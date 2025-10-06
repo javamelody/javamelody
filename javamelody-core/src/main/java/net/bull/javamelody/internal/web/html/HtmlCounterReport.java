@@ -20,7 +20,6 @@ package net.bull.javamelody.internal.web.html;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -74,7 +73,7 @@ public class HtmlCounterReport extends HtmlAbstractReport {
 			writeRequests(counterName, counter.getChildCounterName(), summaryRequest, false, true,
 					false);
 		} else {
-			final List<CounterRequest> summaryRequests = Arrays.asList(globalRequest,
+			final List<CounterRequest> summaryRequests = List.of(globalRequest,
 					counterRequestAggregation.getWarningRequest(),
 					counterRequestAggregation.getSevereRequest());
 			writeRequests(globalRequest.getName(), counter.getChildCounterName(), summaryRequests,

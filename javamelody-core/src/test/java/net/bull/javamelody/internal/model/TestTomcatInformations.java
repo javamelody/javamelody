@@ -24,7 +24,6 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,11 +31,11 @@ import java.util.Map;
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
-import javax.servlet.ServletContext;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import jakarta.servlet.ServletContext;
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.common.Parameters;
@@ -78,16 +77,12 @@ public class TestTomcatInformations {
 		/** {@inheritDoc} */
 		@Override
 		public Map<Object, Object> getmemoryUsage() {
-			return new LinkedHashMap<Object, Object>() {
-				private static final long serialVersionUID = 1L;
-
-				{
-					this.put("committed", 1);
-					this.put("init", 10);
-					this.put("max", 100);
-					this.put("used", 1000);
-				}
-			};
+			final LinkedHashMap<Object, Object> map = new LinkedHashMap<>();
+			map.put("committed", 1);
+			map.put("init", 10);
+			map.put("max", 100);
+			map.put("used", 1000);
+			return map;
 		}
 
 		/** {@inheritDoc} */
@@ -126,7 +121,6 @@ public class TestTomcatInformations {
 		 */
 		int getmaxThreads();
 
-		/** {@inheritDoc} */
 		/**
 		 * attribut memoryUsage.
 		 * @return MemoryUsage
@@ -305,10 +299,10 @@ public class TestTomcatInformations {
 			}
 
 			final Counter counter = new Counter("http", null);
-			final Collector collector = new Collector("test", Arrays.asList(counter));
+			final Collector collector = new Collector("test", List.of(counter));
 			final ServletContext context = createNiceMock(ServletContext.class);
 			expect(context.getServerInfo()).andReturn("Mock").anyTimes();
-			expect(context.getMajorVersion()).andReturn(3).anyTimes();
+			expect(context.getMajorVersion()).andReturn(5).anyTimes();
 			expect(context.getMinorVersion()).andReturn(0).anyTimes();
 			expect(context.getContextPath()).andReturn("/test").anyTimes();
 			replay(context);

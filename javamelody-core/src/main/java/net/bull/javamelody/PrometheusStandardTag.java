@@ -20,11 +20,10 @@ package net.bull.javamelody;
 import java.io.IOException;
 import java.util.Collections;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
-
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.TagSupport;
 import net.bull.javamelody.internal.model.Collector;
 import net.bull.javamelody.internal.model.JavaInformations;
 import net.bull.javamelody.internal.web.MonitoringController;

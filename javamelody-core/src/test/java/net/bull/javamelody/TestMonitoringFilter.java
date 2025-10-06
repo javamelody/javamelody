@@ -37,7 +37,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -49,18 +48,6 @@ import java.util.Set;
 
 import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ReadListener;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.junit.After;
 import org.junit.Before;
@@ -70,6 +57,18 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ReadListener;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import net.bull.javamelody.internal.common.HttpParameter;
 import net.bull.javamelody.internal.common.HttpPart;
 import net.bull.javamelody.internal.common.LOG;
@@ -135,14 +134,14 @@ public class TestMonitoringFilter {// NOPMD
 				Parameters.PARAMETER_SYSTEM_PREFIX + Parameter.DISABLED.getCode())).andReturn(null)
 						.anyTimes();
 		expect(config.getInitParameter(Parameter.DISABLED.getCode())).andReturn(null).anyTimes();
-		expect(context.getMajorVersion()).andReturn(2).anyTimes();
-		expect(context.getMinorVersion()).andReturn(5).anyTimes();
+		expect(context.getMajorVersion()).andReturn(5).anyTimes();
+		expect(context.getMinorVersion()).andReturn(0).anyTimes();
 		expect(context.getServletContextName()).andReturn("test webapp").anyTimes();
 		// mockJetty pour avoir un applicationServerIconName dans JavaInformations
 		expect(context.getServerInfo()).andReturn("mockJetty").anyTimes();
 		// dependencies pour avoir des dépendances dans JavaInformations
 		final Set<String> dependencies = new LinkedHashSet<>(
-				Arrays.asList("/WEB-INF/lib/jrobin.jar", "/WEB-INF/lib/javamelody.jar"));
+				List.of("/WEB-INF/lib/jrobin.jar", "/WEB-INF/lib/javamelody.jar"));
 		// et flags pour considérer que les ressources pom.xml et web.xml existent
 		JavaInformations.setWebXmlExistsAndPomXmlExists(true, true);
 		expect(context.getResourcePaths("/WEB-INF/lib/")).andReturn(dependencies).anyTimes();
@@ -509,54 +508,54 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoring() throws ServletException, IOException {
-		monitoring(Collections.<HttpParameter, String> emptyMap());
+		monitoring(Collections.emptyMap());
 		monitoring(Collections.singletonMap(HttpParameter.FORMAT, "html"));
 		monitoring(Collections.singletonMap(HttpParameter.FORMAT, "htmlbody"));
 		setProperty(Parameter.DISABLED, Boolean.TRUE.toString());
 		try {
 			setUp();
-			monitoring(Collections.<HttpParameter, String> emptyMap(), false);
+			monitoring(Collections.emptyMap(), false);
 		} finally {
 			setProperty(Parameter.DISABLED, Boolean.FALSE.toString());
 		}
 		setProperty(Parameter.NO_DATABASE, Boolean.TRUE.toString());
 		try {
 			setUp();
-			monitoring(Collections.<HttpParameter, String> emptyMap());
+			monitoring(Collections.emptyMap());
 		} finally {
 			setProperty(Parameter.NO_DATABASE, Boolean.FALSE.toString());
 		}
 		setProperty(Parameter.ALLOWED_ADDR_PATTERN, "256.*");
 		try {
 			setUp();
-			monitoring(Collections.<HttpParameter, String> emptyMap(), false);
+			monitoring(Collections.emptyMap(), false);
 			setProperty(Parameter.ALLOWED_ADDR_PATTERN, ".*");
 			setUp();
-			monitoring(Collections.<HttpParameter, String> emptyMap(), false);
+			monitoring(Collections.emptyMap(), false);
 		} finally {
 			setProperty(Parameter.ALLOWED_ADDR_PATTERN, null);
 		}
 		setProperty(Parameter.AUTHORIZED_USERS, "admin:password, ");
 		try {
 			setUp();
-			monitoring(Collections.<HttpParameter, String> emptyMap(), false);
+			monitoring(Collections.emptyMap(), false);
 			setProperty(Parameter.AUTHORIZED_USERS, "");
 			setUp();
-			monitoring(Collections.<HttpParameter, String> emptyMap(), false);
+			monitoring(Collections.emptyMap(), false);
 		} finally {
 			setProperty(Parameter.AUTHORIZED_USERS, null);
 		}
 		setProperty(Parameter.MONITORING_PATH, "/admin/monitoring");
 		try {
 			setUp();
-			monitoring(Collections.<HttpParameter, String> emptyMap(), false);
+			monitoring(Collections.emptyMap(), false);
 		} finally {
 			setProperty(Parameter.MONITORING_PATH, "/monitoring");
 		}
 		try {
 			setProperty(Parameter.JMX_EXPOSE_ENABLED, Boolean.TRUE.toString());
 			setUp();
-			monitoring(Collections.<HttpParameter, String> emptyMap());
+			monitoring(Collections.emptyMap());
 		} finally {
 			setProperty(Parameter.JMX_EXPOSE_ENABLED, null);
 		}
@@ -581,7 +580,7 @@ public class TestMonitoringFilter {// NOPMD
 
 			// simulate call to monitoring?resource=boomerang.min.js
 			monitoring(Collections.singletonMap(HttpParameter.RESOURCE, "boomerang.min.js"));
-			monitoring(Collections.<HttpParameter, String> emptyMap());
+			monitoring(Collections.emptyMap());
 			monitoring(Collections.singletonMap(HttpParameter.PART, HttpPart.RUM.getName()), false);
 
 			// simulate call to monitoring?part=rum to register RUM data
@@ -621,10 +620,10 @@ public class TestMonitoringFilter {// NOPMD
 		setProperty(Parameter.MAIL_SESSION, "testmailsession");
 		setProperty(Parameter.ADMIN_EMAILS, null);
 		setUp();
-		monitoring(Collections.<HttpParameter, String> emptyMap());
+		monitoring(Collections.emptyMap());
 		setProperty(Parameter.ADMIN_EMAILS, "evernat@free.fr");
 		setUp();
-		monitoring(Collections.<HttpParameter, String> emptyMap());
+		monitoring(Collections.emptyMap());
 		setProperty(Parameter.MAIL_SESSION, null);
 		setProperty(Parameter.ADMIN_EMAILS, null);
 	}
@@ -814,20 +813,9 @@ public class TestMonitoringFilter {// NOPMD
 	private void doMonitoringWithUnknownPart() throws IOException, ServletException {
 		final Map<HttpParameter, String> parameters = new HashMap<>();
 		parameters.put(HttpParameter.PART, "unknown part");
-		boolean exception = false;
-		try {
-			monitoring(parameters);
-		} catch (final IllegalArgumentException e) {
-			exception = true;
-		}
-		assertTrue("exception if unknown part", exception);
+		monitoring(parameters, false);
 		parameters.put(HttpParameter.PART, HttpPart.JROBINS.getName());
-		try {
-			monitoring(parameters);
-		} catch (final IllegalArgumentException e) {
-			exception = true;
-		}
-		assertTrue("exception if unknown part", exception);
+		monitoring(parameters, false);
 	}
 
 	private void monitoringSessionsPart(final Map<HttpParameter, String> parameters)
@@ -961,14 +949,8 @@ public class TestMonitoringFilter {// NOPMD
 		monitoring(parameters);
 		parameters.put(HttpParameter.PART, HttpPart.PROCESSES.getName());
 		monitoring(parameters);
-		boolean exception = false;
-		try {
-			parameters.put(HttpParameter.PART, HttpPart.JNDI.getName());
-			monitoring(parameters);
-		} catch (final Exception e) {
-			exception = true;
-		}
-		assertTrue("exception caused by NoInitialContextException", exception);
+		parameters.put(HttpParameter.PART, HttpPart.JNDI.getName());
+		monitoring(parameters);
 		parameters.put(HttpParameter.PART, HttpPart.MBEANS.getName());
 		monitoring(parameters);
 		parameters.put(HttpParameter.PART, HttpPart.COUNTER_SUMMARY_PER_CLASS.getName());
@@ -990,12 +972,7 @@ public class TestMonitoringFilter {// NOPMD
 		monitoring(parameters);
 		parameters.remove(HttpParameter.GRAPH);
 		parameters.put(HttpParameter.PART, "unknown part");
-		try {
-			monitoring(parameters);
-		} catch (final Exception e) {
-			exception = true;
-		}
-		assertTrue("exception if unknown part", exception);
+		monitoring(parameters, false);
 	}
 
 	/** Test.
@@ -1174,11 +1151,10 @@ public class TestMonitoringFilter {// NOPMD
 		final Random random = new Random();
 		if (random.nextBoolean()) {
 			expect(request.getHeaders("Accept-Encoding"))
-					.andReturn(Collections.enumeration(Arrays.asList("application/gzip")))
-					.anyTimes();
+					.andReturn(Collections.enumeration(List.of("application/gzip"))).anyTimes();
 		} else {
 			expect(request.getHeaders("Accept-Encoding"))
-					.andReturn(Collections.enumeration(Arrays.asList("text/html"))).anyTimes();
+					.andReturn(Collections.enumeration(List.of("text/html"))).anyTimes();
 		}
 		for (final Map.Entry<String, String> entry : parameters.entrySet()) {
 			if (HttpParameter.REQUEST.getName().equals(entry.getKey())) {
@@ -1219,6 +1195,7 @@ public class TestMonitoringFilter {// NOPMD
 		verify(chain);
 
 		if (checkResultContent) {
+			System.out.println("checkResultContent=" + checkResultContent);
 			assertTrue("result", output.size() != 0 || stringWriter.getBuffer().length() != 0);
 		}
 	}

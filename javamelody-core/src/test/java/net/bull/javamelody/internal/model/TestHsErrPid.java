@@ -22,7 +22,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -53,7 +52,7 @@ public class TestHsErrPid {
 			final JavaInformations javaInformations = new JavaInformations(null, true);
 			final JavaInformations javaInformations2 = new JavaInformations(null, false);
 			final List<HsErrPid> hsErrPidList3 = HsErrPid
-					.getHsErrPidList(Arrays.asList(javaInformations, javaInformations2));
+					.getHsErrPidList(List.of(javaInformations, javaInformations2));
 			assertEquals("buildHsErrPidList", hsErrPidList.size() + 2, hsErrPidList3.size());
 		} finally {
 			file.delete();

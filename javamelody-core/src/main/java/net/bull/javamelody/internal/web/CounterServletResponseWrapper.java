@@ -19,8 +19,8 @@ package net.bull.javamelody.internal.web;
 
 import java.io.IOException;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Implémentation de {@link FilterServletResponseWrapper} qui fonctionne avec le {@link CounterResponseStream},

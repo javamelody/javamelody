@@ -20,16 +20,16 @@ package net.bull.javamelody;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Date;
 import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
 import net.bull.javamelody.internal.model.Counter;
@@ -74,12 +74,12 @@ public class TestJobGlobalListener {
 			// (aléatoirement il y en a 2/10 qui font une erreur)
 			for (int i = 0; i < 10; i++) {
 				//Define job instance
-				final JobDetail job = new JobDetail("job" + random.nextInt(), null,
-						JobTestImpl.class);
+				final JobDetail job = JobBuilder.newJob(JobTestImpl.class)
+						.withIdentity("job" + random.nextInt()).build();
 
 				//Define a Trigger that will fire "now"
-				final Trigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null,
-						new Date());
+				final Trigger trigger = TriggerBuilder.newTrigger()
+						.withIdentity("trigger" + random.nextInt()).startNow().build();
 				//Schedule the job with the trigger
 				scheduler.scheduleJob(job, trigger);
 			}

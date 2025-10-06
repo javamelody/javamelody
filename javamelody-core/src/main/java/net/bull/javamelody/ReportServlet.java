@@ -19,14 +19,15 @@ package net.bull.javamelody;
 
 import java.io.IOException;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import net.bull.javamelody.internal.common.HttpParameter;
 import net.bull.javamelody.internal.common.LOG;
 import net.bull.javamelody.internal.model.Collector;
+import net.bull.javamelody.internal.model.Counter;
 import net.bull.javamelody.internal.web.HttpAuth;
 import net.bull.javamelody.internal.web.MonitoringController;
 
@@ -74,8 +75,32 @@ public class ReportServlet extends HttpServlet {
 		}
 		final Collector collector = filterContext.getCollector();
 		final MonitoringController monitoringController = new MonitoringController(collector, null);
+		try {
+			monitoringController.doActionIfNeededAndReport(httpRequest, httpResponse,
+					servletConfig.getServletContext());
+		} catch (final Exception e) {
+			LOG.warn(e.toString(), e);
+			httpResponse.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
+			return;
+		}
 
-		monitoringController.doActionIfNeededAndReport(httpRequest, httpResponse,
-				servletConfig.getServletContext());
+		// Ici ReportServlet comme MonitoringFilter#doMonitoring
+		// par exemple pour serveur de collecte branché sur le management endpoint de Spring Boot (#1121).
+		if ("stop".equalsIgnoreCase(HttpParameter.COLLECTOR.getParameterFrom(httpRequest))) {
+			// on a été appelé par un serveur de collecte qui fera l'aggrégation dans le temps,
+			// le stockage et les courbes, donc on arrête le timer s'il est démarré
+			// et on vide les stats pour que le serveur de collecte ne récupère que les deltas
+			for (final Counter counter : collector.getCounters()) {
+				counter.clear();
+			}
+
+			if (!collector.isStopped()) {
+				LOG.debug(
+						"Stopping the javamelody collector in this webapp, because a collector server from "
+								+ httpRequest.getRemoteAddr()
+								+ " wants to collect the data itself");
+				filterContext.stopCollector();
+			}
+		}
 	}
 }

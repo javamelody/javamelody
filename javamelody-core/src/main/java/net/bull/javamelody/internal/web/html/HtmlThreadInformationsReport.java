@@ -32,6 +32,7 @@ import net.bull.javamelody.internal.model.ThreadInformations;
  * @author Emeric Vernat
  */
 public class HtmlThreadInformationsReport extends HtmlAbstractReport {
+	private static final boolean JAVA_20_OR_LATER = "20".compareTo(Parameters.JAVA_VERSION) < 0;
 	private final List<ThreadInformations> threadInformationsList;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final boolean stackTraceEnabled;
@@ -63,7 +64,9 @@ public class HtmlThreadInformationsReport extends HtmlAbstractReport {
 		}
 		if (systemActionsEnabled) {
 			writeln("<th class='noPrint'>#Interrupt#</th>");
-			writeln("<th class='noPrint'>#Tuer#</th>");
+			if (!JAVA_20_OR_LATER) {
+				writeln("<th class='noPrint'>#Tuer#</th>");
+			}
 		}
 		for (final ThreadInformations threadInformations : threadInformationsList) {
 			table.nextRow();
@@ -198,8 +201,11 @@ public class HtmlThreadInformationsReport extends HtmlAbstractReport {
 	}
 
 	void writeThreadWithStackTrace(ThreadInformations threadInformations) throws IOException {
-		final List<StackTraceElement> stackTrace = threadInformations.getStackTrace();
-		final String encodedName = htmlEncode(threadInformations.getName());
+		writeThreadWithStackTrace(threadInformations.getName(), threadInformations.getStackTrace());
+	}
+
+	void writeThreadWithStackTrace(String threadName, List<StackTraceElement> stackTrace) throws IOException {
+		final String encodedName = htmlEncode(threadName);
 		if (stackTrace != null && !stackTrace.isEmpty()) {
 			// même si stackTraceEnabled, ce thread n'a pas forcément de stack-trace
 			writeln("<div class='tooltip'>");
@@ -223,9 +229,12 @@ public class HtmlThreadInformationsReport extends HtmlAbstractReport {
 
 	void writeExecutedMethod(ThreadInformations threadInformations) throws IOException {
 		final String executedMethod = threadInformations.getExecutedMethod();
+		writeExecutedMethod(executedMethod);
+	}
+
+	void writeExecutedMethod(String executedMethod) throws IOException {
 		if (executedMethod != null && !executedMethod.isEmpty()) {
-			writeDirectly(HtmlSourceReport
-					.htmlEncodeStackTraceElement(threadInformations.getExecutedMethod()));
+			writeDirectly(HtmlSourceReport.htmlEncodeStackTraceElement(executedMethod));
 		} else {
 			writeDirectly("&nbsp;");
 		}
@@ -251,7 +260,7 @@ public class HtmlThreadInformationsReport extends HtmlAbstractReport {
 	}
 
 	void writeKillThread(ThreadInformations threadInformations) throws IOException {
-		if (systemActionsEnabled) {
+		if (systemActionsEnabled && !JAVA_20_OR_LATER) {
 			write("</td> <td align='center' class='noPrint'>");
 			write("<a href='?action=kill_thread&amp;threadId=");
 			write(threadInformations.getGlobalThreadId());

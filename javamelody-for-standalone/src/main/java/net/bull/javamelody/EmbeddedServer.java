@@ -1,17 +1,17 @@
 package net.bull.javamelody;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.util.EnumSet;
 import java.util.Map;
 
-import javax.servlet.DispatcherType;
+import org.apache.catalina.Context;
+import org.apache.catalina.servlets.DefaultServlet;
+import org.apache.catalina.startup.Tomcat;
 
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.server.handler.HandlerCollection;
-import org.eclipse.jetty.server.handler.RequestLogHandler;
-import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.FilterRegistration.Dynamic;
+import jakarta.servlet.ServletContainerInitializer;
 
 /**
  * Embedded http server including javamelody reports.
@@ -24,32 +24,54 @@ public class EmbeddedServer {
 	 * @throws Exception e
 	 */
 	public static void start(int port, Map<Parameter, String> parameters) throws Exception {
-		// Init jetty
-		final Server server = new Server(port);
-		final ContextHandlerCollection contexts = new ContextHandlerCollection();
-		final ServletContextHandler context = new ServletContextHandler(contexts, "/",
-				ServletContextHandler.SESSIONS);
+		// Init embedded tomcat
+		Tomcat tomcat = new Tomcat();
+		tomcat.setPort(port);
+		final File baseDir = Files.createTempDirectory("javamelody-embedded-tomcat-").toFile();
+		tomcat.setBaseDir(baseDir.getAbsolutePath());
+		// active le connector sinon il n'est pas actif
+		tomcat.getConnector();
 
-		final net.bull.javamelody.MonitoringFilter monitoringFilter = new net.bull.javamelody.MonitoringFilter();
-		monitoringFilter.setApplicationType("Standalone");
-		final FilterHolder filterHolder = new FilterHolder(monitoringFilter);
-		if (parameters != null) {
-			for (final Map.Entry<Parameter, String> entry : parameters.entrySet()) {
-				final net.bull.javamelody.Parameter parameter = entry.getKey();
-				final String value = entry.getValue();
-				filterHolder.setInitParameter(parameter.getCode(), value);
+		// Répertoire de ressources web bidon juste parce qu'il en faut un
+		final File webappDir = Files.createTempDirectory("javamelody-embedded-").toFile();
+		final Context context = tomcat.addContext("", webappDir.getAbsolutePath());
+		// il faut une servlet, sinon le filtre n'est pas actif
+		Tomcat.addServlet(context, "default", new DefaultServlet());
+		context.addServletMappingDecoded("/", "default");
+
+		// ServletContainerInitializer qui initialisera le filtre
+		final ServletContainerInitializer servletContainerInitializer = (c, ctx) -> {
+			// initialise le filtre pour activer le monitoring et pour afficher la page
+			final MonitoringFilter monitoringFilter = new MonitoringFilter();
+			monitoringFilter.setApplicationType("Standalone");
+			final Dynamic filter = ctx.addFilter("javamelody", monitoringFilter);
+			filter.addMappingForUrlPatterns(
+					EnumSet.of(DispatcherType.INCLUDE, DispatcherType.REQUEST), false, "/*");
+			if (parameters != null) {
+				for (final Map.Entry<Parameter, String> entry : parameters.entrySet()) {
+					final Parameter parameter = entry.getKey();
+					final String value = entry.getValue();
+					filter.setInitParameter(parameter.getCode(), value);
+				}
+			}
+		};
+		context.addServletContainerInitializer(servletContainerInitializer, null);
+
+		tomcat.start();
+		tomcat.getServer().await();
+		deleteRecursive(webappDir);
+		deleteRecursive(baseDir);
+	}
+
+	private static void deleteRecursive(final File directory) {
+		final File[] files = directory.listFiles();
+		if (files != null) {
+			for (final File file : files) {
+				if (file.isDirectory()) {
+					deleteRecursive(file);
+				}
+				file.delete();
 			}
 		}
-		context.addFilter(filterHolder, "/*",
-				EnumSet.of(DispatcherType.INCLUDE, DispatcherType.REQUEST));
-
-		final RequestLogHandler requestLogHandler = new RequestLogHandler();
-		contexts.addHandler(requestLogHandler);
-
-		final HandlerCollection handlers = new HandlerCollection();
-		handlers.setHandlers(new Handler[] { contexts });
-		server.setHandler(handlers);
-
-		server.start();
 	}
 }

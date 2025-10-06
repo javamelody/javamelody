@@ -22,7 +22,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -55,8 +54,7 @@ public class TestHtmlThreadInformationsReport {
 	@Test
 	public void testThreadInformations() throws IOException {
 		final StringWriter writer = new StringWriter();
-		new HtmlThreadInformationsReport(Collections.<ThreadInformations> emptyList(), true, writer)
-				.toHtml();
+		new HtmlThreadInformationsReport(Collections.emptyList(), true, writer).toHtml();
 		assertNotEmptyAndClear(writer);
 		new HtmlThreadInformationsReport(JavaInformations.buildThreadInformationsList(), true,
 				writer).toHtml();
@@ -67,11 +65,11 @@ public class TestHtmlThreadInformationsReport {
 
 		final List<ThreadInformations> threads = new ArrayList<>();
 		final Thread thread = Thread.currentThread();
-		final List<StackTraceElement> stackTrace = Arrays.asList(thread.getStackTrace());
+		final List<StackTraceElement> stackTrace = List.of(thread.getStackTrace());
 		final String hostAddress = Parameters.getHostAddress();
 		threads.add(new ThreadInformations(thread, null, 10, 10, false, hostAddress));
-		threads.add(new ThreadInformations(thread, Collections.<StackTraceElement> emptyList(), 10,
-				10, false, hostAddress));
+		threads.add(new ThreadInformations(thread, Collections.emptyList(), 10, 10, false,
+				hostAddress));
 		threads.add(new ThreadInformations(thread, stackTrace, 10, 10, true, hostAddress));
 		threads.add(new ThreadInformations(thread, stackTrace, 10, 10, false, hostAddress));
 		new HtmlThreadInformationsReport(threads, true, writer).toHtml();

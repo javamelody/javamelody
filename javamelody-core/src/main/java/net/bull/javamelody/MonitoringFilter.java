@@ -22,21 +22,21 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import net.bull.javamelody.internal.common.HttpParameter;
 import net.bull.javamelody.internal.common.HttpPart;
 import net.bull.javamelody.internal.common.LOG;
@@ -84,7 +84,6 @@ public class MonitoringFilter implements Filter {
 	private HttpAuth httpAuth;
 	private FilterConfig filterConfig;
 	private String monitoringUrl;
-	private boolean servletApi2;
 
 	/**
 	 * Constructeur.
@@ -125,7 +124,7 @@ public class MonitoringFilter implements Filter {
 	@Override
 	public void init(FilterConfig config) throws ServletException {
 		final long start = System.currentTimeMillis(); // NOPMD
-		final String contextPath = Parameters.getContextPath(config.getServletContext());
+		final String contextPath = config.getServletContext().getContextPath();
 		if (!instanceEnabled) {
 			if (!CONTEXT_PATHS.contains(contextPath)) {
 				// si jars dans tomcat/lib, il y a plusieurs instances mais dans des webapps différentes (issue 193)
@@ -136,7 +135,6 @@ public class MonitoringFilter implements Filter {
 		}
 		CONTEXT_PATHS.add(contextPath);
 		this.filterConfig = config;
-		this.servletApi2 = config.getServletContext().getMajorVersion() < 3;
 		Parameters.initialize(config);
 		monitoringDisabled = Parameter.DISABLED.getValueAsBoolean();
 		if (monitoringDisabled) {
@@ -176,7 +174,7 @@ public class MonitoringFilter implements Filter {
 				filterContext.destroy();
 			}
 		} finally {
-			final String contextPath = Parameters.getContextPath(filterConfig.getServletContext());
+			final String contextPath = filterConfig.getServletContext().getContextPath();
 			CONTEXT_PATHS.remove(contextPath);
 			// nettoyage avant le retrait de la webapp au cas où celui-ci ne suffise pas
 			httpCounter = null;
@@ -237,7 +235,7 @@ public class MonitoringFilter implements Filter {
 			httpRequest.setAttribute(CounterError.REQUEST_KEY, completeRequestName);
 			CounterError.bindRequest(httpRequest);
 			chain.doFilter(wrappedRequest, wrappedResponse);
-			if (servletApi2 || !httpRequest.isAsyncStarted()) {
+			if (!httpRequest.isAsyncStarted()) {
 				wrappedResponse.flushStream();
 			}
 		} catch (final Throwable t) { // NOPMD
@@ -405,8 +403,14 @@ public class MonitoringFilter implements Filter {
 
 		final Collector collector = filterContext.getCollector();
 		final MonitoringController monitoringController = new MonitoringController(collector, null);
-		monitoringController.doActionIfNeededAndReport(httpRequest, httpResponse,
-				filterConfig.getServletContext());
+		try {
+			monitoringController.doActionIfNeededAndReport(httpRequest, httpResponse,
+					filterConfig.getServletContext());
+		} catch (final Exception e) {
+			LOG.warn(e.toString(), e);
+			httpResponse.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
+			return;
+		}
 
 		if ("stop".equalsIgnoreCase(HttpParameter.COLLECTOR.getParameterFrom(httpRequest))) {
 			// on a été appelé par un serveur de collecte qui fera l'aggrégation dans le temps,
@@ -550,9 +554,9 @@ public class MonitoringFilter implements Filter {
 		final URL registerUrl;
 		try {
 			registerUrl = new URL(collectServerUrl.toExternalForm() + "?appName="
-					+ URLEncoder.encode(appName, "UTF-8") + "&appUrls="
+					+ URLEncoder.encode(appName, StandardCharsets.UTF_8) + "&appUrls="
 					// "UTF-8" as said in javadoc
-					+ URLEncoder.encode(applicationNodeUrl.toExternalForm(), "UTF-8")
+					+ URLEncoder.encode(applicationNodeUrl.toExternalForm(), StandardCharsets.UTF_8)
 					+ "&action=registerNode");
 			unregisterApplicationNodeInCollectServerUrl = new URL(
 					registerUrl.toExternalForm().replace("registerNode", "unregisterNode"));

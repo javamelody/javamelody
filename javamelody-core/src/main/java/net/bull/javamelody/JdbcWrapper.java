@@ -37,9 +37,9 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
-import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
+import jakarta.servlet.ServletContext;
 import net.bull.javamelody.internal.common.LOG;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.ConnectionInformations;
@@ -68,6 +68,9 @@ public final class JdbcWrapper {
 	static final AtomicLong BUILD_QUEUE_WAITING_DURATIONS_SUM = new AtomicLong();
 	static final Map<Integer, ConnectionInformations> USED_CONNECTION_INFORMATIONS = new ConcurrentHashMap<>();
 
+	static final Comparator<ConnectionInformations> CONNECTION_INFORMATIONS_COMPARATOR = Comparator
+			.comparing(ConnectionInformations::getOpeningDate);
+
 	private static final int MAX_USED_CONNECTION_INFORMATIONS = 500;
 
 	// Cette variable sqlCounter conserve un état qui est global au filtre et à l'application (donc thread-safe).
@@ -77,17 +80,6 @@ public final class JdbcWrapper {
 	private boolean jboss;
 	private boolean glassfish;
 	private boolean weblogic;
-
-	static final class ConnectionInformationsComparator
-			implements Comparator<ConnectionInformations>, Serializable {
-		private static final long serialVersionUID = 1L;
-
-		/** {@inheritDoc} */
-		@Override
-		public int compare(ConnectionInformations connection1, ConnectionInformations connection2) {
-			return connection1.getOpeningDate().compareTo(connection2.getOpeningDate());
-		}
-	}
 
 	/**
 	 * Handler de proxy d'un {@link Statement} jdbc.
@@ -101,13 +93,16 @@ public final class JdbcWrapper {
 		// sans notre proxy pour pouvoir appeler les méthodes non standard du driver par ex.
 		private String requestName;
 		private final Statement statement;
+		private final Connection connection;
 
-		StatementInvocationHandler(String query, Statement statement) {
+		StatementInvocationHandler(String query, Statement statement, Connection connection) {
 			super();
 			assert statement != null;
+			assert connection != null;
 
 			this.requestName = query;
 			this.statement = statement;
+			this.connection = connection;
 		}
 
 		/** {@inheritDoc} */
@@ -152,6 +147,8 @@ public final class JdbcWrapper {
 				// sont appelées (et pas executeBatch()) alors la requête conservée est
 				// faussement celle du batch mais l'application cloche grave.
 				requestName = (String) args[0];
+			} else if ("getConnection".equals(methodName) && (args == null || args.length == 0)) {
+				return connection;
 			}
 
 			// ce n'est pas une méthode executeXxx du Statement
@@ -209,7 +206,8 @@ public final class JdbcWrapper {
 					} else {
 						requestName = null;
 					}
-					result = createStatementProxy(requestName, (Statement) result);
+					result = createStatementProxy(requestName, (Statement) result,
+							(Connection) proxy);
 				}
 				return result;
 			} finally {
@@ -361,7 +359,7 @@ public final class JdbcWrapper {
 	public static List<ConnectionInformations> getConnectionInformationsList() {
 		final List<ConnectionInformations> result = new ArrayList<>(
 				USED_CONNECTION_INFORMATIONS.values());
-		Collections.sort(result, new ConnectionInformationsComparator());
+		result.sort(CONNECTION_INFORMATIONS_COMPARATOR);
 		return Collections.unmodifiableList(result);
 	}
 
@@ -682,7 +680,7 @@ public final class JdbcWrapper {
 	private void unwrap(Object parentObject, String fieldName, String unwrappedMessage)
 			throws IllegalAccessException {
 		final Object proxy = JdbcWrapperHelper.getFieldValue(parentObject, fieldName);
-		if (Proxy.isProxyClass(proxy.getClass())) {
+		if (proxy != null && Proxy.isProxyClass(proxy.getClass())) {
 			InvocationHandler invocationHandler = Proxy.getInvocationHandler(proxy);
 			if (invocationHandler instanceof DelegatingInvocationHandler) {
 				invocationHandler = ((DelegatingInvocationHandler) invocationHandler).getDelegate();
@@ -698,8 +696,7 @@ public final class JdbcWrapper {
 
 	Context createContextProxy(final Context context) {
 		assert context != null;
-		final InvocationHandler invocationHandler = new AbstractInvocationHandler<Context>(
-				context) {
+		final InvocationHandler invocationHandler = new AbstractInvocationHandler<>(context) {
 			private static final long serialVersionUID = 1L;
 
 			/** {@inheritDoc} */
@@ -718,7 +715,7 @@ public final class JdbcWrapper {
 	// pour weblogic
 	private Driver createDriverProxy(final Driver driver) {
 		assert driver != null;
-		final InvocationHandler invocationHandler = new AbstractInvocationHandler<Driver>(driver) {
+		final InvocationHandler invocationHandler = new AbstractInvocationHandler<>(driver) {
 			private static final long serialVersionUID = 1L;
 
 			/** {@inheritDoc} */
@@ -761,6 +758,8 @@ public final class JdbcWrapper {
 		} else if (glassfish && ("com.sun.gjc.spi.jdbc40.ConnectionHolder40"
 				.equals(connection.getClass().getName())
 				|| "com.sun.gjc.spi.jdbc40.ConnectionWrapper40"
+						.equals(connection.getClass().getName())
+				|| "com.sun.gjc.spi.jdbc40.ProfiledConnectionWrapper40"
 						.equals(connection.getClass().getName()))) {
 			// pour glassfish,
 			// result instance de com.sun.gjc.spi.jdbc40.ConnectionHolder40
@@ -794,8 +793,7 @@ public final class JdbcWrapper {
 	public DataSource createDataSourceProxy(String name, final DataSource dataSource) {
 		assert dataSource != null;
 		JdbcWrapperHelper.pullDataSourceProperties(name, dataSource);
-		final InvocationHandler invocationHandler = new AbstractInvocationHandler<DataSource>(
-				dataSource) {
+		final InvocationHandler invocationHandler = new AbstractInvocationHandler<>(dataSource) {
 			private static final long serialVersionUID = 1L;
 
 			/** {@inheritDoc} */
@@ -851,7 +849,7 @@ public final class JdbcWrapper {
 		return Parameter.DISABLED.getValueAsBoolean();
 	}
 
-	Statement createStatementProxy(String query, Statement statement) {
+	Statement createStatementProxy(String query, Statement statement, Connection connection) {
 		assert statement != null;
 		// Si un proxy de connexion a été créé dans un driver jdbc et que par la suite le
 		// servletContext a un paramètre désactivant le monitoring, alors ce n'est pas grave
@@ -861,8 +859,8 @@ public final class JdbcWrapper {
 		// Rq : on ne réévalue pas le paramètre ici pour raison de performances sur la recherche
 		// dans les paramètres du système, du contexte et du filtre alors que dans 99.999999999%
 		// des exécutions il n'y a pas le paramètre.
-		final InvocationHandler invocationHandler = new StatementInvocationHandler(query,
-				statement);
+		final InvocationHandler invocationHandler = new StatementInvocationHandler(query, statement,
+				connection);
 		return createProxy(statement, invocationHandler);
 	}
 

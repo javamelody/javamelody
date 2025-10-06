@@ -33,6 +33,8 @@ import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
+import net.bull.javamelody.internal.common.LOG;
+
 /**
  * Informations sur un cache de données JCache (JSR107).
  * L'état d'une instance est initialisé à son instanciation et non mutable;
@@ -92,21 +94,27 @@ public class JCacheInformations implements Serializable {
 			result.add(jcacheInformations);
 		}
 		for (final CachingProvider cachingProvider : Caching.getCachingProviders()) {
-			final CacheManager cacheManager = cachingProvider.getCacheManager();
-			for (final String cacheName : cacheManager.getCacheNames()) {
-				boolean found = false;
-				for (final JCacheInformations jcacheInformations : result) {
-					if (cacheName != null && cacheName.equals(jcacheInformations.getName())) {
+			try {
+				final CacheManager cacheManager = cachingProvider.getCacheManager();
+				for (final String cacheName : cacheManager.getCacheNames()) {
+					boolean found = false;
+					for (final JCacheInformations jcacheInformations : result) {
+						if (cacheName != null && cacheName.equals(jcacheInformations.getName())) {
+							jcacheInformations.availableByApi = true;
+							found = true;
+							break;
+						}
+					}
+					if (!found) {
+						final JCacheInformations jcacheInformations = new JCacheInformations(
+								cacheName);
 						jcacheInformations.availableByApi = true;
-						found = true;
-						break;
+						result.add(jcacheInformations);
 					}
 				}
-				if (!found) {
-					final JCacheInformations jcacheInformations = new JCacheInformations(cacheName);
-					jcacheInformations.availableByApi = true;
-					result.add(jcacheInformations);
-				}
+			} catch (final Exception e) {
+				// issue 1197, if hazelcast 3.12.13 + xalan 2.7.3
+				LOG.warn(e.toString(), e);
 			}
 		}
 		return result;
@@ -116,22 +124,27 @@ public class JCacheInformations implements Serializable {
 		assert JCACHE_AVAILABLE;
 		assert cacheId != null;
 		for (final CachingProvider cachingProvider : Caching.getCachingProviders()) {
-			final CacheManager cacheManager = cachingProvider.getCacheManager();
-			for (final String cacheName : cacheManager.getCacheNames()) {
-				if (cacheName.equals(cacheId)) {
-					// getCache may never return null
-					final Cache<Object, Object> cache = cacheManager.getCache(cacheId);
-					final List<Object> cacheKeys = new ArrayList<>();
-					for (final Entry<Object, Object> entry : cache) {
-						cacheKeys.add(entry.getKey());
-					}
-					for (final JCacheInformations cacheInformations : buildJCacheInformationsList()) {
-						if (cacheInformations.getName().equals(cacheId)) {
-							cacheInformations.cacheKeys = cacheKeys;
-							return cacheInformations; // NOPMD
+			try {
+				final CacheManager cacheManager = cachingProvider.getCacheManager();
+				for (final String cacheName : cacheManager.getCacheNames()) {
+					if (cacheName.equals(cacheId)) {
+						// getCache may never return null
+						final Cache<Object, Object> cache = cacheManager.getCache(cacheId);
+						final List<Object> cacheKeys = new ArrayList<>();
+						for (final Entry<Object, Object> entry : cache) {
+							cacheKeys.add(entry.getKey());
+						}
+						for (final JCacheInformations cacheInformations : buildJCacheInformationsList()) {
+							if (cacheInformations.getName().equals(cacheId)) {
+								cacheInformations.cacheKeys = cacheKeys;
+								return cacheInformations; // NOPMD
+							}
 						}
 					}
 				}
+			} catch (final Exception e) {
+				// issue 1197, if hazelcast 3.12.13 + xalan 2.7.3
+				LOG.warn(e.toString(), e);
 			}
 		}
 		throw new IllegalArgumentException("Cache not found");

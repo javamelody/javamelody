@@ -23,8 +23,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
+import jakarta.servlet.http.HttpServletRequest;
 import net.bull.javamelody.JavaMelodyLogger;
 import net.bull.javamelody.Parameter;
 
@@ -33,7 +32,6 @@ import net.bull.javamelody.Parameter;
  * @author Emeric Vernat
  */
 public final class LOG {
-	public static final boolean LOG4J_ENABLED = isLog4jEnabled();
 	public static final boolean LOG4J2_ENABLED = isLog4j2Enabled();
 	public static final boolean LOGBACK_ENABLED = isLogbackEnabled();
 
@@ -123,22 +121,6 @@ public final class LOG {
 		}
 	}
 
-	private static boolean isLog4jEnabled() {
-		try {
-			Class.forName("org.apache.log4j.Logger");
-			// test avec AppenderSkeleton nécessaire car log4j-over-slf4j contient la classe
-			// org.apache.log4j.Logger mais pas org.apache.log4j.AppenderSkeleton
-			Class.forName("org.apache.log4j.AppenderSkeleton");
-			// test avec LocationInfo nécessaire car log4j-over-slf4j v1.7.6 inclut désormais l'AppenderSkeleton
-			Class.forName("org.apache.log4j.spi.LocationInfo");
-			return true;
-		} catch (final Throwable e) { // NOPMD
-			// catch Throwable et non catch ClassNotFoundException
-			// pour certaines configurations de JBoss qui inclut Log4J (cf issue 166)
-			return false;
-		}
-	}
-
 	private static boolean isLog4j2Enabled() {
 		try {
 			Class.forName("org.apache.logging.log4j.Logger");
@@ -171,19 +153,18 @@ public final class LOG {
 		if (loggerClass != null) {
 			final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
 			try {
-				return JavaMelodyLogger.class.cast(tccl.loadClass(loggerClass).newInstance());
+				return JavaMelodyLogger.class
+						.cast(tccl.loadClass(loggerClass).getDeclaredConstructor().newInstance());
 			} catch (final Exception e) {
 				throw new IllegalStateException(e);
 			}
 		}
 
-		// sinon, on prend selon ce qui est présent Logback ou Log4J ou java.util.logging
+		// sinon, on prend selon ce qui est présent Logback ou Log4J2 ou java.util.logging
 		if (LOGBACK_ENABLED) {
 			return new LogbackLogger();
 		} else if (LOG4J2_ENABLED) {
 			return new Log4J2Logger();
-		} else if (LOG4J_ENABLED) {
-			return new Log4JLogger();
 		} else {
 			return new JavaLogger();
 		}

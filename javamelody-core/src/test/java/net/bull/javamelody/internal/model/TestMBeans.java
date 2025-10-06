@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -119,7 +118,7 @@ public class TestMBeans {
 	@Test
 	public void testToString() {
 		final MBeanNode mBeanNode = new MBeanNode("name", "description",
-				Arrays.asList(new MBeanAttribute("name", "description", "formattedValue")));
+				List.of(new MBeanAttribute("name", "description", "formattedValue")));
 		assertNotNull("mbeanNode", mBeanNode);
 		assertNotNull("toString", mBeanNode.toString());
 		assertNotNull("getAttributes", mBeanNode.getAttributes());

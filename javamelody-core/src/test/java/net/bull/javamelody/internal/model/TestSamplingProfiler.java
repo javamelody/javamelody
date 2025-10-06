@@ -19,6 +19,7 @@ package net.bull.javamelody.internal.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -28,7 +29,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -56,8 +57,7 @@ public class TestSamplingProfiler {
 	 */
 	@Test
 	public void test2() {
-		final SamplingProfiler samplingProfiler = new SamplingProfiler(new ArrayList<String>(),
-				null);
+		final SamplingProfiler samplingProfiler = new SamplingProfiler(new ArrayList<>(), null);
 		assertEmptyHotspots(samplingProfiler);
 		samplingProfiler.update();
 		samplingProfiler.clear();
@@ -76,7 +76,7 @@ public class TestSamplingProfiler {
 	@Test
 	public void testClassesInInclude() {
 		final SamplingProfiler samplingProfiler = new SamplingProfiler(null,
-				Arrays.asList("net.bull", "java"));
+				List.of("net.bull", "java"));
 		assertEmptyHotspots(samplingProfiler);
 		samplingProfiler.update();
 		samplingProfiler.clear();
@@ -93,7 +93,7 @@ public class TestSamplingProfiler {
 	@Test
 	public void testClassesInIncludeNoneMatching() {
 		final SamplingProfiler samplingProfiler = new SamplingProfiler(null,
-				Arrays.asList("not.matching.package,also.not.matching"));
+				List.of("not.matching.package,also.not.matching"));
 		assertEmptyHotspots(samplingProfiler);
 		samplingProfiler.update();
 		assertEmptyHotspots(samplingProfiler);
@@ -108,8 +108,8 @@ public class TestSamplingProfiler {
 	 */
 	@Test
 	public void testConstructor() {
-		final SamplingProfiler samplingProfiler = new SamplingProfiler(
-				Arrays.asList("java", "javax."), null);
+		final SamplingProfiler samplingProfiler = new SamplingProfiler(List.of("java", "javax."),
+				null);
 		assertEmptyHotspots(samplingProfiler);
 	}
 
@@ -118,8 +118,7 @@ public class TestSamplingProfiler {
 	 */
 	@Test
 	public void testConstructorInclude() {
-		final SamplingProfiler samplingProfiler = new SamplingProfiler(null,
-				Arrays.asList("net.bull"));
+		final SamplingProfiler samplingProfiler = new SamplingProfiler(null, List.of("net.bull"));
 		assertEmptyHotspots(samplingProfiler);
 	}
 
@@ -129,7 +128,7 @@ public class TestSamplingProfiler {
 	@SuppressWarnings("unused")
 	@Test(expected = Exception.class)
 	public void testConstructor2() {
-		new SamplingProfiler(Arrays.asList(" "), null);
+		new SamplingProfiler(List.of(" "), null);
 	}
 
 	/**
@@ -155,11 +154,11 @@ public class TestSamplingProfiler {
 		assertEquals("getCount", 0, sampledMethod.getCount());
 		assertEquals("equals", sampledMethod, sampledMethod);
 		assertEquals("equals", sampledMethod, sampledMethod1);
-		assertFalse("equals", sampledMethod.equals(new SampledMethod("class1", "method2")));
-		assertFalse("equals", sampledMethod.equals(new SampledMethod("class2", "method2")));
-		assertFalse("equals", sampledMethod.equals(new Object()));
+		assertNotEquals("equals", sampledMethod, new SampledMethod("class1", "method2"));
+		assertNotEquals("equals", sampledMethod, new SampledMethod("class2", "method2"));
+		assertNotEquals("equals", sampledMethod, new Object());
 		final Object object = null;
-		assertFalse("equals", sampledMethod.equals(object));
+		assertNotEquals("equals", object, sampledMethod);
 		assertEquals("hashCode", sampledMethod.hashCode(), sampledMethod1.hashCode());
 		assertEquals("toString", sampledMethod.toString(), sampledMethod1.toString());
 		assertEquals("compareTo", 0, sampledMethod.compareTo(sampledMethod1));

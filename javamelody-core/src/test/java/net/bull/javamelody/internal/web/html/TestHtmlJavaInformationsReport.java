@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.management.JMException;
@@ -93,8 +92,8 @@ public class TestHtmlJavaInformationsReport {
 											"Catalina:type=GlobalRequestProcessor,name=jk-8009"))
 							.getObjectName());
 			TomcatInformations.initMBeans();
-			final List<JavaInformations> myJavaInformationsList = Arrays
-					.asList(new JavaInformations(null, true));
+			final List<JavaInformations> myJavaInformationsList = List
+					.of(new JavaInformations(null, true));
 			final HtmlJavaInformationsReport htmlReport = new HtmlJavaInformationsReport(
 					myJavaInformationsList, writer);
 			htmlReport.toHtml();
@@ -113,16 +112,16 @@ public class TestHtmlJavaInformationsReport {
 											"Catalina:type=GlobalRequestProcessor,name=jk-8010"))
 							.getObjectName());
 			TomcatInformations.initMBeans();
-			final List<JavaInformations> myJavaInformationsList2 = Arrays
-					.asList(new JavaInformations(null, true));
+			final List<JavaInformations> myJavaInformationsList2 = List
+					.of(new JavaInformations(null, true));
 			final HtmlJavaInformationsReport htmlReport2 = new HtmlJavaInformationsReport(
 					myJavaInformationsList2, writer);
 			htmlReport2.toHtml();
 			assertNotEmptyAndClear(writer);
 
 			jk8010.setrequestCount(1000);
-			final List<JavaInformations> myJavaInformationsList3 = Arrays
-					.asList(new JavaInformations(null, true));
+			final List<JavaInformations> myJavaInformationsList3 = List
+					.of(new JavaInformations(null, true));
 			final HtmlJavaInformationsReport htmlReport3 = new HtmlJavaInformationsReport(
 					myJavaInformationsList3, writer);
 			htmlReport3.toHtml();

@@ -20,7 +20,6 @@ package net.bull.javamelody.internal.model;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -69,15 +68,13 @@ public class ConnectionInformations implements Serializable {
 		if (openingStackTrace == null) {
 			return Collections.emptyList();
 		}
-		final List<StackTraceElement> stackTrace = new ArrayList<>(
-				Arrays.asList(openingStackTrace));
+		final List<StackTraceElement> stackTrace = new ArrayList<>(List.of(openingStackTrace));
 		// on enlève les premiers éléments qui sont forcément ceux de javamelody
 		// (Thread.getStackTrace(), constructeur ConnectionInformations,
 		// JdbcWrapper.createConnectionProxy, appelant de createConnectionProxy...)
-		stackTrace.remove(0);
-		while (stackTrace.get(0).getClassName().startsWith(OWN_PACKAGE)) {
+		do {
 			stackTrace.remove(0);
-		}
+		} while (stackTrace.get(0).getClassName().startsWith(OWN_PACKAGE));
 		return stackTrace;
 	}
 

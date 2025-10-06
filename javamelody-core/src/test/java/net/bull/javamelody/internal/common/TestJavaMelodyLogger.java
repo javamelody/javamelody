@@ -22,11 +22,10 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import jakarta.servlet.http.HttpServletRequest;
 import net.bull.javamelody.JavaMelodyLogger;
 import net.bull.javamelody.Utils;
 
@@ -55,11 +54,9 @@ public class TestJavaMelodyLogger {
 	@Test
 	public void testLoggers() {
 		final JavaMelodyLogger javaLogger = new JavaLogger();
-		final JavaMelodyLogger log4jLogger = new Log4JLogger();
 		final JavaMelodyLogger log4j2Logger = new Log4J2Logger();
 		final JavaMelodyLogger logbackLogger = new LogbackLogger();
 		logs(javaLogger);
-		logs(log4jLogger);
 		logs(log4j2Logger);
 		logs(logbackLogger);
 	}

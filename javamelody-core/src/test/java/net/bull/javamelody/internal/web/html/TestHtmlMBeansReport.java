@@ -22,13 +22,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.management.JMException;
-import javax.management.MBeanAttributeInfo;
-import javax.management.MBeanInfo;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
 import javax.management.ObjectInstance;
@@ -103,7 +100,8 @@ public class TestHtmlMBeansReport {
 							+ "testseparator:type=X"));
 			mBeans.add(mBean5.getObjectName());
 
-			// on force à null une des descriptions de bean et une des descriptions d'attribut
+			/* cette utilisation de java.lang.reflect ne fonctionne plus avec Java 17 sans add-opens javax.management
+			 // on force à null une des descriptions de bean et une des descriptions d'attribut
 			final MBeanInfo mbeanInfo = mBeanServer.getMBeanInfo(mBeans.get(0));
 			setFieldValue(mbeanInfo, "description", null);
 			final MBeanAttributeInfo mbeanAttributeInfo0 = mbeanInfo.getAttributes()[0];
@@ -111,6 +109,7 @@ public class TestHtmlMBeansReport {
 			setFieldValue(mbeanAttributeInfo0, "description", "maxThreads");
 			final MBeanAttributeInfo mbeanAttributeInfo1 = mbeanInfo.getAttributes()[1];
 			setFieldValue(mbeanAttributeInfo1, "description", null);
+			 */
 
 			// register another mbeanServer
 			MBeanServerFactory.createMBeanServer("jboss");
@@ -120,8 +119,6 @@ public class TestHtmlMBeansReport {
 			final HtmlMBeansReport report = new HtmlMBeansReport(mbeans, writer);
 			report.toHtml();
 			assertNotEmptyAndClear(writer);
-		} catch (final IllegalAccessException e) {
-			throw new IllegalStateException(e);
 		} finally {
 			for (final ObjectName registeredMBean : mBeans) {
 				mBeanServer.unregisterMBean(registeredMBean);
@@ -129,6 +126,7 @@ public class TestHtmlMBeansReport {
 		}
 	}
 
+	/*
 	private static void setFieldValue(Object object, String fieldName, Object value)
 			throws IllegalAccessException {
 		try {
@@ -145,4 +143,5 @@ public class TestHtmlMBeansReport {
 			}
 		}
 	}
+	*/
 }

@@ -27,18 +27,17 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.ServletContext;
 
 import org.easymock.IAnswer;
 import org.junit.Before;
 import org.junit.Test;
 
+import jakarta.servlet.ServletContext;
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.MavenArtifact;
@@ -80,19 +79,14 @@ public class TestHtmlDependenciesReport {
 				.andReturn(Collections.singleton(javamelodyDir)).anyTimes();
 		expect(context.getResourcePaths(javamelodyDir)).andReturn(Collections.singleton(webapp))
 				.anyTimes();
-		final IAnswer<InputStream> answer = new IAnswer<InputStream>() {
-			@Override
-			public InputStream answer() throws Throwable {
-				return getClass().getResourceAsStream("/pom.xml");
-			}
-		};
+		final IAnswer<InputStream> answer = () -> getClass().getResourceAsStream("/pom.xml");
 		expect(context.getResourceAsStream(webapp + "pom.xml")).andAnswer(answer).anyTimes();
 		final Set<String> dependencies = new LinkedHashSet<>(
-				Arrays.asList("/WEB-INF/lib/jrobin-1.5.9.jar",
-						"/WEB-INF/lib/javamelody-core-1.65.0.jar", "/WEB-INF/lib/nothing.jar"));
+				List.of("/WEB-INF/lib/jrobin-1.5.9.jar", "/WEB-INF/lib/javamelody-core-1.65.0.jar",
+						"/WEB-INF/lib/nothing.jar"));
 		expect(context.getResourcePaths("/WEB-INF/lib/")).andReturn(dependencies).anyTimes();
-		expect(context.getMajorVersion()).andReturn(2).anyTimes();
-		expect(context.getMinorVersion()).andReturn(5).anyTimes();
+		expect(context.getMajorVersion()).andReturn(5).anyTimes();
+		expect(context.getMinorVersion()).andReturn(0).anyTimes();
 		replay(context);
 		Parameters.initialize(context);
 		final Map<String, MavenArtifact> webappDependencies = MavenArtifact.getWebappDependencies();

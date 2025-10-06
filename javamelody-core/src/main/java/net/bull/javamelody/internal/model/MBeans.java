@@ -21,7 +21,6 @@ import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -57,18 +56,10 @@ public final class MBeans {
 	public static final char ATTRIBUTES_SEPARATOR = '|';
 
 	private static final String JAVA_LANG_MBEAN_DESCRIPTION = "Information on the management interface of the MBean";
-	private static final Comparator<MBeanNode> NODE_COMPARATOR = new Comparator<MBeanNode>() {
-		@Override
-		public int compare(MBeanNode o1, MBeanNode o2) {
-			return o1.getName() != null ? o1.getName().compareTo(o2.getName()) : 0;
-		}
-	};
-	private static final Comparator<MBeanAttribute> ATTRIBUTE_COMPARATOR = new Comparator<MBeanAttribute>() {
-		@Override
-		public int compare(MBeanAttribute o1, MBeanAttribute o2) {
-			return o1.getName().compareTo(o2.getName());
-		}
-	};
+	private static final Comparator<MBeanNode> NODE_COMPARATOR = (node1,
+			node2) -> node1.getName() != null ? node1.getName().compareTo(node2.getName()) : 0;
+	private static final Comparator<MBeanAttribute> ATTRIBUTE_COMPARATOR = Comparator
+			.comparing(MBeanAttribute::getName);
 	private final MBeanServer mbeanServer;
 
 	MBeans() {
@@ -170,7 +161,7 @@ public final class MBeans {
 
 	private void sortMBeanNodes(List<MBeanNode> nodes) {
 		if (nodes.size() > 1) {
-			Collections.sort(nodes, NODE_COMPARATOR);
+			nodes.sort(NODE_COMPARATOR);
 		}
 
 		for (final MBeanNode node : nodes) {
@@ -180,7 +171,7 @@ public final class MBeans {
 			}
 			final List<MBeanAttribute> attributes = node.getAttributes();
 			if (attributes != null && attributes.size() > 1) {
-				Collections.sort(attributes, ATTRIBUTE_COMPARATOR);
+				attributes.sort(ATTRIBUTE_COMPARATOR);
 			}
 		}
 	}
@@ -210,17 +201,18 @@ public final class MBeans {
 		for (final MBeanAttributeInfo attribute : attributeInfos) {
 			// on ne veut pas afficher l'attribut password, jamais
 			// (notamment, dans users tomcat ou dans datasources tomcat)
-			if (attribute.isReadable() && !"password".equalsIgnoreCase(attribute.getName())) {
+			// et on ne veut pas afficher l'attribut configurationAsProperties d'infinispan (issue 1180)
+			if (attribute.isReadable() && !"password".equalsIgnoreCase(attribute.getName())
+					&& !"configurationAsProperties".equalsIgnoreCase(attribute.getName())) {
 				attributeNames.add(attribute.getName());
 			}
 		}
 		final String[] attributeNamesArray = attributeNames.toArray(new String[0]);
 		final List<MBeanAttribute> result = new ArrayList<>();
 		try {
-			// issue 116: asList sur mbeanServer.getAttributes(name, attributeNamesArray) n'existe qu'en java 1.6
-			final List<Object> attributes = mbeanServer.getAttributes(name, attributeNamesArray);
-			for (final Object object : attributes) {
-				final Attribute attribute = (Attribute) object;
+			final List<Attribute> attributes = mbeanServer.getAttributes(name, attributeNamesArray)
+					.asList();
+			for (final Attribute attribute : attributes) {
 				final Object value = convertValueIfNeeded(attribute.getValue());
 				final String attributeDescription = getAttributeDescription(attribute.getName(),
 						attributeInfos);
@@ -392,8 +384,8 @@ public final class MBeans {
 	}
 
 	public static String getConvertedAttributes(String jmxValueParameter) {
-		final List<String> mbeanAttributes = Arrays
-				.asList(jmxValueParameter.split("[" + ATTRIBUTES_SEPARATOR + ']'));
+		final List<String> mbeanAttributes = List
+				.of(jmxValueParameter.split("[" + ATTRIBUTES_SEPARATOR + ']'));
 		final List<Object> jmxValues = getConvertedAttributes(mbeanAttributes);
 		final StringBuilder sb = new StringBuilder();
 		boolean first = true;

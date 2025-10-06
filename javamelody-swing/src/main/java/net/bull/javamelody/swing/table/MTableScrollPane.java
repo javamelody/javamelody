@@ -34,7 +34,7 @@ public class MTableScrollPane<T> extends JScrollPane {
 	 */
 	public MTableScrollPane() {
 		super();
-		setViewportView(new MTable<T>());
+		setViewportView(new MTable<>());
 	}
 
 	/**

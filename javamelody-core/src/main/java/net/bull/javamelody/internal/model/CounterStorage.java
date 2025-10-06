@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +34,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import net.bull.javamelody.Parameter;
+import net.bull.javamelody.internal.common.LOG;
 import net.bull.javamelody.internal.common.Parameters;
 
 /**
@@ -158,6 +158,11 @@ public class CounterStorage {
 			}
 		} catch (final ClassNotFoundException e) {
 			throw new IOException(e.getMessage(), e);
+		} catch (final IllegalStateException | ClassCastException e) {
+			LOG.warn("could not deserialize " + file.getName()
+					+ " , corrupted file will be deleted.", e);
+			file.delete();
+			return null;
 		}
 	}
 
@@ -218,7 +223,7 @@ public class CounterStorage {
 		if (files == null) {
 			return Collections.emptyList();
 		}
-		return Arrays.asList(files);
+		return List.of(files);
 	}
 
 	// cette méthode est utilisée dans l'ihm Swing

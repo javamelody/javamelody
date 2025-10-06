@@ -26,9 +26,8 @@ import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.internal.common.LOG;
 import net.bull.javamelody.internal.common.MessageDigestPasswordEncoder;

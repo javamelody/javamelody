@@ -25,13 +25,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-import javax.mail.MessagingException;
-import javax.mail.Session;
 import javax.naming.NamingException;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.Session;
 import net.bull.javamelody.Utils;
 
 /**
@@ -61,7 +61,7 @@ public class TestMailer {
 		mailer.setSession(Session.getInstance(properties));
 		send(null, false);
 		send(null, true);
-		send(new ArrayList<File>(), false);
+		send(new ArrayList<>(), false);
 		send(Collections.singletonList(new File("nothing.txt")), false);
 		properties.put("mail.transport.protocol", "smtps");
 		mailer.setSession(Session.getInstance(properties));

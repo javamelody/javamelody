@@ -35,7 +35,6 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.jar.JarFile;
 import java.util.zip.ZipFile;
@@ -96,7 +95,7 @@ public final class Main {
 		//				System.setOut(ps);
 		//				System.setErr(ps);
 		//				// don't let winstone see this
-		//				final List myArgs = new ArrayList(Arrays.asList(args));
+		//				final List myArgs = new ArrayList(List.of(args));
 		//				myArgs.remove(i);
 		//				args = (String[]) myArgs.toArray(new String[myArgs.size()]);
 		//				break;
@@ -125,13 +124,13 @@ public final class Main {
 		final Method mainMethod = launcher.getMethod("main", new Class<?>[] { String[].class });
 
 		// figure out the arguments
-		final List<String> arguments = new ArrayList<>(Arrays.asList(args));
+		final List<String> arguments = new ArrayList<>(List.of(args));
 		arguments.add(0, "--warfile=" + me.getAbsolutePath());
 
 		// override the usage screen
 		final Field usage = launcher.getField("USAGE");
 		usage.set(null, "JavaMelody Monitoring Collect Server " + "\n"
-				+ "Usage: java -jar javamelody.war [--option=value] [--option=value]\n" + "\n"
+				+ "Usage: java -jar javamelody-collector-server.war [--option=value] [--option=value]\n" + "\n"
 				+ "Options:\n"
 				+ "   --config                 = load configuration properties from here. Default is ./winstone.properties\n"
 				+ "   --prefix                 = add this prefix to all URLs (eg http://localhost:8080/prefix/resource). Default is none\n"
@@ -139,41 +138,58 @@ public final class Main {
 				+ "   \n"
 				+ "   --logThrowingLineNo      = show the line no that logged the message (slow). Default is false\n"
 				+ "   --logThrowingThread      = show the thread that logged the message. Default is false\n"
-				+ "   --debug                  = set the level of debug msgs (1-9). Default is 5 (INFO level)\n"
+				+ "   --debug                  = set the level of Winstone debug msgs (1-9). Default is 5 (INFO level)\n"
 				+ "\n"
 				+ "   --httpPort               = set the http listening port. -1 to disable, Default is 8080\n"
 				+ "   --httpListenAddress      = set the http listening address. Default is all interfaces\n"
 				+ "   --httpDoHostnameLookups  = enable host name lookups on incoming http connections (true/false). Default is false\n"
-				+ "   --httpKeepAliveTimeout   = how long idle HTTP keep-alive connections are kept around (in ms; default 5000)?\n"
+				+ "   --httpUnixDomainPath     = set the http unix domain path. Default is no path\n"
+				+ "   --httpKeepAliveTimeout   = how long idle HTTP keep-alive connections are kept around (in ms; default 3000)?\n"
 				+ "   --httpsPort              = set the https listening port. -1 to disable, Default is disabled\n"
 				+ "                              if neither --httpsCertificate nor --httpsKeyStore are specified,\n"
 				+ "                              https is run with one-time self-signed certificate.\n"
 				+ "   --httpsListenAddress     = set the https listening address. Default is all interfaces\n"
 				+ "   --httpsDoHostnameLookups = enable host name lookups on incoming https connections (true/false). Default is false\n"
-				+ "   --httpsKeepAliveTimeout   = how long idle HTTPS keep-alive connections are kept around (in ms; default 5000)?\n"
+				+ "   --httpsKeepAliveTimeout   = how long idle HTTPS keep-alive connections are kept around (in ms; default 3000)?\n"
 				+ "   --httpsKeyStore          = the location of the SSL KeyStore file.\n"
 				+ "   --httpsKeyStorePassword  = the password for the SSL KeyStore file. Default is null\n"
-				+ "   --httpsCertificate       = the location of the PEM-encoded SSL certificate file.\n"
-				+ "                              (the one that starts with '-----BEGIN CERTIFICATE-----')\n"
-				+ "                              must be used with --httpsPrivateKey.\n"
-				+ "   --httpsPrivateKey        = the location of the PEM-encoded SSL private key.\n"
-				+ "                              (the one that starts with '-----BEGIN RSA PRIVATE KEY-----')\n"
 				+ "   --httpsKeyManagerType    = the SSL KeyManagerFactory type (eg SunX509, IbmX509). Default is SunX509\n"
-				+ "   --spdy                   = Enable SPDY. See http://wiki.eclipse.org/Jetty/Feature/NPN\n"
-				+ "   --ajp13Port              = set the ajp13 listening port. -1 to disable, Default is disabled\n"
-				+ "   --ajp13ListenAddress     = set the ajp13 listening address. Default is all interfaces\n"
+				+ "   --httpsRedirectHttp      = redirect http requests to https (requires both --httpPort and --httpsPort)\n"
+				+ "   --http2Port              = set the http2 listening port. -1 to disable, Default is disabled\n"
+				+ "   --httpsSniHostCheck      = if the SNI Host name must match when there is an SNI certificate. Check disabled per default\n"
+				+ "   --httpsSniRequired       = if a SNI certificate is required. Disabled per default\n"
+				+ "   --http2ListenAddress     = set the http2 listening address. Default is all interfaces\n"
+				+ "   --excludeProtocols       = set protocol versions to exclude. (comma separated list, use blank quote \" \" to exclude none)\n"
+				+ "                              (default is \"SSL\", \"SSLv2\", \"SSLv2Hello\", \"SSLv3\")\n"
+				+ "   --excludeCipherSuites    = set the ciphers to exclude (comma separated, use blank quote \" \" to exclude none)\n"
+				+ "                              (default is "
+				// Exclude weak / insecure ciphers
+				+ "\"^.*_(MD5|SHA|SHA1)$\", "
+				// Exclude ciphers that don't support forward secrecy
+				+ "\"^TLS_RSA_.*$\", "
+				// The following exclusions are present to cleanup known bad cipher
+				// suites that may be accidentally included via include patterns.
+				// The default enabled cipher list in Java will not include these
+				// (but they are available in the supported list).
+				+ "\"^SSL_.*$\", "
+				+ "\"^.*_NULL_.*$\", "
+				+ "\"^.*_anon_.*$\")\n"
 				+ "   --controlPort            = set the shutdown/control port. -1 to disable, Default disabled\n"
 				+ "   \n"
-				+ "   --handlerCountStartup    = set the no of worker threads to spawn at startup. Default is 5\n"
-				+ "   --handlerCountMax        = set the max no of worker threads to allow. Default is 40\n"
-				+ "   --handlerCountMaxIdle    = set the max no of idle worker threads to allow. Default is 5\n"
-				+ "   \n"
+				+ "   --compression            = set the compression scheme (gzip or none to disable compression). Default is gzip.\n"
 				+ "   --sessionTimeout         = set the http session timeout value in minutes. Default to what webapp specifies, and then to 60 minutes\n"
+				+ "   --sessionEviction        = set the session eviction timeout for idle sessions in seconds. Default value is 180. -1 never evict, 0 evict on exit\n"
 				+ "   --mimeTypes=ARG          = define additional MIME type mappings. ARG would be EXT=MIMETYPE:EXT=MIMETYPE:...\n"
 				+ "                              (e.g., xls=application/vnd.ms-excel:wmf=application/x-msmetafile)\n"
+				+ "   --requestHeaderSize=N    = set the maximum size in bytes of the request header. Default is 8192.\n"
+				+ "   --responseHeaderSize=N   = set the maximum size in bytes of the response header. Default is 8192.\n"
 				+ "   --maxParamCount=N        = set the max number of parameters allowed in a form submission to protect\n"
 				+ "                              against hash DoS attack (oCERT #2011-003). Default is 10000.\n"
-				+ "   --usage / --help         = show this message\n" + "   \n"
+				+ "   --useJmx                 = Enable Jetty Jmx\n"
+				+ "   --qtpMaxThreadsCount     = max threads number when using Jetty Queued Thread Pool\n"
+				+ "   --jettyAcceptorsCount    = Jetty Acceptors number\n"
+				+ "   --jettySelectorsCount    = Jetty Selectors number\n"
+		+ "   --usage / --help         = show this message\n" + "   \n"
 				// For security of the collect server, see https://github.com/javamelody/javamelody/wiki/UserGuideAdvanced#5-security-with-a-collect-server
 				// (-Djavamelody.authorized-users=user1:pwd1,user2:pwd2)
 				//						+ "Security options:\n"

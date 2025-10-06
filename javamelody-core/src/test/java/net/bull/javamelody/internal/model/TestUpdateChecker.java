@@ -25,14 +25,13 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Timer;
-
-import javax.servlet.ServletContext;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import jakarta.servlet.ServletContext;
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.SessionListener;
 import net.bull.javamelody.Utils;
@@ -64,18 +63,18 @@ public class TestUpdateChecker {
 	@Test
 	public void testCheckForUpdate() throws IOException {
 		final ServletContext context = createNiceMock(ServletContext.class);
-		expect(context.getMajorVersion()).andReturn(2).anyTimes();
-		expect(context.getMinorVersion()).andReturn(5).anyTimes();
+		expect(context.getMajorVersion()).andReturn(5).anyTimes();
+		expect(context.getMinorVersion()).andReturn(0).anyTimes();
 		expect(context.getContextPath()).andReturn("/test").anyTimes();
 		replay(context);
 		Parameters.initialize(context);
 		verify(context);
 		final Collector collector = new Collector("test",
-				Arrays.asList(new Counter("http", null), new Counter("sql", null)));
+				List.of(new Counter("http", null), new Counter("sql", null)));
 		JRobin.initBackendFactory(new Timer(getClass().getSimpleName(), true));
 		assertNotNull("SessionListener", new SessionListener());
 		TestDatabaseInformations.initJdbcDriverParameters();
-		collector.collectWithoutErrors(Arrays.asList(new JavaInformations(null, true)));
+		collector.collectWithoutErrors(List.of(new JavaInformations(null, true)));
 		final String serverUrl = "http://dummy";
 		final UpdateChecker updateCheckerCollectorServer = UpdateChecker.createForTest(null,
 				UpdateChecker.COLLECTOR_SERVER_APPLICATION_TYPE, serverUrl);

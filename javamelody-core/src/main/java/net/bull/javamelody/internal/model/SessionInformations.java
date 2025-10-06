@@ -21,7 +21,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -29,8 +28,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
+import jakarta.servlet.http.HttpSession;
 import net.bull.javamelody.SessionListener;
 import net.bull.javamelody.internal.common.I18N;
 
@@ -45,11 +43,11 @@ import net.bull.javamelody.internal.common.I18N;
 public class SessionInformations implements Serializable {
 	private static final long serialVersionUID = -2689338895804445093L;
 
-	private static final List<String> BROWSERS = Arrays.asList("Edge", "Edg", "Chrome", "CriOS",
+	private static final List<String> BROWSERS = List.of("Edge", "Edg", "Chrome", "CriOS",
 			"Firefox", "Safari", "MSIE", "Trident", "Opera" // IEMobile dans MSIE
 	);
 
-	private static final List<String> OS = Arrays.asList(
+	private static final List<String> OS = List.of(
 			// Android avant Linux. iPhone, iPad dans Mac OS. *bot et (yahoo) slurp ignorés
 			"Windows", "Android", "Linux", "Mac OS");
 

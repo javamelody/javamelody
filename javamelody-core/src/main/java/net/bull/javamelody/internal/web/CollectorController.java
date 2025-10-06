@@ -21,10 +21,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,14 +33,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.internal.common.HttpParameter;
 import net.bull.javamelody.internal.common.HttpPart;
@@ -559,6 +558,18 @@ public class CollectorController { // NOPMD
 
 	private String forwardActionAndUpdateData(HttpServletRequest req, String application)
 			throws IOException {
+		final List<String> aggregatedApplications = Parameters.getApplicationsByAggregationApplication().get(application);
+		if (aggregatedApplications != null) {
+			String messageForReport = "";
+			// c'est une application d'agrégation, on forward sur chaque application agrégée
+			for (final String aggregatedApplication : aggregatedApplications) {
+				final String msg = forwardActionAndUpdateData(req, aggregatedApplication);
+				if (msg != null) {
+					messageForReport = msg;
+				}
+			}
+			return messageForReport;
+		}
 		final String actionParameter = HttpParameter.ACTION.getParameterFrom(req);
 		final String sessionIdParameter = HttpParameter.SESSION_ID.getParameterFrom(req);
 		final String threadIdParameter = HttpParameter.THREAD_ID.getParameterFrom(req);
@@ -590,8 +601,7 @@ public class CollectorController { // NOPMD
 		return collectorServer.collectForApplicationForAction(application, actionUrls);
 	}
 
-	public String getApplication(HttpServletRequest req, HttpServletResponse resp)
-			throws UnsupportedEncodingException {
+	public String getApplication(HttpServletRequest req, HttpServletResponse resp) {
 		// on utilise un cookie client pour stocker l'application
 		// car la page html est faite pour une seule application sans passer son nom en paramètre des requêtes
 		// et pour ne pas perdre l'application choisie entre les reconnexions
@@ -600,7 +610,7 @@ public class CollectorController { // NOPMD
 			// pas de paramètre application dans la requête, on cherche le cookie
 			final Cookie cookie = httpCookieManager.getCookieByName(req, COOKIE_NAME);
 			if (cookie != null) {
-				application = URLDecoder.decode(cookie.getValue(), "UTF-8");
+				application = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
 				if (!collectorServer.isApplicationDataAvailable(application)) {
 					cookie.setMaxAge(-1);
 					resp.addCookie(cookie);
@@ -617,7 +627,7 @@ public class CollectorController { // NOPMD
 			// En Tomcat, le cookie doit être conforme à la RFC 6265 (pas d'espace, ...)
 			// see org.apache.tomcat.util.http.Rfc6265CookieProcessor
 			httpCookieManager.addCookie(req, resp, COOKIE_NAME,
-					URLEncoder.encode(application, "UTF-8"));
+					URLEncoder.encode(application, StandardCharsets.UTF_8));
 		}
 		return application;
 	}

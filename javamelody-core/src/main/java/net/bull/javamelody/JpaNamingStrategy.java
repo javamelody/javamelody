@@ -19,8 +19,8 @@ package net.bull.javamelody;
 
 import java.lang.reflect.Method;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 /**
  * JPA naming strategy.
@@ -29,7 +29,6 @@ import javax.persistence.Query;
  * @author Emeric Vernat
  */
 class JpaNamingStrategy {
-	private static final Class<?> HIBERNATE_QUERY_CLASS_PRE_6 = getClass("org.hibernate.Query");
 	private static final Class<?> HIBERNATE_QUERY_CLASS = getClass("org.hibernate.query.Query");
 
 	private static final Class<?> ECLIPSELINK_QUERY_CLASS = getClass(
@@ -102,24 +101,16 @@ class JpaNamingStrategy {
 	}
 
 	private boolean isHibernateQuery(Query query) {
-		return (HIBERNATE_QUERY_CLASS != null || HIBERNATE_QUERY_CLASS_PRE_6 != null)
+		return HIBERNATE_QUERY_CLASS != null
 				&& query.getClass().getName().startsWith("org.hibernate.");
 	}
 
-	@SuppressWarnings("deprecation")
 	private String getHibernateQueryRequestName(Query query) {
 		if (HIBERNATE_QUERY_CLASS != null) {
-			org.hibernate.query.Query<?> unwrappedQuery = (org.hibernate.query.Query<?>) query
+			final org.hibernate.query.Query<?> unwrappedQuery = (org.hibernate.query.Query<?>) query
 					.unwrap(HIBERNATE_QUERY_CLASS);
 			return unwrappedQuery.getQueryString();
 		}
-
-		if (HIBERNATE_QUERY_CLASS_PRE_6 != null) {
-			org.hibernate.Query<?> unwrappedQuery = (org.hibernate.Query<?>) query
-					.unwrap(HIBERNATE_QUERY_CLASS_PRE_6);
-			return unwrappedQuery.getQueryString();
-		}
-
 		final Object unwrappedQuery = query.unwrap(HIBERNATE_QUERY_CLASS);
 		return unwrappedQuery.toString();
 	}

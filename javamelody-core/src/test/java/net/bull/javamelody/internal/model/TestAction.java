@@ -36,18 +36,19 @@ import java.util.Random;
 
 import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpSession;
 import net.bull.javamelody.JobTestImpl;
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.Utils;
@@ -225,8 +226,8 @@ public class TestAction {
 
 	private void mailTest(Collector collector) throws IOException {
 		final ServletContext context = createNiceMock(ServletContext.class);
-		expect(context.getMajorVersion()).andReturn(2).anyTimes();
-		expect(context.getMinorVersion()).andReturn(5).anyTimes();
+		expect(context.getMajorVersion()).andReturn(5).anyTimes();
+		expect(context.getMinorVersion()).andReturn(0).anyTimes();
 		expect(context.getServletContextName()).andReturn("test webapp").anyTimes();
 		expect(context.getServerInfo()).andReturn("mockJetty").anyTimes();
 		expect(context.getContextPath()).andReturn("/test").anyTimes();
@@ -297,11 +298,13 @@ public class TestAction {
 			//Define job instance
 			final Random random = new Random();
 
-			final JobDetail job = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
+			final JobDetail job = JobBuilder.newJob(JobTestImpl.class)
+					.withIdentity("job" + random.nextInt()).build();
 
 			//Define a Trigger that will fire "later"
-			final Trigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null,
-					new Date(System.currentTimeMillis() + 60000));
+			final Trigger trigger = TriggerBuilder.newTrigger()
+					.withIdentity("trigger" + random.nextInt())
+					.startAt(new Date(System.currentTimeMillis() + 60000)).build();
 			//Schedule the job with the trigger
 			scheduler.scheduleJob(job, trigger);
 
@@ -311,7 +314,7 @@ public class TestAction {
 					counterName, sessionId, threadId, globalJobId, cacheId));
 
 			globalJobId = PID.getPID() + '_' + Parameters.getHostAddress() + '_'
-					+ job.getFullName().hashCode();
+					+ job.getKey().getName().hashCode();
 			assertNotNull("message PAUSE_JOB 6", Action.PAUSE_JOB.execute(collector, null, null,
 					counterName, sessionId, threadId, globalJobId, cacheId));
 			assertNotNull("message RESUME_JOB 6", Action.RESUME_JOB.execute(collector, null, null,

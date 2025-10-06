@@ -21,10 +21,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
@@ -38,10 +35,9 @@ import javax.naming.NameClassPair;
 import javax.naming.NamingException;
 import javax.naming.NoInitialContextException;
 import javax.naming.Referenceable;
-import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
-import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
+import jakarta.servlet.ServletContext;
 
 /**
  * Classe utilitaire pour {@link JdbcWrapper}.
@@ -57,7 +53,7 @@ final class JdbcWrapperHelper {
 	private static final BasicDataSourcesProperties TOMCAT_JDBC_DATASOURCES_PROPERTIES = new BasicDataSourcesProperties();
 
 	private static final Map<Class<?>, Constructor<?>> PROXY_CACHE = Collections
-			.synchronizedMap(new WeakHashMap<Class<?>, Constructor<?>>());
+			.synchronizedMap(new WeakHashMap<>());
 
 	/**
 	 * Propriétés des BasicDataSources si elles viennent de Tomcat-DBCP ou de DBCP seul.
@@ -96,11 +92,8 @@ final class JdbcWrapperHelper {
 		}
 
 		void put(String dataSourceName, String key, Object value) {
-			Map<String, Object> dataSourceProperties = properties.get(dataSourceName);
-			if (dataSourceProperties == null) {
-				dataSourceProperties = new LinkedHashMap<>();
-				properties.put(dataSourceName, dataSourceProperties);
-			}
+			final Map<String, Object> dataSourceProperties = properties
+					.computeIfAbsent(dataSourceName, k -> new LinkedHashMap<>());
 			dataSourceProperties.put(key, value);
 		}
 	}
@@ -242,15 +235,9 @@ final class JdbcWrapperHelper {
 	static void pullDataSourceProperties(String name, DataSource dataSource) {
 		// CHECKSTYLE:ON
 		final String dataSourceClassName = dataSource.getClass().getName();
-		if ("org.apache.tomcat.dbcp.dbcp.BasicDataSource".equals(dataSourceClassName)
-				&& dataSource instanceof BasicDataSource) {
-			pullTomcatDbcpDataSourceProperties(name, dataSource);
-		} else if ("org.apache.tomcat.dbcp.dbcp2.BasicDataSource".equals(dataSourceClassName)
+		if ("org.apache.tomcat.dbcp.dbcp2.BasicDataSource".equals(dataSourceClassName)
 				&& dataSource instanceof org.apache.tomcat.dbcp.dbcp2.BasicDataSource) {
 			pullTomcatDbcp2DataSourceProperties(name, dataSource);
-		} else if ("org.apache.commons.dbcp.BasicDataSource".equals(dataSourceClassName)
-				&& dataSource instanceof org.apache.commons.dbcp.BasicDataSource) {
-			pullCommonsDbcpDataSourceProperties(name, dataSource);
 		} else if ("org.apache.commons.dbcp2.BasicDataSource".equals(dataSourceClassName)
 				&& dataSource instanceof org.apache.commons.dbcp2.BasicDataSource) {
 			pullCommonsDbcp2DataSourceProperties(name, dataSource);
@@ -260,76 +247,7 @@ final class JdbcWrapperHelper {
 		}
 	}
 
-	private static void pullTomcatDbcpDataSourceProperties(String name, DataSource dataSource) {
-		// si tomcat et si dataSource standard, alors on récupère des infos
-		final BasicDataSource tomcatDbcpDataSource = (BasicDataSource) dataSource;
-		final BasicDataSourcesProperties properties = TOMCAT_BASIC_DATASOURCES_PROPERTIES;
-		// basicDataSource.getNumActive() est en théorie égale à USED_CONNECTION_COUNT à un instant t,
-		// numIdle + numActive est le nombre de connexions ouvertes dans la bdd pour ce serveur à un instant t
-
-		// les propriétés généralement importantes en premier (se méfier aussi de testOnBorrow)
-		properties.put(name, MAX_ACTIVE_PROPERTY_NAME, tomcatDbcpDataSource.getMaxActive());
-		properties.put(name, "poolPreparedStatements",
-				tomcatDbcpDataSource.isPoolPreparedStatements());
-
-		properties.put(name, "defaultCatalog", tomcatDbcpDataSource.getDefaultCatalog());
-		properties.put(name, "defaultAutoCommit", tomcatDbcpDataSource.getDefaultAutoCommit());
-		properties.put(name, "defaultReadOnly", tomcatDbcpDataSource.getDefaultReadOnly());
-		properties.put(name, "defaultTransactionIsolation",
-				tomcatDbcpDataSource.getDefaultTransactionIsolation());
-		properties.put(name, "driverClassName", tomcatDbcpDataSource.getDriverClassName());
-		properties.put(name, "initialSize", tomcatDbcpDataSource.getInitialSize());
-		properties.put(name, "maxIdle", tomcatDbcpDataSource.getMaxIdle());
-		properties.put(name, "maxOpenPreparedStatements",
-				tomcatDbcpDataSource.getMaxOpenPreparedStatements());
-		properties.put(name, "maxWait", tomcatDbcpDataSource.getMaxWait());
-		properties.put(name, "minEvictableIdleTimeMillis",
-				tomcatDbcpDataSource.getMinEvictableIdleTimeMillis());
-		properties.put(name, "minIdle", tomcatDbcpDataSource.getMinIdle());
-		properties.put(name, "numTestsPerEvictionRun",
-				tomcatDbcpDataSource.getNumTestsPerEvictionRun());
-		properties.put(name, "testOnBorrow", tomcatDbcpDataSource.getTestOnBorrow());
-		properties.put(name, "testOnReturn", tomcatDbcpDataSource.getTestOnReturn());
-		properties.put(name, "testWhileIdle", tomcatDbcpDataSource.getTestWhileIdle());
-		properties.put(name, "timeBetweenEvictionRunsMillis",
-				tomcatDbcpDataSource.getTimeBetweenEvictionRunsMillis());
-		properties.put(name, "validationQuery", tomcatDbcpDataSource.getValidationQuery());
-	}
-
-	private static void pullCommonsDbcpDataSourceProperties(String name, DataSource dataSource) {
-		// si dbcp et si dataSource standard, alors on récupère des infos
-		final org.apache.commons.dbcp.BasicDataSource dbcpDataSource = (org.apache.commons.dbcp.BasicDataSource) dataSource;
-		final BasicDataSourcesProperties properties = DBCP_BASIC_DATASOURCES_PROPERTIES;
-		// basicDataSource.getNumActive() est en théorie égale à USED_CONNECTION_COUNT à un instant t,
-		// numIdle + numActive est le nombre de connexions ouvertes dans la bdd pour ce serveur à un instant t
-
-		// les propriétés généralement importantes en premier (se méfier aussi de testOnBorrow)
-		properties.put(name, MAX_ACTIVE_PROPERTY_NAME, dbcpDataSource.getMaxActive());
-		properties.put(name, "poolPreparedStatements", dbcpDataSource.isPoolPreparedStatements());
-
-		properties.put(name, "defaultCatalog", dbcpDataSource.getDefaultCatalog());
-		properties.put(name, "defaultAutoCommit", dbcpDataSource.getDefaultAutoCommit());
-		properties.put(name, "defaultReadOnly", dbcpDataSource.getDefaultReadOnly());
-		properties.put(name, "defaultTransactionIsolation",
-				dbcpDataSource.getDefaultTransactionIsolation());
-		properties.put(name, "driverClassName", dbcpDataSource.getDriverClassName());
-		properties.put(name, "initialSize", dbcpDataSource.getInitialSize());
-		properties.put(name, "maxIdle", dbcpDataSource.getMaxIdle());
-		properties.put(name, "maxOpenPreparedStatements",
-				dbcpDataSource.getMaxOpenPreparedStatements());
-		properties.put(name, "maxWait", dbcpDataSource.getMaxWait());
-		properties.put(name, "minEvictableIdleTimeMillis",
-				dbcpDataSource.getMinEvictableIdleTimeMillis());
-		properties.put(name, "minIdle", dbcpDataSource.getMinIdle());
-		properties.put(name, "numTestsPerEvictionRun", dbcpDataSource.getNumTestsPerEvictionRun());
-		properties.put(name, "testOnBorrow", dbcpDataSource.getTestOnBorrow());
-		properties.put(name, "testOnReturn", dbcpDataSource.getTestOnReturn());
-		properties.put(name, "testWhileIdle", dbcpDataSource.getTestWhileIdle());
-		properties.put(name, "timeBetweenEvictionRunsMillis",
-				dbcpDataSource.getTimeBetweenEvictionRunsMillis());
-		properties.put(name, "validationQuery", dbcpDataSource.getValidationQuery());
-	}
-
+	@SuppressWarnings("deprecation")
 	private static void pullTomcatDbcp2DataSourceProperties(String name, DataSource dataSource) {
 		// si tomcat et si dataSource standard, alors on récupère des infos
 		final org.apache.tomcat.dbcp.dbcp2.BasicDataSource tomcatDbcp2DataSource = (org.apache.tomcat.dbcp.dbcp2.BasicDataSource) dataSource;
@@ -366,6 +284,7 @@ final class JdbcWrapperHelper {
 		properties.put(name, "validationQuery", tomcatDbcp2DataSource.getValidationQuery());
 	}
 
+	@SuppressWarnings("deprecation")
 	private static void pullCommonsDbcp2DataSourceProperties(String name, DataSource dataSource) {
 		// si dbcp et si dataSource standard, alors on récupère des infos
 		final org.apache.commons.dbcp2.BasicDataSource dbcp2DataSource = (org.apache.commons.dbcp2.BasicDataSource) dataSource;
@@ -476,9 +395,8 @@ final class JdbcWrapperHelper {
 					.getDeclaredField("readOnlyContexts");
 			setFieldAccessible(field);
 			@SuppressWarnings("unchecked")
-			final Hashtable<String, Object> readOnlyContexts = (Hashtable<String, Object>) field
-					.get(null);
-			// la clé dans cette Hashtable est normalement
+			final Map<String, Object> readOnlyContexts = (Map<String, Object>) field.get(null);
+			// la clé dans cette Hashtable ou depuis 8.0.83/9.0.67 ConcurrentHashMap est normalement
 			// "/Catalina/" + hostName + Parameters.getContextPath(servletContext) ;
 			// hostName vaut en général "localhost" (ou autre selon le Host dans server.xml)
 			// et contextPath vaut "/myapp" par exemple ;
@@ -539,14 +457,7 @@ final class JdbcWrapperHelper {
 	}
 
 	private static void setFieldAccessible(final Field field) {
-		AccessController.doPrivileged(new PrivilegedAction<Object>() { // pour findbugs
-			/** {@inheritDoc} */
-			@Override
-			public Object run() {
-				field.setAccessible(true);
-				return null;
-			}
-		});
+		field.setAccessible(true);
 	}
 
 	static void clearProxyCache() {
@@ -599,12 +510,12 @@ final class JdbcWrapperHelper {
 		// et connection.getClass().getInterfaces() est vide dans ce cas
 		final List<Class<?>> myInterfaces;
 		if (interfaces == null) {
-			myInterfaces = new ArrayList<>(Arrays.asList(objectClass.getInterfaces()));
+			myInterfaces = new ArrayList<>(List.of(objectClass.getInterfaces()));
 			Class<?> classe = objectClass.getSuperclass();
 			while (classe != null) {
 				final Class<?>[] classInterfaces = classe.getInterfaces();
 				if (classInterfaces.length > 0) {
-					final List<Class<?>> superInterfaces = Arrays.asList(classInterfaces);
+					final List<Class<?>> superInterfaces = List.of(classInterfaces);
 					// removeAll d'abord car il ne faut pas de doublon dans la liste
 					myInterfaces.removeAll(superInterfaces);
 					myInterfaces.addAll(superInterfaces);

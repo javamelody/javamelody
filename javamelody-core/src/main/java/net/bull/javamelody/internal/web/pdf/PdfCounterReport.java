@@ -84,7 +84,7 @@ class PdfCounterReport extends PdfAbstractTableReport {
 		} else {
 			// 1. synthèse
 			final CounterRequest globalRequest = counterRequestAggregation.getGlobalRequest();
-			final List<CounterRequest> summaryRequests = Arrays.asList(globalRequest,
+			final List<CounterRequest> summaryRequests = List.of(globalRequest,
 					counterRequestAggregation.getWarningRequest(),
 					counterRequestAggregation.getSevereRequest());
 			writeRequests(counter.getChildCounterName(), summaryRequests);

@@ -42,19 +42,19 @@ import net.bull.javamelody.internal.model.TomcatInformations;
 /**
  * Produces a report of the data in {@link JavaInformations} in the Prometheus text format
  * to enable collection by a <a href='https://prometheus.io/'>Prometheus</a> server.
- *<br/><br/>
+ * <br/><br/>
  * Metric names have been adjusted to match Prometheus recommendations.
- *
+ * <p>
  * The {@link JavaInformations} fields to Prometheus metric mappings are done statically
  * to avoid any performance penalties of Java Reflection.  Additional metadata (description, type)
  * about each statistic is merged in as well.
- *
+ * <p>
  * In the spirit of JavaMelody, special attention is paid to performance so that exposing
  * these metrics should have very little performance overhead on applications.
- *
+ * <p>
  * This implementation directly outputs the Prometheus text format avoiding dependence on any
  * additional libraries.
- *<br/><br/>
+ * <br/><br/>
  * Exposed Metrics: <br/>
  * (From {@link JavaInformations})
  * <pre>
@@ -142,7 +142,7 @@ import net.bull.javamelody.internal.model.TomcatInformations;
  *  Additionally, the `lastValue` metrics can also be exported by adding the http parameter includeLastValue=true.
  *  Note: the `lastValue` metrics are already aggregated over time, where Prometheus prefers the raw counters and gauges.
  *  Also, obtaining the `lastValue` metrics appears to have a 5-10ms overhead.
- *
+ * <p>
  *  The `lastValue` metrics are DISABLED by default.
  *
  * @author https://github.com/slynn1324, Stefan Penndorf, Emeric Vernat
@@ -378,7 +378,7 @@ class PrometheusController {
 
 	/**
 	 * Reports on hits, errors, and duration sum for all counters in the collector.
-	 *
+	 * <p>
 	 * Bypasses the {@link JRobin#getLastValue()} methods to provide real-time counters as well as
 	 * improving performance from bypassing JRobin reads in the getLastValue() method.
 	 */
@@ -415,13 +415,13 @@ class PrometheusController {
 
 	/**
 	 * Includes the traditional 'graph' fields from the 'lastValue' API.
-	 *
+	 * <p>
 	 * These fields are summary fields aggregated over `javamelody.resolutions-seconds` (default 60), which
 	 * is normally an odd thing to pass to Prometheus.  Most (all?) of these can be calculated inside
 	 * Prometheus from the Collector stats.
-	 *
+	 * <p>
 	 * Note: This lookup seems to take the longest execution time -- 5-10ms per request due to JRobin reads.
-	 *
+	 * <p>
 	 * Disabled by default.  To enable set the 'prometheus-include-last-value' property to 'true'.
 	 *
 	 * @throws IOException e
@@ -457,7 +457,7 @@ class PrometheusController {
 			printLong(MetricType.COUNTER, "transactions_count", "transactions count",
 					javaInformations.getTransactionCount());
 			printLong(MetricType.GAUGE, "connections_used_count", "used connections count",
-					javaInformations.getActiveConnectionCount());
+					javaInformations.getUsedConnectionCount());
 			printLong(MetricType.GAUGE, "connections_active_count", "active connections",
 					javaInformations.getActiveConnectionCount());
 			if (javaInformations.getMaxConnectionCount() > 0) {

@@ -17,8 +17,7 @@
  */
 package net.bull.javamelody.internal.common;
 
-import javax.servlet.http.HttpServletRequest;
-
+import jakarta.servlet.http.HttpServletRequest;
 import net.bull.javamelody.JavaMelodyLogger;
 
 /**

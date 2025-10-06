@@ -25,15 +25,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.SessionListener;
 import net.bull.javamelody.internal.common.HttpParameter;
@@ -161,6 +161,8 @@ public class MonitoringController {
 		}
 
 		doReport(httpRequest, httpResponse, Collections.singletonList(javaInformations));
+
+		httpResponse.flushBuffer();
 	}
 
 	public void doReport(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
@@ -202,8 +204,8 @@ public class MonitoringController {
 				final String path = HttpParameter.PATH.getParameterFrom(httpRequest);
 				doHsErrPid(httpResponse, javaInformationsList, path);
 			} else if (HttpParameter.REPORT.getParameterFrom(httpRequest) != null) {
-				final String reportName = URLDecoder
-						.decode(HttpParameter.REPORT.getParameterFrom(httpRequest), "UTF-8");
+				final String reportName = URLDecoder.decode(
+						HttpParameter.REPORT.getParameterFrom(httpRequest), StandardCharsets.UTF_8);
 				doCustomReport(httpRequest, httpResponse, reportName);
 			} else {
 				doReportCore(httpRequest, httpResponse, javaInformationsList);
@@ -247,6 +249,8 @@ public class MonitoringController {
 		final PrometheusController prometheusController = new PrometheusController(
 				javaInformationsList, collector, httpResponse.getWriter());
 		prometheusController.report(includeLastValue);
+
+		httpResponse.getWriter().flush();
 	}
 
 	public static void noCache(HttpServletResponse httpResponse) {
@@ -343,19 +347,16 @@ public class MonitoringController {
 			throws IOException {
 		// on enlève tout ".." dans le paramètre par sécurité
 		final String localResource = Parameters.getResourcePath(resource.replace("..", ""));
-		final InputStream resourceAsStream = MonitoringController.class
-				.getResourceAsStream(localResource);
-		if (resourceAsStream == null) {
-			httpResponse.sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
-			return;
-		}
-		try {
+		try (final InputStream resourceAsStream = MonitoringController.class
+				.getResourceAsStream(localResource)) {
+			if (resourceAsStream == null) {
+				httpResponse.sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
+				return;
+			}
 			addHeadersForResource(httpResponse, localResource);
 
 			final OutputStream out = httpResponse.getOutputStream();
 			InputOutput.pump(resourceAsStream, out);
-		} finally {
-			resourceAsStream.close();
 		}
 	}
 
@@ -459,10 +460,8 @@ public class MonitoringController {
 		httpResponse.addHeader("Content-Disposition", "inline;filename=web.xml");
 		final InputStream in = getWebXmlAsStream();
 		if (in != null) {
-			try {
+			try (in) {
 				InputOutput.pump(in, out);
-			} finally {
-				in.close();
 			}
 		}
 	}
@@ -475,10 +474,8 @@ public class MonitoringController {
 		httpResponse.addHeader("Content-Disposition", "inline;filename=pom.xml");
 		final InputStream in = MavenArtifact.getWebappPomXmlAsStream();
 		if (in != null) {
-			try {
+			try (in) {
 				InputOutput.pump(in, out);
-			} finally {
-				in.close();
 			}
 		}
 	}

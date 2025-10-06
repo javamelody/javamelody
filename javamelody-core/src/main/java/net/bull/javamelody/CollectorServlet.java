@@ -20,19 +20,18 @@ package net.bull.javamelody;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StreamCorruptedException;
-import java.util.Arrays;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import net.bull.javamelody.internal.common.HttpParameter;
 import net.bull.javamelody.internal.common.I18N;
 import net.bull.javamelody.internal.common.Parameters;
@@ -175,10 +174,10 @@ public class CollectorServlet extends HttpServlet {
 			} else {
 				assert aggregatedApps != null;
 				collectorController.addCollectorAggregationApplication(appName,
-						Arrays.asList(aggregatedApps));
+						List.of(aggregatedApps));
 				LOGGER.info("aggregation application added: " + appName);
 				LOGGER.info("aggregated applications of the aggregation application: "
-						+ Arrays.asList(aggregatedApps));
+						+ List.of(aggregatedApps));
 			}
 			CollectorController.showAlertAndRedirectTo(resp,
 					I18N.getFormattedString("application_ajoutee", appName),

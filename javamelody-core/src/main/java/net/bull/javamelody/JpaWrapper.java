@@ -20,10 +20,9 @@ package net.bull.javamelody;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
-
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
 import net.bull.javamelody.internal.model.Counter;
 
 /**

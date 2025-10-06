@@ -28,7 +28,6 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -40,7 +39,6 @@ import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import javax.servlet.ServletContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -50,6 +48,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import jakarta.servlet.ServletContext;
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.internal.common.InputOutput;
 import net.bull.javamelody.internal.common.LOG;
@@ -684,7 +683,7 @@ public final class MavenArtifact implements Serializable {
 			}
 			return result;
 		}
-		return Arrays.asList(LOCAL_REPO.getPath(), MAVEN_CENTRAL);
+		return List.of(LOCAL_REPO.getPath(), MAVEN_CENTRAL);
 	}
 
 	private static String replaceProperty(String value, Map<String, String> properties) {

@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.bull.javamelody.Parameter;
-import net.bull.javamelody.internal.model.Counter.CounterRequestComparator;
 
 /**
  * Agrégation des requêtes d'un compteur pour l'affichage d'une synthèse.
@@ -193,7 +192,7 @@ public class CounterRequestAggregation {
 		// on trie par la somme des durées
 		final List<CounterRequest> requestList = new ArrayList<>(requestMap.values());
 		if (requestList.size() > 1) {
-			Collections.sort(requestList, Collections.reverseOrder(new CounterRequestComparator()));
+			requestList.sort(Counter.COUNTER_REQUEST_COMPARATOR);
 		}
 		return requestList;
 	}
@@ -209,7 +208,7 @@ public class CounterRequestAggregation {
 			}
 		}
 		if (requestList.size() > 1) {
-			Collections.sort(requestList, Collections.reverseOrder(new CounterRequestComparator()));
+			requestList.sort(Counter.COUNTER_REQUEST_COMPARATOR);
 		}
 		return requestList;
 	}

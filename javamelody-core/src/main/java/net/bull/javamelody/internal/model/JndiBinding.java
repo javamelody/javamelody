@@ -27,6 +27,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
+import javax.naming.NoInitialContextException;
 import javax.naming.Reference;
 
 import net.bull.javamelody.internal.common.Parameters;
@@ -95,8 +96,8 @@ public class JndiBinding implements Serializable {
 			jndiName = JNDI_PREFIX + normalizedPath;
 		}
 		final List<JndiBinding> result = new ArrayList<>();
-		final NamingEnumeration<Binding> enumeration = context.listBindings(jndiName);
 		try {
+			final NamingEnumeration<Binding> enumeration = context.listBindings(jndiName);
 			while (enumeration.hasMore()) {
 				try {
 					final Binding binding = enumeration.next();
@@ -113,6 +114,8 @@ public class JndiBinding implements Serializable {
 					continue;
 				}
 			}
+		} catch (final NoInitialContextException e) {
+			return result;
 		} finally {
 			// Comme indiqué dans la javadoc enumeration.close() n'est pas nécessaire après que hasMore()
 			// a retourné false. De plus, cela provoquerait une exception dans glassfish 3.0.1

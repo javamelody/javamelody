@@ -49,10 +49,10 @@ class CloudWatch extends MetricsPublisher {
 		super();
 		assert cloudWatch != null;
 		assert cloudWatchNamespace != null && !cloudWatchNamespace.startsWith("AWS/")
-				&& cloudWatchNamespace.length() > 0 && cloudWatchNamespace.length() <= 255;
+				&& !cloudWatchNamespace.isEmpty() && cloudWatchNamespace.length() <= 255;
 		assert prefix != null;
-		assert application.length() >= 1 && application.length() <= 255;
-		assert hostName.length() >= 1 && hostName.length() <= 255;
+		assert !application.isEmpty() && application.length() <= 255;
+		assert !hostName.isEmpty() && hostName.length() <= 255;
 
 		this.awsCloudWatch = cloudWatch;
 		this.cloudWatchNamespace = cloudWatchNamespace;

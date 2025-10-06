@@ -17,6 +17,7 @@
  */
 package net.bull.javamelody;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
 
 import javax.naming.Context;
@@ -59,11 +60,13 @@ public class MonitoringInitialContextFactory implements InitialContextFactory {
 	public Context getInitialContext(Hashtable<?, ?> environment) throws NamingException { // NOPMD
 		try {
 			final Class<?> clazz = Class.forName(initialContextFactory);
-			final InitialContextFactory icf = (InitialContextFactory) clazz.newInstance();
+			final InitialContextFactory icf = (InitialContextFactory) clazz.getDeclaredConstructor()
+					.newInstance();
 			final Context context = icf.getInitialContext(environment);
 			final JdbcWrapper jdbcWrapper = JdbcWrapper.SINGLETON;
 			return jdbcWrapper.createContextProxy(context);
-		} catch (final ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+		} catch (final ClassNotFoundException | IllegalAccessException | InstantiationException
+				| InvocationTargetException | NoSuchMethodException e) {
 			throw createNamingException(e);
 		}
 	}

@@ -28,7 +28,7 @@ import net.bull.javamelody.internal.model.Counter;
 
 /**
  * Method interceptor that measures the duration of the intercepted call using Google Guice.
- *
+ * <p>
  * Inspired by Erik van Oosten (Java Simon, Licence LGPL)
  * @author Emeric Vernat
  */

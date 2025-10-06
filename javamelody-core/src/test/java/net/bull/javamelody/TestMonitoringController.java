@@ -23,16 +23,15 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.Arrays;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import net.bull.javamelody.internal.common.HttpParameter;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Collector;
@@ -51,8 +50,8 @@ public class TestMonitoringController {
 	public void setUp() {
 		Utils.initialize();
 		final ServletContext context = createNiceMock(ServletContext.class);
-		expect(context.getMajorVersion()).andReturn(2).anyTimes();
-		expect(context.getMinorVersion()).andReturn(5).anyTimes();
+		expect(context.getMajorVersion()).andReturn(5).anyTimes();
+		expect(context.getMinorVersion()).andReturn(0).anyTimes();
 		expect(context.getServletContextName()).andReturn("test webapp").anyTimes();
 		expect(context.getServerInfo()).andReturn("mockJetty").anyTimes();
 		expect(context.getContextPath()).andReturn("/test").anyTimes();
@@ -64,7 +63,7 @@ public class TestMonitoringController {
 	@Test
 	public void testWriteHtmlToLastShutdownFile() {
 		final Counter sqlCounter = new Counter("sql", "db.png");
-		final Collector collector = new Collector("test", Arrays.asList(sqlCounter));
+		final Collector collector = new Collector("test", List.of(sqlCounter));
 		new MonitoringController(collector, null).writeHtmlToLastShutdownFile();
 	}
 
@@ -72,7 +71,7 @@ public class TestMonitoringController {
 	@Test
 	public void testAddPdfContentTypeAndDisposition() {
 		final Counter sqlCounter = new Counter("sql", "db.png");
-		final Collector collector = new Collector("test collector", Arrays.asList(sqlCounter));
+		final Collector collector = new Collector("test collector", List.of(sqlCounter));
 		final HttpServletRequest httpRequest = createNiceMock(HttpServletRequest.class);
 		final HttpServletResponse httpResponse = createNiceMock(HttpServletResponse.class);
 		expect(httpRequest.getHeader("user-agent")).andReturn("Firefox").anyTimes();

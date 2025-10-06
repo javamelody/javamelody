@@ -56,8 +56,7 @@ class HtmlHashPasswordReport extends HtmlAbstractReport {
 		writeln("<select name='" + HttpParameter.ALGORITHM.getName()
 				+ "' id='algorithm' required>");
 		for (final String algo : getSortedAlgorithms()) {
-			if (algorithm != null && algo.equals(algorithm)
-					|| algorithm == null && "SHA-256".equals(algo)) {
+			if (algo.equals(algorithm) || algorithm == null && "SHA-256".equals(algo)) {
 				writeln("<option selected>" + algo + "</option>");
 			} else {
 				writeln("<option>" + algo + "</option>");

@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -206,8 +205,8 @@ public class Collector { // NOPMD
 			}
 		}
 		if (rootCurrentContexts.size() > 1) {
-			Collections.sort(rootCurrentContexts, Collections
-					.reverseOrder(new CounterRequestContextComparator(System.currentTimeMillis())));
+			rootCurrentContexts
+					.sort(new CounterRequestContextComparator(System.currentTimeMillis()));
 
 			CounterRequestContext.replaceParentCounters(rootCurrentContexts, newParentCounters);
 		}
@@ -287,13 +286,7 @@ public class Collector { // NOPMD
 
 	public List<Counter> getRangeCountersToBeDisplayed(Range range) throws IOException {
 		final List<Counter> result = new ArrayList<>(getRangeCounters(range));
-		final Iterator<Counter> it = result.iterator();
-		while (it.hasNext()) {
-			final Counter counter = it.next();
-			if (!counter.isDisplayed() || counter.isJobCounter()) {
-				it.remove();
-			}
-		}
+		result.removeIf(counter -> !counter.isDisplayed() || counter.isJobCounter());
 		return Collections.unmodifiableList(result);
 	}
 

@@ -4,11 +4,9 @@ import java.awt.Desktop;
 import java.io.File;
 import java.net.URI;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
+import net.bull.javamelody.internal.model.Counter;
 import net.bull.javamelody.internal.model.DataMerge;
 
 /**
@@ -31,8 +29,9 @@ public class Viewer {
 		final String tmpApplication = "tmpjavamelody" + new Random().nextInt();
 		final String mergedDirectory = System.getProperty("java.io.tmpdir"); //Parameters.getStorageDirectory(tmpApplication).getPath();
 
-		DataMerge.main(new String[] { storageDirectory, mergedDirectory + '/' + tmpApplication });
-		addShutdownHook(new File(mergedDirectory + '/' + tmpApplication));
+ 		final String mergedApplicationDirectory = mergedDirectory + '/' + tmpApplication;
+		DataMerge.main(new String[] { storageDirectory, mergedApplicationDirectory});
+		addShutdownHook(new File(mergedApplicationDirectory));
 
 		final Map<Parameter, String> parameters = new HashMap<>();
 		// set the path of the reports:
@@ -46,7 +45,11 @@ public class Viewer {
 		final String port = System.getProperty("javamelody.viewer.port", "8080");
 		String url = "http://localhost:" + port + '/';
 		System.out.println("Starting on " + url);
-		EmbeddedServer.start(Integer.parseInt(port), parameters);
+		final MonitoringFilter monitoringFilter = EmbeddedServer.start(Integer.parseInt(port), parameters);
+
+		// display stats like spring and services when files are present
+		updateDisplayedCounters(
+				monitoringFilter.getFilterContext().getCollector().getCounters(), new File(mergedApplicationDirectory));
 
 		// open the reports in a browser
 		final String lastDay = new SimpleDateFormat("yyyy-MM-dd")
@@ -55,6 +58,18 @@ public class Viewer {
 		System.out.println("Opening the reports in a browser on " + url);
 		Desktop.getDesktop().browse(URI.create(url));
 		System.out.println("Done");
+	}
+
+	private static void updateDisplayedCounters(List<Counter> counters, File mergedApplicationDirectory) {
+		final List<String> displayedCounters = new ArrayList<>();
+		for (final Counter counter : counters) {
+			if (counter.isDisplayed()
+					|| new File(mergedApplicationDirectory, counter.getName() + ".ser.gz").exists()) {
+				counter.setDisplayed(true);
+				displayedCounters.add(counter.getName());
+			}
+		}
+		System.out.println("Displayed counters: " + displayedCounters);
 	}
 
 	private static long getLatest(File directory) {
@@ -70,24 +85,21 @@ public class Viewer {
 	}
 
 	private static void addShutdownHook(final File directoryToCleanup) {
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-				System.out.println("Cleaning up...");
-				try {
-					// stop is needed to remove locks on files such as the javamelody.lock file
-					EmbeddedServer.stop();
-				} catch (final Exception e) {
-					System.out.println(e.toString());
-				}
-				if (directoryToCleanup.exists()) {
-					for (final File file : directoryToCleanup.listFiles()) {
-						file.delete();
-					}
-					directoryToCleanup.delete();
-				}
-				System.out.println("Good bye");
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			System.out.println("Cleaning up...");
+			try {
+				// stop is needed to remove locks on files such as the javamelody.lock file
+				EmbeddedServer.stop();
+			} catch (final Exception e) {
+				System.out.println(e);
 			}
-		});
+			if (directoryToCleanup.exists()) {
+				for (final File file : directoryToCleanup.listFiles()) {
+					file.delete();
+				}
+				directoryToCleanup.delete();
+			}
+			System.out.println("Good bye");
+		}));
 	}
 }

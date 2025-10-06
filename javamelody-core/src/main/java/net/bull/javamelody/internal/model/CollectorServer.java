@@ -118,7 +118,7 @@ public class CollectorServer {
 		}
 	}
 
-	public void collectWithoutErrors() {
+	public synchronized void collectWithoutErrors() {
 		try {
 			final Map<String, List<URL>> urlsByApplication = new LinkedHashMap<>(
 					Parameters.getCollectorUrlsByApplications());
@@ -180,18 +180,14 @@ public class CollectorServer {
 		for (final Map.Entry<String, List<URL>> entry : urlsByApplication.entrySet()) {
 			final String application = entry.getKey();
 			final List<URL> urls = entry.getValue();
-			final Future<?> future = executorService.submit(new Runnable() {
-				@Override
-				public void run() {
-					collectForApplicationWithoutErrors(application, urls);
-				}
-			});
+			final Future<?> future = executorService
+					.submit(() -> collectForApplicationWithoutErrors(application, urls));
 			futures.add(future);
 		}
 		return futures;
 	}
 
-	public String collectForApplicationForAction(String application, List<URL> urls)
+	public synchronized String collectForApplicationForAction(String application, List<URL> urls)
 			throws IOException {
 		return collectForApplication(new RemoteCollector(application, urls));
 	}
@@ -415,6 +411,9 @@ public class CollectorServer {
 		final RemoteCollector remoteCollector = remoteCollectorsByApplication.remove(application);
 		if (remoteCollector != null && remoteCollector.getCollector() != null) {
 			remoteCollector.getCollector().stop();
+		}
+		for (final RemoteCollector otherRemoteCollector : remoteCollectorsByApplication.values()) {
+			otherRemoteCollector.refreshAggregated();
 		}
 	}
 

@@ -17,9 +17,8 @@
  */
 package net.bull.javamelody.internal.web;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Counter;
 import net.bull.javamelody.internal.model.CounterRequestContext;
@@ -77,7 +76,7 @@ public final class RumInjector implements HtmlToInject {
 		}
 		String tmp2 = tmp + Parameters.getMonitoringPath();
 		// remove first '/', including when tmp == Parameters.getMonitoringPath()
-		while (tmp2.length() > 0 && tmp2.charAt(0) == '/') {
+		while (!tmp2.isEmpty() && tmp2.charAt(0) == '/') {
 			tmp2 = tmp2.substring(1);
 		}
 		return tmp2;

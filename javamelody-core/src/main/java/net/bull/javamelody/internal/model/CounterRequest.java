@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Données statistiques d'une requête identifiée, hors paramètres dynamiques comme un identifiant,
  * et sur la période considérée selon le pilotage du {@link Collector} par l'intermédiaire d'un {@link Counter}.
- *
+ * <p>
  * Les méthodes d'une instance de cette classe ne sont pas thread-safe.
  * L'état d'une instance doit être accédé ou modifié par l'intermédiaire d'une instance de {@link Counter},
  * qui gérera les accès concurrents sur les instances de cette classe.
@@ -62,7 +62,7 @@ public class CounterRequest implements Cloneable, Serializable {
 	/**
 	 * Interface du contexte d'une requête en cours.
 	 */
-	interface ICounterRequestContext {
+	public interface ICounterRequestContext {
 		/**
 		 * @return Nombre de hits du compteur fils pour ce contexte.
 		 */

@@ -19,7 +19,7 @@ package net.bull.javamelody;
 
 import java.lang.reflect.Method;
 
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.InvocationContext;
 
 /**
  * Intercepteur pour EJB 3, alternatif à {@link MonitoringInterceptor}.

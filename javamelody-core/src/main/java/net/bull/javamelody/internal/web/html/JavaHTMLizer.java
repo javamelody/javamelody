@@ -18,7 +18,6 @@
 package net.bull.javamelody.internal.web.html;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,7 @@ final class JavaHTMLizer {
 	private static final String BR = "<br />\n";
 
 	private static final List<Pattern> RESERVED_WORDS_PATTERNS = createReservedWordPatterns(
-			Arrays.asList("class", "finally", "return", "new", "public", "static", "final", "void",
+			List.of("class", "finally", "return", "new", "public", "static", "final", "void",
 					"synchronized", "interface", "enum", "private", "protected", "import",
 					"package", "try", "catch", "for", "while", "do", "if", "else", "switch", "case",
 					"default", "goto", "byte", "short", "int", "long", "float", "double", "char",

@@ -36,12 +36,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import jakarta.servlet.http.HttpServletRequest;
 import net.bull.javamelody.Utils;
 
 /**
@@ -351,13 +350,9 @@ public class TestCounter {
 	}
 
 	private static Thread bindRootContext(final Counter myCounter) {
-		final Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				// bindContext avec un remoteUser pour avoir au moins un cas d'affichage de l'utilisateur
-				myCounter.bindContext("second root context", "my context", null, -1, -1);
-			}
-		});
+		final Thread thread = new Thread(() ->
+		// bindContext avec un remoteUser pour avoir au moins un cas d'affichage de l'utilisateur
+		myCounter.bindContext("second root context", "my context", null, -1, -1));
 		thread.setDaemon(true);
 		thread.start();
 		return thread;

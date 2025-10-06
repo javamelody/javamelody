@@ -33,11 +33,11 @@ import javax.cache.spi.CachingProvider;
 import javax.management.JMException;
 import javax.management.ObjectName;
 import javax.management.openmbean.CompositeData;
-import javax.servlet.http.HttpSession;
 
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 
+import jakarta.servlet.http.HttpSession;
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.SessionListener;
 import net.bull.javamelody.internal.common.I18N;

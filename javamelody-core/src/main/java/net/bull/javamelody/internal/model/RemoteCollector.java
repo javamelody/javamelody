@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -64,6 +65,10 @@ public class RemoteCollector {
 		this.urls = urls;
 		this.aggregatedApplication = isAggregatedApplication();
 		this.aggregationApplication = isAggregationApplication();
+	}
+
+	void refreshAggregated() throws IOException {
+		this.aggregatedApplication = isAggregatedApplication();
 	}
 
 	String collectData() throws IOException {
@@ -232,7 +237,7 @@ public class RemoteCollector {
 			}
 		}
 		final List<SampledMethod> hotspots = new ArrayList<>(map.values());
-		Collections.sort(hotspots);
+		hotspots.sort(Comparator.naturalOrder());
 		return hotspots;
 	}
 

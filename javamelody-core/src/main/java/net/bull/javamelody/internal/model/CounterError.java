@@ -20,7 +20,7 @@ package net.bull.javamelody.internal.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Objet correspondant à une erreur dans filtre http ou dans logs à un instant t, avec son message, sa stackTrace

@@ -24,11 +24,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import javax.servlet.ServletContext;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import jakarta.servlet.ServletContext;
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.common.Parameters;
 

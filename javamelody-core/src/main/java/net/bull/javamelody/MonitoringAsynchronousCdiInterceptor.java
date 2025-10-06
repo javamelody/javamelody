@@ -17,11 +17,11 @@
  */
 package net.bull.javamelody;
 
-import javax.ejb.Asynchronous;
-import javax.interceptor.Interceptor;
+import jakarta.ejb.Asynchronous;
+import jakarta.interceptor.Interceptor;
 
 /**
- * Intercepteur pour CDI & pour EJB 3.1 (Java EE 6+), non activé par défaut.
+ * Intercepteur pour CDI et pour EJB 3.1 (Java EE 6+), non activé par défaut.
  * @author Emeric Vernat
  */
 @Interceptor

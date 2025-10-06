@@ -5,16 +5,15 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.bull.javamelody</groupId>
 	<artifactId>javamelody-offline-viewer</artifactId>
-	<version>1.91.0-SNAPSHOT</version>
+	<version>2.6.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>JavaMelody - offline viewer</name>
 	<description>View reports on data offline without access to online reports</description>
 	<url>https://github.com/javamelody/javamelody/wiki</url>
 
 	<properties>
-		<!-- Adapt this to a version found on http://central.maven.org/maven2/org/eclipse/jetty/jetty-maven-plugin/ -->
-		<!-- (9.2.21 is the last version supporting Java 7) -->
-		<jettyVersion>9.2.21.v20170120</jettyVersion>
+		<!-- Adapt this to a version found on https://search.maven.org/artifact/org.apache.tomcat.embed/tomcat-embed-core -->
+		<tomcat.version>10.1.46</tomcat.version>
 		<!-- Adapt this to a version found on http://central.maven.org/maven2/net/bull/javamelody/javamelody-core/ -->
 		<javamelodyVersion>${project.version}</javamelodyVersion>
 
@@ -24,34 +23,21 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-servlet</artifactId>
-			<version>${jettyVersion}</version>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-core</artifactId>
+			<version>${tomcat.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.bull.javamelody</groupId>
 			<artifactId>javamelody-core</artifactId>
 			<version>${javamelodyVersion}</version>
 		</dependency>
-		<!-- iText dependency for PDF exports (optional) -->
+		<!-- Optional: openpdf (iText fork) dependency for PDF exports in JavaMelody,
+		openpdf 1.4.1 is not compatible -->
 		<dependency>
-			<groupId>com.lowagie</groupId>
-			<artifactId>itext</artifactId>
-			<version>2.1.7</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>bcmail-jdk14</artifactId>
-					<groupId>bouncycastle</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>bcprov-jdk14</artifactId>
-					<groupId>bouncycastle</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>bctsp-jdk14</artifactId>
-					<groupId>bouncycastle</groupId>
-				</exclusion>
-			</exclusions>
+			<groupId>com.github.librepdf</groupId>
+			<artifactId>openpdf</artifactId>
+			<version>1.3.43</version>
 		</dependency>
 	</dependencies>
 
@@ -60,8 +46,9 @@
 			<plugin>
 				<!-- Use "mvn package" then "java -Djavamelody.storage-directory=... 
 					-jar target/javamelody-viewer.jar" -->
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>3.3.0</version>
+				<version>3.7.1</version>
 				<configuration>
 					<finalName>javamelody-offline-viewer</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
@@ -88,7 +75,7 @@
 				<!-- Or use "mvn compile exec:java -Djavamelody.storage-directory=..." -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<version>3.0.0</version>
+				<version>3.5.0</version>
 				<executions>
 					<execution>
 						<goals>
@@ -103,10 +90,10 @@
 			<!-- Configuration compilation -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
+				<version>3.13.0</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>11</source>
+					<target>11</target>
 				</configuration>
 			</plugin>
 		</plugins>

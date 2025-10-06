@@ -27,7 +27,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -36,6 +35,9 @@ import java.util.ResourceBundle;
 
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+
+import org.postgresql.jdbc.PgConnection;
+import org.postgresql.jdbc.PreferQueryMode;
 
 import net.bull.javamelody.JdbcWrapper;
 import net.bull.javamelody.Parameter;
@@ -48,13 +50,13 @@ import net.bull.javamelody.internal.common.Parameters;
  */
 public class DatabaseInformations implements Serializable {
 	private static final long serialVersionUID = -6105478981257689782L;
+	private static final boolean POSTGRESQL_DRIVER_AVAILABLE = isPostgresqlDriverAvailable();
 
 	enum Database {
 		// base de données connues avec les noms retournés par connection.getMetaData().getDatabaseProductName()
 		// (inspirés par Hibernate)
 		POSTGRESQL("PostgreSQL"),
 		MYSQL("MySQL"),
-		MYSQL4("MySQL"),
 		MARIADB("MariaDB"),
 		ORACLE("Oracle"),
 		DB2("DB2 UDB for AS/400", "DB2/"),
@@ -74,7 +76,7 @@ public class DatabaseInformations implements Serializable {
 		private final List<String> databaseNames;
 
 		Database(String... databaseNames) {
-			this.databaseNames = Arrays.asList(databaseNames);
+			this.databaseNames = List.of(databaseNames);
 		}
 
 		// CHECKSTYLE:OFF
@@ -83,57 +85,51 @@ public class DatabaseInformations implements Serializable {
 			final List<String> tmp;
 			switch (this) {
 			case POSTGRESQL:
-				tmp = Arrays.asList("pg_stat_activity", "pg_locks", "pg_database", "pg_tablespace",
+				tmp = List.of("pg_stat_activity", "pg_locks", "pg_database", "pg_tablespace",
 						"pg_stat_database", "pg_stat_user_tables", "pg_stat_user_indexes",
 						"pg_statio_user_tables", "pg_statio_user_indexes",
 						"pg_statio_user_sequences", "pg_settings");
 				break;
 			case MYSQL:
 			case MARIADB:
-				tmp = Arrays.asList("processlist", "databases", "variables", "global_status",
+				tmp = List.of("processlist", "databases", "variables", "global_status",
 						"innodb_status", "unusedIndexes", "longRunning", "tableStats",
 						"eventsWaits", "tableIoWaits", "indexIoWaits", "tableLockWaits",
 						"tablesWithoutPk", "perfDigests", "memory");
 				break;
-			case MYSQL4:
-				// les noms des premières requêtes sont les mêmes, mais la requête SQL correspondant à "innodb_status"
-				// n'est pas identique entre MYSQL 5+ et MYSQL 4 (issue 195)
-				tmp = Arrays.asList("processlist", "databases", "variables", "global_status",
-						"innodb_status");
-				break;
 			case ORACLE:
-				tmp = Arrays.asList("sessions", "locks", "sqlTimes", "foreignKeysWithoutIndexes",
+				tmp = List.of("sessions", "locks", "sqlTimes", "foreignKeysWithoutIndexes",
 						"invalidObjects", "disabledConstraints", "tableStats", "instance",
 						"database", "nlsParameters", "tablespaceFreespace", "datafileIo",
 						"tablespaceExtents", "ratios", "parameters", "rollbackSegmentStatistics",
 						"statistics", "events");
 				break;
 			case DB2:
-				tmp = Arrays.asList("mon_current_sql", "mon_db_summary", "mon_lockwaits",
+				tmp = List.of("mon_current_sql", "mon_db_summary", "mon_lockwaits",
 						"mon_service_subclass_summary", "mon_current_uow", "mon_workload_summary",
 						"mon_get_connection", "current_queries");
 				break;
 			case H2:
-				tmp = Arrays.asList("memory", "sessions", "locks", "settings");
+				tmp = List.of("memory", "sessions", "locks", "settings");
 				break;
 			case HSQLDB:
-				tmp = Arrays.asList("system_sessions", "system_cacheinfo", "system_properties",
+				tmp = List.of("system_sessions", "system_cacheinfo", "system_properties",
 						"system_schemas");
 				break;
 			case SQLSERVER:
-				tmp = Arrays.asList("version", "connections");
+				tmp = List.of("version", "connections");
 				break;
 			case SYBASE:
-				tmp = Arrays.asList("sp_who", "connections", "sp_lock", "lock",
+				tmp = List.of("sp_who", "connections", "sp_lock", "lock",
 						"running_stored_procedure", "used_temporary_tables", "used_tables",
 						"sp_version");
 				break;
 			case INFORMIX:
-				tmp = Arrays.asList("version", "sessions", "resources_by_user", "current_queries",
+				tmp = List.of("version", "sessions", "resources_by_user", "current_queries",
 						"config");
 				break;
 			case SQLITE:
-				tmp = Arrays.asList("version", "database_list");
+				tmp = List.of("version", "database_list");
 				break;
 			default:
 				throw new IllegalStateException();
@@ -151,9 +147,6 @@ public class DatabaseInformations implements Serializable {
 		}
 
 		String getUrlIdentifier() {
-			if (this == MYSQL4) {
-				return MYSQL.toString().toLowerCase(Locale.ENGLISH);
-			}
 			return this.toString().toLowerCase(Locale.ENGLISH);
 		}
 
@@ -180,10 +173,6 @@ public class DatabaseInformations implements Serializable {
 			final String url = metaData.getURL();
 			for (final Database database : values()) {
 				if (database.isRecognized(databaseName, url)) {
-					if (database == MYSQL && metaData.getDatabaseMajorVersion() <= 4) {
-						// si mysql et version 4 alors c'est MYSQL4 et non MYSQL
-						return MYSQL4;
-					}
 					return database;
 				}
 			}
@@ -201,16 +190,13 @@ public class DatabaseInformations implements Serializable {
 	public DatabaseInformations(int selectedRequestIndex) throws SQLException, NamingException {
 		super();
 		this.selectedRequestIndex = selectedRequestIndex;
-		final Connection connection = getConnection();
-		assert connection != null;
-		try {
+		try (final Connection connection = getConnection()) {
+			assert connection != null;
 			database = Database.getDatabaseForConnection(connection);
 			requestNames = database.getRequestNames();
 			final String request = database
 					.getRequestByName(requestNames.get(selectedRequestIndex));
 			result = executeRequest(connection, request, null);
-		} finally {
-			connection.close();
 		}
 	}
 
@@ -255,7 +241,7 @@ public class DatabaseInformations implements Serializable {
 
 	private static String[][] executeRequest(Connection connection, String request,
 			List<?> parametersValues) throws SQLException {
-		try (PreparedStatement statement = connection.prepareStatement(request)) {
+		try (final PreparedStatement statement = connection.prepareStatement(request)) {
 			if (parametersValues != null) {
 				int i = 1;
 				for (final Object parameterValue : parametersValues) {
@@ -277,7 +263,7 @@ public class DatabaseInformations implements Serializable {
 	}
 
 	private static String[][] executeQuery(PreparedStatement statement) throws SQLException {
-		try (ResultSet resultSet = statement.executeQuery()) {
+		try (final ResultSet resultSet = statement.executeQuery()) {
 			final ResultSetMetaData metaData = resultSet.getMetaData();
 			final int columnCount = metaData.getColumnCount();
 			final List<String[]> list = new ArrayList<>();
@@ -340,7 +326,7 @@ public class DatabaseInformations implements Serializable {
 				if (database == Database.ORACLE) {
 					// Si oracle, on demande le plan d'exécution avec la table PLAN_TABLE par défaut
 					// avec "explain plan set statement_id = <statement_id> for ..."
-					// (si mysql ou postgresql on pourrait faire "explain ...",
+					// (si mysql, on pourrait faire "explain ...",
 					// sauf que les paramètres bindés ne seraient pas acceptés
 					// et les requêtes update/insert/delete non plus).
 					// (si db2, la syntaxe serait "explain plan for ...")
@@ -353,14 +339,67 @@ public class DatabaseInformations implements Serializable {
 					// affichés simultanément, et en tout cas CounterRequest.getId() est trop long
 					// pour la table oracle par défaut (SYS.PLAN_TABLE$.STATEMENT_ID a une longueur de 30)
 					final String statementId = String.valueOf(sqlRequest.hashCode());
-					final String explainRequest = buildExplainRequest(sqlRequest, statementId);
+					// utilisation de la table PLAN_TABLE par défaut
+					// (il faut que cette table soit créée auparavant dans oracle
+					// et elle peut être créée par : @$ORACLE_HOME/rdbms/admin/catplan.sql
+					// ou par @$ORACLE_HOME/rdbms/admin/utlxplan.sql si oracle 9g ou avant)
+					final String explainRequest = "explain plan set statement_id = '" + statementId
+							+ "' for " + normalizeRequestForExplain(sqlRequest, ':');
 					// exécution de la demande
-					try (Statement statement = connection.createStatement()) {
+					try (final Statement statement = connection.createStatement()) {
 						statement.execute(explainRequest);
 					}
 
 					// récupération du résultat
-					return getPlanOutput(connection, statementId);
+					// table PLAN_TABLE par défaut et format par défaut
+					final String planTableRequest = "select * from table(dbms_xplan.display(null,?,null))";
+					final String[][] planTableOutput = executeRequest(connection, planTableRequest,
+							Collections.singletonList(statementId));
+					final StringBuilder sb = new StringBuilder();
+					for (final String[] row : planTableOutput) {
+						for (final String value : row) {
+							sb.append(value);
+						}
+						sb.append('\n');
+					}
+					if (sb.indexOf("-") != -1) {
+						sb.delete(0, sb.indexOf("-"));
+					}
+					return sb.toString();
+				} else if (database == Database.POSTGRESQL && POSTGRESQL_DRIVER_AVAILABLE
+						&& connection.getMetaData().getDatabaseMajorVersion() >= 16) {
+					// Si postgresql, on demande le plan d'exécution avec "explain (generic plan) ..."
+					final PgConnection pgConnection = connection.unwrap(PgConnection.class);
+					if (pgConnection != null) {
+						final PreferQueryMode preferQueryMode = pgConnection.getQueryExecutor()
+								.getPreferQueryMode();
+						try {
+							// given the parameters without values, explain (generic plan) should be executed as simple query
+							// and not as prepared query which is by default.
+							// (there is no other way than using postgresql "internal" api:
+							// not possible using jdbc api or postgresql "public" api)
+							pgConnection.getQueryExecutor()
+									.setPreferQueryMode(PreferQueryMode.SIMPLE);
+
+							// explain plan pour Postgresql 16 ou ultérieur
+							// https://www.cybertec-postgresql.com/en/explain-generic-plan-postgresql-16/
+							final String explainPlanRequest = "explain (generic_plan) "
+									+ normalizeRequestForExplain(sqlRequest, '$');
+							final StringBuilder sb = new StringBuilder();
+							try (final Statement statement = connection.createStatement()) {
+								try (final ResultSet resultSet = statement
+										.executeQuery(explainPlanRequest)) {
+									while (resultSet.next()) {
+										sb.append(resultSet.getString(1)).append('\n');
+									}
+								}
+							}
+							return sb.toString();
+						} finally {
+							// set back the connection preferQueryMode as before
+							pgConnection.getQueryExecutor().setPreferQueryMode(preferQueryMode);
+						}
+					}
 				}
 			} finally {
 				if (!connection.getAutoCommit()) {
@@ -372,7 +411,7 @@ public class DatabaseInformations implements Serializable {
 		return null;
 	}
 
-	private static String buildExplainRequest(String sqlRequest, String statementId) {
+	private static String normalizeRequestForExplain(String sqlRequest, char parameterChar) {
 		// rq : il semble qu'une requête explain plan ne puisse avoir la requête en paramètre bindé
 		// (donc les requêtes "explain ..." seront ignorées dans JdbcWrapper)
 		int i = 1;
@@ -384,48 +423,32 @@ public class DatabaseInformations implements Serializable {
 			// transformées par SQL_TRANSFORM_PATTERN)
 			request = request.replace(Counter.TRANSFORM_REPLACEMENT_CHAR, '?');
 		}
-		// utilisation de la table PLAN_TABLE par défaut
-		// (il faut que cette table soit créée auparavant dans oracle
-		// et elle peut être créée par : @$ORACLE_HOME/rdbms/admin/catplan.sql
-		// ou par @$ORACLE_HOME/rdbms/admin/utlxplan.sql si oracle 9g ou avant)
-		String explainRequest = "explain plan set statement_id = '" + statementId + "' for "
-				+ request;
 
 		// dans le cas où la requête contient ';' (requêtes multiples), je ne sais pas si explain
 		// plan considère que cela fait partie de la requête à analyser où si certaines versions
 		// d'oracle considèrent que cela vient après l'explain plan; par sécurité on interdit cela
-		if (explainRequest.indexOf(';') != -1) {
-			explainRequest = explainRequest.substring(0, explainRequest.indexOf(';'));
+		if (request.indexOf(';') != -1) {
+			request = request.substring(0, request.indexOf(';'));
 		}
 
-		// on remplace les paramètres bindés "?" par ":n"
-		int index = explainRequest.indexOf('?');
+		// on remplace les paramètres bindés "?" par ":n" si oracle ou "$n" si postgresql
+		int index = request.indexOf('?');
 		while (index != -1) {
-			explainRequest = explainRequest.substring(0, index) + ':' + i
-					+ explainRequest.substring(index + 1);
+			request = request.substring(0, index) + parameterChar + i
+					+ request.substring(index + 1);
 			i++;
-			index = explainRequest.indexOf('?');
+			index = request.indexOf('?');
 		}
-		return explainRequest;
+		return request;
 	}
 
-	private static String getPlanOutput(Connection connection, String statementId)
-			throws SQLException {
-		// table PLAN_TABLE par défaut et format par défaut
-		final String planTableRequest = "select * from table(dbms_xplan.display(null,?, null))";
-		final String[][] planTableOutput = executeRequest(connection, planTableRequest,
-				Collections.singletonList(statementId));
-		final StringBuilder sb = new StringBuilder();
-		for (final String[] row : planTableOutput) {
-			for (final String value : row) {
-				sb.append(value);
-			}
-			sb.append('\n');
+	private static boolean isPostgresqlDriverAvailable() {
+		try {
+			Class.forName("org.postgresql.jdbc.PgConnection");
+			return true;
+		} catch (final ClassNotFoundException e) {
+			return false;
 		}
-		if (sb.indexOf("-") != -1) {
-			sb.delete(0, sb.indexOf("-"));
-		}
-		return sb.toString();
 	}
 
 	/** {@inheritDoc} */

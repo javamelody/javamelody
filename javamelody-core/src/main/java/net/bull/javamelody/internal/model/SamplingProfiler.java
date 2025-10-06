@@ -19,12 +19,12 @@ package net.bull.javamelody.internal.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Detect CPU hotspots CPU by periodic sampling of the stack-traces of the threads.
@@ -166,7 +166,7 @@ public class SamplingProfiler {
 		if (packageNames == null) {
 			return null;
 		}
-		return Arrays.asList(packageNames.split(","));
+		return List.of(packageNames.split(","));
 	}
 
 	private String[] verifyPackageNames(List<String> packageNames) {
@@ -213,12 +213,8 @@ public class SamplingProfiler {
 		final SampledMethod key = new SampledMethod(element.getClassName(),
 				element.getMethodName());
 		// or final String key = element.getClassName() + '.' + element.getMethodName();
-		SampledMethod method = this.data.get(key);
-		if (method == null) {
-			method = key;
-			// or method = new SampledMethod(element.getClassName(), element.getMethodName());
-			this.data.put(key, method);
-		}
+		// or method = new SampledMethod(element.getClassName(), element.getMethodName());
+		SampledMethod method = this.data.computeIfAbsent(key, Function.identity());
 		// on pourrait incrémenter la valeur selon l'augmentation de cpuTime pour ce thread,
 		// mais l'intervalle entre deux samples est probablement trop grand
 		// pour que le cpu du thread entre les deux intervalles ait un rapport avec cette méthode
@@ -258,7 +254,7 @@ public class SamplingProfiler {
 
 	public synchronized List<SampledMethod> getHotspots(int rows) {
 		final List<SampledMethod> methods = new ArrayList<>(data.values());
-		Collections.sort(methods);
+		methods.sort(Comparator.naturalOrder());
 		return methods.subList(0, Math.min(rows, methods.size()));
 	}
 

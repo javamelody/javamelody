@@ -31,11 +31,13 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLSession;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.net.ssl.HostnameVerifier;
+import jakarta.net.ssl.HttpsURLConnection;
+import jakarta.net.ssl.SSLSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import net.bull.javamelody.internal.common.HttpParameter;
 import net.bull.javamelody.internal.common.HttpPart;
@@ -138,7 +140,7 @@ public class LabradorRetriever {
 	<T> T call() throws IOException {
 		if (shouldMock()) {
 			// ce générique doit être conservé pour la compilation javac en intégration continue
-			return this.<T> createMockResultOfCall();
+			return this.createMockResultOfCall();
 		}
 		final long start = System.currentTimeMillis();
 		int dataLength = -1;

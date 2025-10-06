@@ -23,13 +23,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -42,12 +39,14 @@ import javax.cache.configuration.MutableConfiguration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.quartz.CronTrigger;
+import org.quartz.CronScheduleBuilder;
+import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.SimpleTrigger;
+import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
 import com.lowagie.text.Document;
@@ -117,7 +116,7 @@ public class TestPdfReport {
 		final Counter counter = new Counter("http", "db.png", sqlCounter);
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
 		final Counter jobCounter = TestHtmlReport.getJobCounter();
-		final List<Counter> counters = Arrays.asList(counter, sqlCounter, errorCounter, jobCounter);
+		final List<Counter> counters = List.of(counter, sqlCounter, errorCounter, jobCounter);
 		counter.addRequest("test1", 0, 0, 0, false, 1000);
 		counter.addRequest("test2", 1000, 500, 500, false, 1000);
 		counter.addRequest("test3", 10000, 500, 500, true, 10000);
@@ -235,21 +234,23 @@ public class TestPdfReport {
 			final Random random = new Random();
 
 			//Define a Trigger that will fire "later"
-			final JobDetail job2 = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
-			final SimpleTrigger trigger2 = new SimpleTrigger("trigger" + random.nextInt(), null,
-					new Date(System.currentTimeMillis() + random.nextInt(60000)));
-			trigger2.setRepeatInterval(2 * 24L * 60 * 60 * 1000);
+			final JobDetail job2 = JobBuilder.newJob(JobTestImpl.class)
+					.withIdentity("job" + random.nextInt()).build();
+			final Trigger trigger2 = TriggerBuilder.newTrigger()
+					.withIdentity("trigger" + random.nextInt())
+					.startAt(new Date(System.currentTimeMillis() + random.nextInt(60000)))
+					.withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(48)
+							.repeatForever())
+					.build();
+
 			scheduler.scheduleJob(job2, trigger2);
-			scheduler.pauseJob(job2.getName(), job2.getGroup());
-			try {
-				final JobDetail job3 = new JobDetail("job" + random.nextInt(), null,
-						JobTestImpl.class);
-				final Trigger trigger3 = new CronTrigger("trigger" + random.nextInt(), null,
-						"0 0 0 * * ? 2030");
-				scheduler.scheduleJob(job3, trigger3);
-			} catch (final ParseException e) {
-				throw new IllegalStateException(e);
-			}
+			scheduler.pauseJob(job2.getKey());
+			final JobDetail job3 = JobBuilder.newJob(JobTestImpl.class)
+					.withIdentity("job" + random.nextInt()).build();
+			final Trigger trigger3 = TriggerBuilder.newTrigger()
+					.withIdentity("crontrigger" + random.nextInt())
+					.withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ? 2030")).build();
+			scheduler.scheduleJob(job3, trigger3);
 
 			// JavaInformations doit être réinstancié pour récupérer les jobs
 			// (mais "Aucun job" dans le counter)
@@ -260,30 +261,26 @@ public class TestPdfReport {
 
 			// on lance 10 jobs pour être à peu près sûr qu'il y en a un qui fait une erreur
 			// (aléatoirement il y en a 2/10 qui font une erreur)
-			final Map<JobDetail, SimpleTrigger> triggersByJob = new LinkedHashMap<>();
 			for (int i = 0; i < 10; i++) {
 				//Define a Trigger that will fire "now"
-				final JobDetail job = new JobDetail("job" + random.nextInt(), null,
-						JobTestImpl.class);
-				job.setDescription("description");
+				final JobDetail job = JobBuilder.newJob(JobTestImpl.class)
+						.withIdentity("job" + random.nextInt()).withDescription("description")
+						.build();
 
-				final SimpleTrigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null,
-						new Date());
+				final Trigger trigger = TriggerBuilder.newTrigger()
+						.withIdentity("trigger" + random.nextInt()).startNow()
+						// pour que les jobs restent en cours après la 1ère exécution
+						.withSchedule(SimpleScheduleBuilder.simpleSchedule()
+								.withIntervalInMinutes(1).repeatForever())
+						.build();
 				//Schedule the job with the trigger
 				scheduler.scheduleJob(job, trigger);
-				triggersByJob.put(job, trigger);
 			}
 			// JobTestImpl fait un sleep de 2s au plus, donc on attend les jobs pour les compter
 			try {
 				Thread.sleep(3000);
 			} catch (final InterruptedException e) {
 				throw new IllegalStateException(e);
-			}
-
-			for (final Map.Entry<JobDetail, SimpleTrigger> entry : triggersByJob.entrySet()) {
-				// et on les relance pour qu'ils soient en cours
-				entry.getValue().setRepeatInterval(60000);
-				scheduler.scheduleJob(entry.getKey(), entry.getValue());
 			}
 
 			// JavaInformations doit être réinstancié pour récupérer les jobs
@@ -304,7 +301,7 @@ public class TestPdfReport {
 		toPdf(collector, false, Collections.singletonList(javaInformations), graphs);
 
 		final Counter myCounter = new Counter("http", null);
-		final Collector collector2 = new Collector("test 2", Arrays.asList(myCounter));
+		final Collector collector2 = new Collector("test 2", List.of(myCounter));
 		myCounter.bindContext("my context", "my context", null, -1, -1);
 		toPdf(collector2, false, Collections.singletonList(javaInformations), graphs);
 
@@ -314,9 +311,8 @@ public class TestPdfReport {
 		final Document document = pdfDocumentFactory.createDocument();
 		document.open();
 		final PdfCounterRequestContextReport pdfCounterRequestContextReport = new PdfCounterRequestContextReport(
-				collector2.getRootCurrentContexts(collector2.getCounters()),
-				new ArrayList<PdfCounterReport>(), new ArrayList<ThreadInformations>(), false,
-				pdfDocumentFactory, document);
+				collector2.getRootCurrentContexts(collector2.getCounters()), new ArrayList<>(),
+				new ArrayList<>(), false, pdfDocumentFactory, document);
 		pdfCounterRequestContextReport.toPdf();
 		document.close();
 		assertNotEmptyAndClear(output);
@@ -344,7 +340,7 @@ public class TestPdfReport {
 		// counterName doit être http, sql ou ejb pour que les libellés de graph soient trouvés dans les traductions
 		final Counter counter = new Counter("http", "db.png");
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
-		final List<Counter> counters = Arrays.asList(counter, errorCounter);
+		final List<Counter> counters = List.of(counter, errorCounter);
 		final Collector collector = new Collector(TEST_APP, counters);
 		final JavaInformations javaInformations = new JavaInformations(null, true);
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -380,9 +376,8 @@ public class TestPdfReport {
 		final Document document = pdfDocumentFactory.createDocument();
 		document.open();
 		final PdfCounterRequestContextReport report = new PdfCounterRequestContextReport(
-				Collections.<CounterRequestContext> emptyList(),
-				Collections.<PdfCounterReport> emptyList(),
-				Collections.<ThreadInformations> emptyList(), true, pdfDocumentFactory, document);
+				Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), true,
+				pdfDocumentFactory, document);
 		report.toPdf();
 		report.setTimeOfSnapshot(System.currentTimeMillis());
 		report.writeContextDetails();
@@ -438,8 +433,7 @@ public class TestPdfReport {
 		final Document document4 = pdfDocumentFactory.createDocument();
 		document4.open();
 		final PdfThreadInformationsReport report4 = new PdfThreadInformationsReport(
-				new ArrayList<ThreadInformations>(), stackTraceEnabled, pdfDocumentFactory,
-				document4);
+				new ArrayList<>(), stackTraceEnabled, pdfDocumentFactory, document4);
 		report4.toPdf();
 		report4.writeDeadlocks();
 		document4.close();
@@ -455,7 +449,7 @@ public class TestPdfReport {
 	@Test
 	public void testSetters() throws Exception {
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
-		final List<Counter> counters = Arrays.asList(errorCounter);
+		final List<Counter> counters = List.of(errorCounter);
 		final Collector collector = new Collector("test", counters);
 		final JavaInformations javaInformations = new JavaInformations(null, true);
 		final List<JavaInformations> javaInformationsList = Collections

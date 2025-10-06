@@ -6,7 +6,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
+import java.util.Base64;
 import java.util.Random;
 
 import org.junit.Test;
@@ -45,53 +45,47 @@ public class TestBase64Coder {
 	}
 
 	/**
-	 * Test Base64Coder against sun.misc.BASE64Encoder/Decoder with random data.
+	 * Test Base64Coder against java.util.Base64 Encoder/Decoder with random data.
 	 * Line length below 76.
-	 * @throws IOException e
 	 */
-	@SuppressWarnings("restriction")
 	@Test
-	public void test2() throws IOException {
-		final int maxLineLen = 76 - 1; // the Sun encoder adds a CR/LF when a line is longer
+	public void test2() {
+		final int maxLineLen = 76 - 1; // the Base64 Mime encoder adds a CR/LF when a line is longer
 		final int maxDataBlockLen = maxLineLen * 3 / 4;
-		final sun.misc.BASE64Encoder sunEncoder = new sun.misc.BASE64Encoder();
-		final sun.misc.BASE64Decoder sunDecoder = new sun.misc.BASE64Decoder();
 		final Random rnd = new Random(0x538afb92);
 		for (int i = 0; i < 100; i++) {
 			final int len = rnd.nextInt(maxDataBlockLen + 1);
 			final byte[] b0 = new byte[len];
 			rnd.nextBytes(b0);
 			final String e1 = new String(Base64Coder.encode(b0));
-			final String e2 = sunEncoder.encode(b0);
+			final String e2 = Base64.getEncoder().encodeToString(b0);
 			assertEquals("test2", e2, e1);
 			final byte[] b1 = Base64Coder.decode(e1);
-			final byte[] b2 = sunDecoder.decodeBuffer(e2);
+			final byte[] b2 = Base64.getDecoder().decode(e2);
 			assertArrayEquals("test2", b0, b1);
 			assertArrayEquals("test2", b0, b2);
 		}
 	}
 
 	/**
-	 * Test Base64Coder line encoding/decoding against sun.misc.BASE64Encoder/Decoder
+	 * Test Base64Coder line encoding/decoding against java.util.Base64 Mime Encoder/Decoder
 	 * with random data.
-	 * @throws IOException e
 	 */
-	@SuppressWarnings("restriction")
 	@Test
-	public void test3() throws IOException {
+	public void test3() {
 		final int maxDataBlockLen = 512;
-		final sun.misc.BASE64Encoder sunEncoder = new sun.misc.BASE64Encoder();
-		final sun.misc.BASE64Decoder sunDecoder = new sun.misc.BASE64Decoder();
 		final Random rnd = new Random(0x39ac7d6e);
 		for (int i = 0; i < 100; i++) {
 			final int len = rnd.nextInt(maxDataBlockLen + 1);
 			final byte[] b0 = new byte[len];
 			rnd.nextBytes(b0);
-			final String e1 = Base64Coder.encodeLines(b0);
-			final String e2 = sunEncoder.encodeBuffer(b0);
-			assertEquals("test3", e2, e1);
+			// Base64Coder uses System.lineSeparator() but Mime Encoder uses CR LF (\r \n),
+			// so we replace for linux
+			final String e1 = Base64Coder.encodeLines(b0).replace(System.lineSeparator(), "\r\n");
+			final String e2 = Base64.getMimeEncoder().encodeToString(b0);
+			assertEquals("test3", e2, e1.trim());
 			final byte[] b1 = Base64Coder.decodeLines(e1);
-			final byte[] b2 = sunDecoder.decodeBuffer(e2);
+			final byte[] b2 = Base64.getMimeDecoder().decode(e2);
 			assertArrayEquals("test3", b0, b1);
 			assertArrayEquals("test3", b0, b2);
 		}

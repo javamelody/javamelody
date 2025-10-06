@@ -25,18 +25,17 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.naming.Binding;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import javax.servlet.ServletContext;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import jakarta.servlet.ServletContext;
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.JndiBinding;
@@ -108,8 +107,9 @@ public class TestHtmlJndiTreeReport {
 		}
 		expect(enumeration.hasMore()).andReturn(true).times(7);
 		expect(enumeration.next()).andReturn(new Binding("test value", "test")).once();
-		expect(enumeration.next()).andReturn(new Binding("test value collection",
-				Arrays.asList("test collection", "test collection"))).once();
+		expect(enumeration.next()).andReturn(
+				new Binding("test value collection", List.of("test collection", "test collection")))
+				.once();
 		expect(enumeration.next())
 				.andReturn(new Binding("test context", createNiceMock(Context.class))).once();
 		expect(enumeration.next()).andReturn(new Binding("", "test")).once();
