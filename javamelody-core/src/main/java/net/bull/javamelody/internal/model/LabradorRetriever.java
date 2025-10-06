@@ -31,6 +31,9 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -141,14 +144,23 @@ public class LabradorRetriever {
 		int dataLength = -1;
 		try {
 			final URLConnection connection = openConnection();
-			// pour traductions (si on vient de CollectorServlet.forwardActionAndUpdateData,
+
+                        if (connection instanceof HttpsURLConnection) {
+                            ((HttpsURLConnection) connection).setHostnameVerifier(new HostnameVerifier() {
+                                @Override
+                                public boolean verify(String hostname, SSLSession session) {
+                                    return true;
+                                }
+                            });
+                        }
+
+                                // pour traductions (si on vient de CollectorServlet.forwardActionAndUpdateData,
 			// cela permet d'avoir les messages dans la bonne langue)
 			connection.setRequestProperty("Accept-Language", I18N.getCurrentLocale().getLanguage());
 
 			// Rq: on ne gère pas ici les éventuels cookie de session http,
 			// puisque le filtre de monitoring n'est pas censé créer des sessions
 			//		if (cookie != null) { connection.setRequestProperty("Cookie", cookie); }
-
 			connection.connect();
 
 			//		final String setCookie = connection.getHeaderField("Set-Cookie");
