@@ -391,7 +391,7 @@ public class JavaMelodyAutoConfiguration {
 	 * @return SchedulerFactoryBeanCustomizer
 	 */
 	@ConditionalOnClass(name = {
-			"org.springframework.boot.autoconfigure.quartz.SchedulerFactoryBeanCustomizer",
+			"org.springframework.boot.quartz.autoconfigure.SchedulerFactoryBeanCustomizer",
 			"org.springframework.scheduling.quartz.SchedulerFactoryBean",
 			"org.quartz.JobListener" })
 	@Bean
