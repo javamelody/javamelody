@@ -373,10 +373,12 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 		if (childContext != null) {
 			clone.currentChildContext = childContext.clone(clone);
 		}
-		if (childRequestsExecutionsByRequestId != null) {
-			clone.childRequestsExecutionsByRequestId = new LinkedHashMap<>(
-					childRequestsExecutionsByRequestId);
-		}
+		// on ne clone plus childRequestsExecutionsByRequestId parce qu'il n'y en a pas besoin pour l'affichage et
+		// aussi cela évite une ConcurrentModificationException à l'affichage si jamais une requête fille est ajoutée
+		// dans childRequestsExecutionsByRequestId en même temps que l'itérateur dans le constructeur de LinkedHashMap
+		// if (childRequestsExecutionsByRequestId != null) {
+		//	clone.childRequestsExecutionsByRequestId = new LinkedHashMap<>(childRequestsExecutionsByRequestId);
+		// }
 		return clone;
 	}
 
