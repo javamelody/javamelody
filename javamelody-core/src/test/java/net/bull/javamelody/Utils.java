@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Map;
 
+import net.bull.javamelody.internal.model.RrdFfmBackendFactory;
 import org.jrobin.core.RrdBackendFactory;
 import org.jrobin.core.RrdException;
 import org.quartz.SchedulerException;
@@ -84,9 +85,18 @@ public final class Utils {
 
 		try {
 			// we must initialize default factory before creating any rrd
-			if (!RrdBackendFactory.getDefaultFactory().getFactoryName()
-					.equals(RrdNioBackendFactory.FACTORY_NAME)) {
-				RrdBackendFactory.registerAndSetAsDefaultFactory(new RrdNioBackendFactory());
+			final boolean java22OrLater = "22".compareTo(Parameters.JAVA_VERSION) < 0;
+			if (java22OrLater) {
+				// we can use Foreign Function and Memory api since java 22
+				if (!RrdBackendFactory.getDefaultFactory().getFactoryName()
+						.equals(RrdFfmBackendFactory.FACTORY_NAME)) {
+					RrdBackendFactory.registerAndSetAsDefaultFactory(new RrdFfmBackendFactory());
+				}
+			} else {
+				if (!RrdBackendFactory.getDefaultFactory().getFactoryName()
+						.equals(RrdNioBackendFactory.FACTORY_NAME)) {
+					RrdBackendFactory.registerAndSetAsDefaultFactory(new RrdNioBackendFactory());
+				}
 			}
 		} catch (final RrdException e) {
 			throw new IllegalStateException(e);
