@@ -1195,7 +1195,6 @@ public class TestMonitoringFilter {// NOPMD
 		verify(chain);
 
 		if (checkResultContent) {
-			System.out.println("checkResultContent=" + checkResultContent);
 			assertTrue("result", output.size() != 0 || stringWriter.getBuffer().length() != 0);
 		}
 	}
