@@ -93,8 +93,8 @@ public class RrdFfmBackend extends RrdFileBackend {
 					FileChannel.MapMode.READ_WRITE;
 
 			arena = Arena.ofShared();
-			// Arena.ofConfined() is faster,
-			// but given org.jrobin.core.RrdDbPool and fileSyncTimer, could we be sure of using it in a single thread ?
+			// Arena.ofConfined() is faster, but given org.jrobin.core.RrdDbPool and in particular fileSyncTimer,
+			// we can't be sure of using it in a single thread
 			memorySegment = file.getChannel().map(mapMode, 0, length, arena);
 		}
 	}
