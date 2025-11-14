@@ -144,12 +144,12 @@ public final class JRobin {
 	 */
 	public static void initBackendFactory(Timer timer) throws IOException {
 		RrdNioBackend.setFileSyncTimer(timer);
-		RrdFfmBackend.setFileSyncTimer(timer);
 
 		try {
 			final boolean java22OrLater = "22".compareTo(Parameters.JAVA_VERSION) < 0;
 			if (java22OrLater) {
 				// we can use Foreign Function and Memory api since java 22
+				RrdFfmBackend.setFileSyncTimer(timer);
 				if (!RrdBackendFactory.getDefaultFactory().getFactoryName()
 						.equals(RrdFfmBackendFactory.FACTORY_NAME)) {
 					RrdBackendFactory.registerAndSetAsDefaultFactory(new RrdFfmBackendFactory());
