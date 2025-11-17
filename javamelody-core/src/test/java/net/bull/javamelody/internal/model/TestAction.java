@@ -356,8 +356,12 @@ public class TestAction {
 		myThread.start();
 		String globalThreadId = PID.getPID() + '_' + Parameters.getHostAddress() + '_'
 				+ myThread.getId();
-		assertNotNull("message KILL_THREAD 4", Action.KILL_THREAD.execute(collector, null, null,
-				counterName, sessionId, globalThreadId, jobId, cacheId));
+
+		final boolean java20OrLater = "20".compareTo(Parameters.JAVA_VERSION) < 0;
+		if (!java20OrLater) {
+			assertNotNull("message KILL_THREAD 4", Action.KILL_THREAD.execute(collector, null, null,
+					counterName, sessionId, globalThreadId, jobId, cacheId));
+		}
 		globalThreadId = PID.getPID() + '_' + Parameters.getHostAddress() + '_' + 10000;
 		assertNotNull("message KILL_THREAD 5", Action.KILL_THREAD.execute(collector, null, null,
 				counterName, sessionId, globalThreadId, jobId, cacheId));

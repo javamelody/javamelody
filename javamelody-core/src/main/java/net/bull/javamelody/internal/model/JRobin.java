@@ -146,9 +146,19 @@ public final class JRobin {
 		RrdNioBackend.setFileSyncTimer(timer);
 
 		try {
-			if (!RrdBackendFactory.getDefaultFactory().getFactoryName()
-					.equals(RrdNioBackendFactory.FACTORY_NAME)) {
-				RrdBackendFactory.registerAndSetAsDefaultFactory(new RrdNioBackendFactory());
+			final boolean java22OrLater = "22".compareTo(Parameters.JAVA_VERSION) < 0;
+			if (java22OrLater) {
+				// we can use Foreign Function and Memory api since java 22
+				RrdFfmBackend.setFileSyncTimer(timer);
+				if (!RrdBackendFactory.getDefaultFactory().getFactoryName()
+						.equals(RrdFfmBackendFactory.FACTORY_NAME)) {
+					RrdBackendFactory.registerAndSetAsDefaultFactory(new RrdFfmBackendFactory());
+				}
+			} else {
+				if (!RrdBackendFactory.getDefaultFactory().getFactoryName()
+						.equals(RrdNioBackendFactory.FACTORY_NAME)) {
+					RrdBackendFactory.registerAndSetAsDefaultFactory(new RrdNioBackendFactory());
+				}
 			}
 		} catch (final RrdException e) {
 			throw createIOException(e);
