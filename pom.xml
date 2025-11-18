@@ -13,6 +13,7 @@
 		<module>javamelody-collector-server</module>
 		<module>javamelody-for-standalone</module>
 		<module>javamelody-spring-boot-starter</module>
+		<module>javamelody-spring-boot4-starter</module>
 		<module>javamelody-for-spring-boot</module>
 		<module>javamelody-offline-viewer</module>
 		<module>javamelody-test-webapp</module>
