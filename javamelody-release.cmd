@@ -76,6 +76,13 @@ cd ../javamelody-spring-boot-starter
 call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
 call mvn clean install || exit /B
 
+:: package spring boot 4 starter: put release version in javamelody-spring-boot4-starter/pom.xml and clean install
+echo.
+echo javamelody-spring-boot4-starter ...
+cd ../javamelody-spring-boot4-starter
+call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
+call mvn clean install || exit /B
+
 :: deploy to https://oss.sonatype.org
 echo.
 echo deploy to https://oss.sonatype.org
@@ -89,6 +96,10 @@ cd ../javamelody-spring-boot-starter
 call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-spring-boot-starter-%releaseVersion%.jar || exit /B
 call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-spring-boot-starter-%releaseVersion%-sources.jar -Dclassifier=sources || exit /B
 call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-spring-boot-starter-%releaseVersion%-javadoc.jar -Dclassifier=javadoc || exit /B
+cd ../javamelody-spring-boot4-starter
+call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-spring-boot4-starter-%releaseVersion%.jar || exit /B
+call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-spring-boot4-starter-%releaseVersion%-sources.jar -Dclassifier=sources || exit /B
+call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-spring-boot4-starter-%releaseVersion%-javadoc.jar -Dclassifier=javadoc || exit /B
 
 :: create javamelody release in github
 echo create javamelody release in github
@@ -102,6 +113,22 @@ echo ```xml
 echo         ^<dependency^>
 echo                 ^<groupId^>net.bull.javamelody^</groupId^>
 echo                 ^<artifactId^>javamelody-core^</artifactId^>
+echo                 ^<version^>%releaseVersion%^</version^>
+echo         ^</dependency^>
+echo ```
+echo or if Spring Boot 3
+echo ```xml
+echo         ^<dependency^>
+echo                 ^<groupId^>net.bull.javamelody^</groupId^>
+echo                 ^<artifactId^>javamelody-spring-boot-starter^</artifactId^>
+echo                 ^<version^>%releaseVersion%^</version^>
+echo         ^</dependency^>
+echo ```
+echo or if Spring Boot 4
+echo ```xml
+echo         ^<dependency^>
+echo                 ^<groupId^>net.bull.javamelody^</groupId^>
+echo                 ^<artifactId^>javamelody-spring-boot4-starter^</artifactId^>
 echo                 ^<version^>%releaseVersion%^</version^>
 echo         ^</dependency^>
 echo ```
@@ -130,6 +157,8 @@ call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%developmentVersio
 cd ../javamelody-collector-server
 call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%developmentVersion% || exit /B
 cd ../javamelody-spring-boot-starter
+call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%developmentVersion% || exit /B
+cd ../javamelody-spring-boot4-starter
 call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%developmentVersion% || exit /B
 cd ../javamelody-for-standalone
 call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%developmentVersion% || exit /B

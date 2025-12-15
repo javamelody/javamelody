@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.4</version>
+		<version>4.0.0</version>
 	</parent>
 
 	<groupId>net.bull.javamelody</groupId>
@@ -33,7 +33,7 @@
 		<!-- JavaMelody Spring Boot Starter -->
 		<dependency>
 			<groupId>net.bull.javamelody</groupId>
-			<artifactId>javamelody-spring-boot-starter</artifactId>
+			<artifactId>javamelody-spring-boot4-starter</artifactId>
 			<version>${javamelody.version}</version>
 		</dependency>
 

@@ -1,0 +1,3 @@
+net.bull.javamelody.JavaMelodyAutoConfiguration
+net.bull.javamelody.JavaMelodyQuartzAutoConfiguration
+net.bull.javamelody.JavaMelodyDisabledAutoConfiguration
