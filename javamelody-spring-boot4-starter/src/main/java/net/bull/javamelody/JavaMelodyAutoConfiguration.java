@@ -387,27 +387,6 @@ public class JavaMelodyAutoConfiguration {
 	}
 
 	/**
-	 * Configure Spring's Schedulers for Quartz Scheduler
-	 * @return SchedulerFactoryBeanCustomizer
-	 */
-	@ConditionalOnClass(name = {
-			"org.springframework.boot.quartz.autoconfigure.SchedulerFactoryBeanCustomizer",
-			"org.springframework.scheduling.quartz.SchedulerFactoryBean",
-			"org.quartz.JobListener" })
-	@Bean
-	@ConditionalOnMissingBean
-	public SchedulerFactoryBeanCustomizer schedulerFactoryBeanCustomizer() {
-		return new SchedulerFactoryBeanCustomizer() {
-			@Override
-			public void customize(SchedulerFactoryBean schedulerFactoryBean) {
-				final JobGlobalListener jobGlobalListener = new JobGlobalListener();
-				schedulerFactoryBean.setGlobalJobListeners(jobGlobalListener);
-				schedulerFactoryBean.setExposeSchedulerInRepository(true);
-			}
-		};
-	}
-
-	/**
 	 * @return Enregistrement du context Spring.
 	 */
 	@Bean
