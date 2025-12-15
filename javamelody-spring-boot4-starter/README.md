@@ -1,6 +1,8 @@
-# JavaMelody Spring Boot Starter
+# JavaMelody Spring Boot 4 Starter
 
-The JavaMelody Spring Boot Starter facilitates the integration of JavaMelody in Spring Boot web applications.
+The JavaMelody Spring Boot 4 Starter facilitates the integration of JavaMelody in Spring Boot 4 web applications.
+
+For Spring Boot 3, see [JavaMelody Spring Boot Starter](../javamelody-spring-boot-starter).
 
 License ASL, http://www.apache.org/licenses/LICENSE-2.0
 
