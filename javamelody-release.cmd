@@ -48,7 +48,7 @@ cd javamelody-release
 git clone https://github.com/javamelody/javamelody
 cd javamelody
 
-:: javamelody-core: mvn release
+:: javamelody-core: mvn release, sign, publish
 echo.
 echo javamelody-core ...
 cd javamelody-core
@@ -56,50 +56,44 @@ call mvn clean || exit /B
 if /I NOT "%dryRun%" == "true" (
 call mvn release:prepare release:perform -Dtag=javamelody-core-%releaseVersion% -DreleaseVersion=%releaseVersion% -DdevelopmentVersion=%developmentVersion%  -Darguments="-Dmaven.deploy.skip=true" || exit /B
 call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
-call mvn source:jar javadoc:jar -DskipTests || exit /B
+call mvn install source:jar javadoc:jar gpg:sign org.sonatype.central:central-publishing-maven-plugin:publish -DskipTests || exit /B
 ) else (
 call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
-call mvn install source:jar javadoc:jar -DskipTests || exit /B
+call mvn clean install source:jar javadoc:jar gpg:sign -DskipTests || exit /B
 )
 
-:: package collector server: put release version in javamelody-collector-server/pom.xml and clean install
+:: package collector server: put release version in javamelody-collector-server/pom.xml and clean install sign publish
 echo.
 echo javamelody-collector-server ...
 cd ../javamelody-collector-server
 call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
-call mvn clean install || exit /B
+if /I NOT "%dryRun%" == "true" (
+call mvn clean install gpg:sign org.sonatype.central:central-publishing-maven-plugin:publish || exit /B
+) else (
+call mvn clean install gpg:sign || exit /B
+)
 
-:: package spring boot starter: put release version in javamelody-spring-boot-starter/pom.xml and clean install
+:: package spring boot starter: put release version in javamelody-spring-boot-starter/pom.xml and clean install sign publish
 echo.
 echo javamelody-spring-boot-starter ...
 cd ../javamelody-spring-boot-starter
 call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
-call mvn clean install || exit /B
+if /I NOT "%dryRun%" == "true" (
+call mvn clean install gpg:sign org.sonatype.central:central-publishing-maven-plugin:publish || exit /B
+) else (
+call mvn clean install gpg:sign || exit /B
+)
 
-:: package spring boot 4 starter: put release version in javamelody-spring-boot4-starter/pom.xml and clean install
+:: package spring boot 4 starter: put release version in javamelody-spring-boot4-starter/pom.xml and clean install sign publish
 echo.
 echo javamelody-spring-boot4-starter ...
 cd ../javamelody-spring-boot4-starter
 call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
-call mvn clean install || exit /B
-
-:: deploy to https://oss.sonatype.org
-echo.
-echo deploy to https://oss.sonatype.org
-cd ../javamelody-core
-call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-core-%releaseVersion%.jar || exit /B
-call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-core-%releaseVersion%-sources.jar -Dclassifier=sources || exit /B
-call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-core-%releaseVersion%-javadoc.jar -Dclassifier=javadoc || exit /B
-cd ../javamelody-collector-server
-call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-collector-server-%releaseVersion%.war || exit /B
-cd ../javamelody-spring-boot-starter
-call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-spring-boot-starter-%releaseVersion%.jar || exit /B
-call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-spring-boot-starter-%releaseVersion%-sources.jar -Dclassifier=sources || exit /B
-call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-spring-boot-starter-%releaseVersion%-javadoc.jar -Dclassifier=javadoc || exit /B
-cd ../javamelody-spring-boot4-starter
-call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-spring-boot4-starter-%releaseVersion%.jar || exit /B
-call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-spring-boot4-starter-%releaseVersion%-sources.jar -Dclassifier=sources || exit /B
-call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-spring-boot4-starter-%releaseVersion%-javadoc.jar -Dclassifier=javadoc || exit /B
+if /I NOT "%dryRun%" == "true" (
+call mvn clean install gpg:sign org.sonatype.central:central-publishing-maven-plugin:publish || exit /B
+) else (
+call mvn clean install gpg:sign || exit /B
+)
 
 :: create javamelody release in github
 echo create javamelody release in github
@@ -168,12 +162,13 @@ cd ../javamelody-offline-viewer
 call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%developmentVersion% || exit /B
 cd ../javamelody-objectfactory
 call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%developmentVersion% || exit /B
+cd ..
 if /I NOT "%dryRun%" == "true" (
 git commit -a -m %developmentVersion% || exit /B
 git push || exit /B
 )
 
-cd ../..
+cd ..
 
 :: monitoring-plugin: increment javamelody-core version in pom.xml and mvn release
 echo.
@@ -233,7 +228,7 @@ cd ..
 :: call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release -Ddraft=%dryRun% -Downer=javamelody -Drepository=liferay-javamelody -Dserver=github-release -DtagName=%releaseVersion% -Dname=%releaseVersion% -DtargetCommitish=master -Dbody="Release notes: https://github.com/javamelody/javamelody/wiki/ReleaseNotes#%releaseVersion:.=%" -Dassets=target/liferay-javamelody-hook-%releaseVersion%.0.war || exit /B
 :: cd ..
 
-:: alfresco-javamelody: increment version, clean install, github release and deploy to https://oss.sonatype.org
+:: alfresco-javamelody: increment version, clean install, github release, sign and deploy to https://central.sonatype.com/publishing/deployments
 echo.
 echo alfresco-javamelody ...
 git clone https://github.com/javamelody/alfresco-javamelody
@@ -243,9 +238,12 @@ if /I NOT "%dryRun%" == "true" (
 git commit -a -m %releaseVersion% || exit /B
 git push || exit /B
 )
-call mvn clean install || exit /B
+if /I NOT "%dryRun%" == "true" (
+call mvn clean install gpg:sign org.sonatype.central:central-publishing-maven-plugin:publish || exit /B
+) else (
+call mvn clean install gpg:sign || exit /B
+)
 call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release -Ddraft=%dryRun% -Downer=javamelody -Drepository=alfresco-javamelody -Dserver=github-release -DtagName=%releaseVersion% -Dname=%releaseVersion% -DtargetCommitish=master -Dbody="Version for Alfresco 23 or later. Release notes: https://github.com/javamelody/javamelody/wiki/ReleaseNotes#%releaseVersion:.=%" -Dassets=target/alfresco-javamelody-addon-%releaseVersion%.amp || exit /B
-call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/alfresco-javamelody-addon-%releaseVersion%.amp || exit /B
 cd ..
 
 :: clean-up after
