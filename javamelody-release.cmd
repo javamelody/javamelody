@@ -186,18 +186,18 @@ call mvn clean install || exit /B
 cd ..
 
 :: jira-confluence-javamelody: increment version, clean install and github release
-:: echo.
-:: echo jira-confluence-javamelody ...
-:: git clone https://github.com/javamelody/jira-confluence-javamelody
-:: cd jira-confluence-javamelody
-:: call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
-:: call mvn clean install || exit /B
-:: if /I NOT "%dryRun%" == "true" (
-:: git commit -a -m %releaseVersion% || exit /B
-:: git push || exit /B
-:: )
-:: call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release -Ddraft=%dryRun% -Downer=javamelody -Drepository=jira-confluence-javamelody -Dserver=github-release -DtagName=%releaseVersion% -Dname=%releaseVersion% -DtargetCommitish=master -Dbody="Release notes: https://github.com/javamelody/javamelody/wiki/ReleaseNotes#%releaseVersion:.=%" -Dassets=target/jira-confluence-javamelody-%releaseVersion%.jar || exit /B
-:: cd ..
+echo.
+echo jira-confluence-javamelody ...
+git clone https://github.com/javamelody/jira-confluence-javamelody
+cd jira-confluence-javamelody
+call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
+call mvn clean install || exit /B
+if /I NOT "%dryRun%" == "true" (
+git commit -a -m %releaseVersion% || exit /B
+git push || exit /B
+)
+call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release -Ddraft=%dryRun% -Downer=javamelody -Drepository=jira-confluence-javamelody -Dserver=github-release -DtagName=%releaseVersion% -Dname=%releaseVersion% -DtargetCommitish=master -Dbody="Release notes: https://github.com/javamelody/javamelody/wiki/ReleaseNotes#%releaseVersion:.=%" -Dassets=target/jira-confluence-javamelody-%releaseVersion%.jar || exit /B
+cd ..
 
 :: sonar-javamelody: increment version, clean install and github release
 :: echo.
