@@ -353,6 +353,8 @@
 	<properties>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
 	</properties>
 	<build>
 		<resources>
@@ -365,15 +367,6 @@
 			</resource>
 		</resources>
 		<plugins>
-			<!-- Configuration compilation -->
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.14.1</version>
-				<configuration>
-					<source>11</source>
-					<target>11</target>
-				</configuration>
-			</plugin>
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.5.0</version>
