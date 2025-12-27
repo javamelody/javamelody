@@ -44,11 +44,11 @@ import net.bull.javamelody.internal.model.TestTomcatInformations.ThreadPool;
  * Test unitaire de la classe HtmlMBeansReport.
  * @author Emeric Vernat
  */
-public class TestHtmlMBeansReport {
+class TestHtmlMBeansReport {
 	/**
 	 * MBean sans attribut.
 	 */
-	public static class EmptyAttribute implements EmptyAttributeMBean {
+	static class EmptyAttribute implements EmptyAttributeMBean {
 		// rien
 	}
 
@@ -61,7 +61,7 @@ public class TestHtmlMBeansReport {
 
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
@@ -74,7 +74,7 @@ public class TestHtmlMBeansReport {
 	 * @throws IOException e
 	 * @throws JMException e */
 	@Test
-	public void testToHtml() throws IOException, JMException {
+	void testToHtml() throws IOException, JMException {
 		final MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
 		final List<ObjectName> mBeans = new ArrayList<>();
 		try {

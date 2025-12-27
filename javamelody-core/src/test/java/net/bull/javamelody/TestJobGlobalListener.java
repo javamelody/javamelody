@@ -38,16 +38,16 @@ import net.bull.javamelody.internal.model.Counter;
  * Test unitaire de la classe JobGlobalListener.
  * @author Emeric Vernat
  */
-public class TestJobGlobalListener {
+class TestJobGlobalListener {
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test. */
 	@Test
-	public void testGetJobCounter() {
+	void testGetJobCounter() {
 		assertNotNull(JobGlobalListener.getJobCounter(), "getJobCounter");
 	}
 
@@ -55,7 +55,7 @@ public class TestJobGlobalListener {
 	 * @throws SchedulerException e
 	 * @throws InterruptedException e */
 	@Test
-	public void testJobGlobalListener() throws SchedulerException, InterruptedException {
+	void testJobGlobalListener() throws SchedulerException, InterruptedException {
 		final Counter jobCounter = JobGlobalListener.getJobCounter();
 		jobCounter.clear();
 		jobCounter.setDisplayed(true);
@@ -96,13 +96,13 @@ public class TestJobGlobalListener {
 
 	/** Test. */
 	@Test
-	public void testExecutionVetoed() {
+	void testExecutionVetoed() {
 		new JobGlobalListener().jobExecutionVetoed(null);
 	}
 
 	/** Test. */
 	@Test
-	public void testDefaultListenerDisabled() {
+	void testDefaultListenerDisabled() {
 		Utils.setProperty(Parameter.QUARTZ_DEFAULT_LISTENER_DISABLED, "true");
 		JobGlobalListener.initJobGlobalListener();
 		JobGlobalListener.destroyJobGlobalListener();

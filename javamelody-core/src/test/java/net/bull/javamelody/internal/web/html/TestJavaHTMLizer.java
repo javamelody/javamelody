@@ -26,13 +26,13 @@ import org.junit.jupiter.api.Test;
  * Test unitaire pour JavaHTMLizer.
  * @author Emeric Vernat
  */
-public class TestJavaHTMLizer {
+class TestJavaHTMLizer {
 	/**
 	 * Test.
 	 */
 	@Test
-	public void test() {
-		final String javaSource = "public class Test { static final String TEST = \"test\"; }";
+	void test() {
+		final String javaSource = "class Test { static final String TEST = \"test\"; }";
 		final String html = JavaHTMLizer.htmlizeFull(javaSource);
         assertFalse(html.isEmpty(), "htmlizeFull");
 	}

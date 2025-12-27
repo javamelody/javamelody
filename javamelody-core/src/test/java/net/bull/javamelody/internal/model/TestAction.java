@@ -60,18 +60,18 @@ import net.sf.ehcache.Element;
  * Test unitaire de la classe Action.
  * @author Emeric Vernat
  */
-public class TestAction {
+class TestAction {
 	private static final String ALL = "all";
 
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test. */
 	@Test
-	public void testValueOfIgnoreCase() {
+	void testValueOfIgnoreCase() {
 		for (final Action action : Action.values()) {
 			assertSame(action, Action.valueOfIgnoreCase(action.toString().toLowerCase(Locale.getDefault())), "same");
 		}
@@ -79,7 +79,7 @@ public class TestAction {
 
 	/** Test. */
 	@Test
-	public void testGetContextName() {
+	void testGetContextName() {
 		for (final Action action : Action.values()) {
 			assertNotNull(action.getContextName("test"), "getContextName");
 			assertNotNull(action.getContextName(ALL), "getContextName");
@@ -90,7 +90,7 @@ public class TestAction {
 	 * @throws IOException e
 	 * @throws SchedulerException e */
 	@Test
-	public void testExecute() throws IOException, SchedulerException {
+	void testExecute() throws IOException, SchedulerException {
 		final Counter counter = new Counter(Counter.HTTP_COUNTER_NAME, null);
 		counter.addRequest("test1", 0, 1, 1, false, 1000);
 		counter.addRequest("test2", 1000, 900, 900, false, 1000);
@@ -444,7 +444,7 @@ public class TestAction {
 
 	/** Test. */
 	@Test
-	public void testCheckSystemActionsEnabled() {
+	void testCheckSystemActionsEnabled() {
 		boolean systemActionsEnabled = true;
 		try {
 			Action.checkSystemActionsEnabled();

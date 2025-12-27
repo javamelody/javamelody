@@ -32,19 +32,19 @@ import net.bull.javamelody.Utils;
  * Test unitaire de la classe StatsD.
  * @author Emeric Vernat
  */
-public class TestDatadog {
+class TestDatadog {
 	/**
 	 * Initialisation.
 	 */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		Datadog datadog = Datadog.getInstance("/test", "hostname");
 		assertNull(datadog, "getInstance");
 		setProperty(Parameter.DATADOG_API_KEY, "9775a026f1ca7d1c6c5af9d94d9595a4");

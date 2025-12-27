@@ -33,17 +33,17 @@ import net.bull.javamelody.Utils;
  * Test unitaire des classes implémentant JavaMelodyLogger.
  * @author Emeric Vernat
  */
-public class TestJavaMelodyLogger {
+class TestJavaMelodyLogger {
 
 	/** Initialisation. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test. */
 	@Test
-	public void testDebugInfoAndWarn() {
+	void testDebugInfoAndWarn() {
 		LOG.debug("test debug");
 		LOG.debug("test debug", new IllegalStateException("test debug"));
 		LOG.info("test info", new IllegalStateException("test info"));
@@ -52,7 +52,7 @@ public class TestJavaMelodyLogger {
 
 	/** Test. */
 	@Test
-	public void testLoggers() {
+	void testLoggers() {
 		final JavaMelodyLogger javaLogger = new JavaLogger();
 		final JavaMelodyLogger log4j2Logger = new Log4J2Logger();
 		final JavaMelodyLogger logbackLogger = new LogbackLogger();

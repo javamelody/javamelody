@@ -42,17 +42,17 @@ import net.bull.javamelody.internal.model.Period;
  * Test unitaire de la classe PdfCounterErrorReport.
  * @author Emeric Vernat
  */
-public class TestPdfCounterErrorReport {
+class TestPdfCounterErrorReport {
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test.
 		 * @throws IOException e */
 	@Test
-	public void testCounterError() throws IOException {
+	void testCounterError() throws IOException {
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
 		final Collector collector = new Collector("test", Collections.singletonList(errorCounter));
 		final JavaInformations javaInformations = new JavaInformations(null, true);

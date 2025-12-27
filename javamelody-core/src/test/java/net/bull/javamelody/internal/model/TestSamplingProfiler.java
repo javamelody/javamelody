@@ -36,14 +36,14 @@ import static org.junit.jupiter.api.Assertions.*;
  * Test unitaire de la classe SamplingProfiler.
  * @author Emeric Vernat
  */
-public class TestSamplingProfiler {
+class TestSamplingProfiler {
 	private static final int NB_ROWS = 100;
 
 	/**
 	 * Test.
 	 */
 	@Test
-	public void test1() {
+	void test1() {
 		final SamplingProfiler samplingProfiler = new SamplingProfiler();
 		assertEmptyHotspots(samplingProfiler);
 		samplingProfiler.update();
@@ -53,7 +53,7 @@ public class TestSamplingProfiler {
 	 * Test.
 	 */
 	@Test
-	public void test2() {
+	void test2() {
 		final SamplingProfiler samplingProfiler = new SamplingProfiler(new ArrayList<>(), null);
 		assertEmptyHotspots(samplingProfiler);
 		samplingProfiler.update();
@@ -71,7 +71,7 @@ public class TestSamplingProfiler {
 	 * Test that classes from packages are included.
 	 */
 	@Test
-	public void testClassesInInclude() {
+	void testClassesInInclude() {
 		final SamplingProfiler samplingProfiler = new SamplingProfiler(null,
 				List.of("net.bull", "java"));
 		assertEmptyHotspots(samplingProfiler);
@@ -88,7 +88,7 @@ public class TestSamplingProfiler {
 	 * Test that classes from packages are included, where include pattern does not match any packages.
 	 */
 	@Test
-	public void testClassesInIncludeNoneMatching() {
+	void testClassesInIncludeNoneMatching() {
 		final SamplingProfiler samplingProfiler = new SamplingProfiler(null,
 				List.of("not.matching.package,also.not.matching"));
 		assertEmptyHotspots(samplingProfiler);
@@ -104,7 +104,7 @@ public class TestSamplingProfiler {
 	 * Test.
 	 */
 	@Test
-	public void testConstructor() {
+	void testConstructor() {
 		final SamplingProfiler samplingProfiler = new SamplingProfiler(List.of("java", "javax."),
 				null);
 		assertEmptyHotspots(samplingProfiler);
@@ -114,7 +114,7 @@ public class TestSamplingProfiler {
 	 * Test include packages.
 	 */
 	@Test
-	public void testConstructorInclude() {
+	void testConstructorInclude() {
 		final SamplingProfiler samplingProfiler = new SamplingProfiler(null, List.of("net.bull"));
 		assertEmptyHotspots(samplingProfiler);
 	}
@@ -124,7 +124,7 @@ public class TestSamplingProfiler {
 	 */
     @SuppressWarnings("unused")
 	@Test
-	public void testConstructor2() {
+	void testConstructor2() {
         assertThrows(Exception.class, () ->		new SamplingProfiler(List.of(" "), null));
 	}
 
@@ -132,7 +132,7 @@ public class TestSamplingProfiler {
 	 * Test.
 	 */
 	@Test
-	public void testConstructor3() {
+	void testConstructor3() {
 		final SamplingProfiler samplingProfiler = new SamplingProfiler("java,javax.", null);
 		assertEmptyHotspots(samplingProfiler);
 	}
@@ -143,7 +143,7 @@ public class TestSamplingProfiler {
 	 * @throws ClassNotFoundException e
 	 */
 	@Test
-	public void testSampledMethod() throws IOException, ClassNotFoundException {
+	void testSampledMethod() throws IOException, ClassNotFoundException {
 		final SampledMethod sampledMethod = new SampledMethod("class1", "method1");
 		final SampledMethod sampledMethod1 = new SampledMethod("class1", "method1");
 		assertEquals("class1", sampledMethod.getClassName(), "getClassName");
@@ -221,7 +221,7 @@ public class TestSamplingProfiler {
 		 * Start.
 		 * @param limit Number of digits
 		 */
-		public void calcPiDigits(int limit) {
+		void calcPiDigits(int limit) {
 			BigInteger nn;
 			BigInteger nr;
 			boolean first = true;

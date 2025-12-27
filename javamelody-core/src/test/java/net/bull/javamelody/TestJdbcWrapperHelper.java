@@ -28,16 +28,16 @@ import org.junit.jupiter.api.Test;
  * Test unitaire de la classe JdbcWrapperHelper.
  * @author Emeric Vernat
  */
-public class TestJdbcWrapperHelper {
+class TestJdbcWrapperHelper {
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test. */
 	@Test
-	public void testGetJndiDataSources() {
+	void testGetJndiDataSources() {
 		getJndiDataSources();
 		setProperty(Parameter.DATASOURCES, "");
 		getJndiDataSources();
@@ -48,7 +48,7 @@ public class TestJdbcWrapperHelper {
 
 	/** Test. */
 	@Test
-	public void testGetJndiAndSpringDataSources() {
+	void testGetJndiAndSpringDataSources() {
 		getJndiAndSpringDataSources();
 	}
 
@@ -71,7 +71,7 @@ public class TestJdbcWrapperHelper {
 	/** Test.
 	 * @throws IllegalAccessException e */
 	@Test
-	public void testGetFieldValue() throws IllegalAccessException {
+	void testGetFieldValue() throws IllegalAccessException {
 		// sqlCounter est un champ privé qui existe comme un autre
 		assertNotNull(JdbcWrapperHelper.getFieldValue(JdbcWrapper.SINGLETON, "sqlCounter"), "getFieldValue");
 	}
@@ -79,7 +79,7 @@ public class TestJdbcWrapperHelper {
 	/** Test.
 	 * @throws IllegalAccessException e */
 	@Test
-	public void testSetFieldValue() throws IllegalAccessException {
+	void testSetFieldValue() throws IllegalAccessException {
 		// sqlCounter est un champ privé qui existe comme un autre
 		final Object value = JdbcWrapperHelper.getFieldValue(JdbcWrapper.SINGLETON, "sqlCounter");
 		JdbcWrapperHelper.setFieldValue(JdbcWrapper.SINGLETON, "sqlCounter", value);

@@ -75,21 +75,21 @@ import net.sf.ehcache.Element;
  * @author Emeric Vernat
  */
 //CHECKSTYLE:OFF
-public class TestPdfReport {
+class TestPdfReport {
 	//CHECKSTYLE:ON
 	private static final String TEST_APP = "test app";
 
 	/** Before.
 	 * @throws IOException e */
 	@BeforeEach
-	public void setUp() throws IOException {
+	void setUp() throws IOException {
 		Utils.initialize();
 		JRobin.initBackendFactory(new Timer(getClass().getSimpleName(), true));
 	}
 
 	/** After. */
 	@AfterEach
-	public void tearDown() {
+	void tearDown() {
 		JRobin.stop();
 	}
 
@@ -110,7 +110,7 @@ public class TestPdfReport {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testToPdf() throws Exception {
+	void testToPdf() throws Exception {
 		final Counter sqlCounter = new Counter("sql", "db.png");
 		// counterName doit être http, sql ou ejb pour que les libellés de graph soient trouvés dans les traductions
 		final Counter counter = new Counter("http", "db.png", sqlCounter);
@@ -336,7 +336,7 @@ public class TestPdfReport {
 	 * @throws IOException e
 	 * @throws DocumentException e */
 	@Test
-	public void testPdfCounterReportWithIncludeGraph() throws IOException, DocumentException {
+	void testPdfCounterReportWithIncludeGraph() throws IOException, DocumentException {
 		// counterName doit être http, sql ou ejb pour que les libellés de graph soient trouvés dans les traductions
 		final Counter counter = new Counter("http", "db.png");
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
@@ -369,7 +369,7 @@ public class TestPdfReport {
 	 * @throws IOException e
 	 * @throws DocumentException e */
 	@Test
-	public void testEmptyPdfCounterRequestContext() throws IOException, DocumentException {
+	void testEmptyPdfCounterRequestContext() throws IOException, DocumentException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(TEST_APP, null,
 				output);
@@ -389,7 +389,7 @@ public class TestPdfReport {
 	 * @throws IOException e
 	 * @throws DocumentException e */
 	@Test
-	public void testPdfThreadInformationsReport() throws IOException, DocumentException {
+	void testPdfThreadInformationsReport() throws IOException, DocumentException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(TEST_APP, null,
 				output);
@@ -442,12 +442,12 @@ public class TestPdfReport {
 
 	/** Test. */
 	@Test
-	public void testGetFileName() {
+	void testGetFileName() {
 		assertNotNull(PdfReport.getFileName("test"), "filename");
 	}
 
 	@Test
-	public void testSetters() throws Exception {
+	void testSetters() throws Exception {
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
 		final List<Counter> counters = List.of(errorCounter);
 		final Collector collector = new Collector("test", counters);
@@ -466,7 +466,7 @@ public class TestPdfReport {
 	}
 
 	@Test
-	public void testUsPageSize() throws DocumentException, IOException {
+	void testUsPageSize() throws DocumentException, IOException {
 		I18N.bindLocale(Locale.US);
 		try {
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();

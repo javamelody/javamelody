@@ -31,17 +31,17 @@ import static org.junit.jupiter.api.Assertions.*;
  * Test unitaire des classes internes de CounterRequestMXBean.
  * @author Emeric Vernat
  */
-public class TestCounterRequestMxBean {
+class TestCounterRequestMxBean {
 
 	/** Before. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test. */
 	@Test
-	public void test() {
+	void test() {
 		final Counter counter = new Counter("http", "db.png");
 		counter.addRequest("test 1", 10, 10, 10, false, 100);
 		final CounterRequestMXBeanImpl counterRequestMXBeanImpl = new CounterRequestMXBeanImpl(

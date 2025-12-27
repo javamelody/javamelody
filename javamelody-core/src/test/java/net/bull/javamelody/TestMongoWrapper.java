@@ -37,16 +37,16 @@ import com.mongodb.client.MongoDatabase;
  * Test unitaire de la classe MongoWrapper.
  * @author Emeric Vernat
  */
-public class TestMongoWrapper {
+class TestMongoWrapper {
 	/** Test. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test. */
 	@Test
-	public void testCreateDatabaseProxy() {
+	void testCreateDatabaseProxy() {
 		try {
 			Class.forName("com.mongodb.ReadPreference");
 		} catch (final ClassNotFoundException e) {

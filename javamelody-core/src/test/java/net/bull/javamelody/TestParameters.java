@@ -41,52 +41,52 @@ import net.bull.javamelody.internal.model.TransportFormat;
  * Test unitaire de la classe Parameters.
  * @author Emeric Vernat
  */
-public class TestParameters {
+class TestParameters {
 	private static void setProperty(Parameter parameter, String value) {
 		Utils.setProperty(parameter, value);
 	}
 
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test. */
 	@Test
-	public void testInitializeFilterConfig() {
+	void testInitializeFilterConfig() {
 		// test pas d'erreur
 		Parameters.initialize((FilterConfig) null);
 	}
 
 	/** Test. */
 	@Test
-	public void testInitializeServletContext() {
+	void testInitializeServletContext() {
 		// test pas d'erreur
 		Parameters.initialize((ServletContext) null);
 	}
 
 	/** Test. */
 	@Test
-	public void testGetHostName() {
+	void testGetHostName() {
 		assertNotNull(Parameters.getHostName(), "getHostName");
 	}
 
 	/** Test. */
 	@Test
-	public void testGetHostAddress() {
+	void testGetHostAddress() {
 		assertNotNull(Parameters.getHostAddress(), "getHostAddress");
 	}
 
 	/** Test. */
 	@Test
-	public void testGetResourcePath() {
+	void testGetResourcePath() {
 		assertNotNull(Parameters.getResourcePath("resource"), "getResourcePath");
 	}
 
 	/** Test. */
 	@Test
-	public void testGetResolutionSeconds() {
+	void testGetResolutionSeconds() {
 		if (Parameters.getResolutionSeconds() <= 0) {
 			fail("getResolutionSeconds");
 		}
@@ -109,7 +109,7 @@ public class TestParameters {
 
 	/** Test. */
 	@Test
-	public void testGetStorageDirectory() {
+	void testGetStorageDirectory() {
 		final String message = "getStorageDirectory";
 		final String application = "test";
 		assertNotNull(Parameters.getStorageDirectory(application), message);
@@ -126,7 +126,7 @@ public class TestParameters {
 
 	/** Test. */
 	@Test
-	public void testGetCurrentApplication() {
+	void testGetCurrentApplication() {
 		Parameters.initialize((ServletContext) null);
 		// null car pas de servletContext
 		assertNull(Parameters.getCurrentApplication(), "getCurrentApplication");
@@ -136,21 +136,21 @@ public class TestParameters {
 
 	/** Test. */
 	@Test
-	public void testPeriodValueOfIgnoreCase() {
+	void testPeriodValueOfIgnoreCase() {
 		assertNotNull(Period.valueOfIgnoreCase(Period.TOUT.toString()), "Period.valueOfIgnoreCase");
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testGetCollectorUrlsByApplication() throws IOException {
+	void testGetCollectorUrlsByApplication() throws IOException {
 		assertNotNull(Parameters.getCollectorUrlsByApplications(), "getCollectorUrlsByApplications");
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testAddRemoveCollectorApplication() throws IOException {
+	void testAddRemoveCollectorApplication() throws IOException {
 		final String application = "testapp";
 		Parameters.removeCollectorApplication(application);
 		final int size = Parameters.getCollectorUrlsByApplications().size();
@@ -175,7 +175,7 @@ public class TestParameters {
 	/** Test.
 	 * @throws MalformedURLException e */
 	@Test
-	public void testParseUrl() throws MalformedURLException {
+	void testParseUrl() throws MalformedURLException {
 		setProperty(Parameter.TRANSPORT_FORMAT, TransportFormat.XML.getCode());
 		assertNotNull(Parameters.parseUrls("http://localhost,http://localhost"), "parseUrl");
 		assertNotNull(Parameters.parseUrls("http://localhost/"), "parseUrl");
@@ -185,7 +185,7 @@ public class TestParameters {
 
 	/** Test. */
 	@Test
-	public void testIsCounterHidden() {
+	void testIsCounterHidden() {
 		setProperty(Parameter.DISPLAYED_COUNTERS, null);
 		assertFalse(Parameters.isCounterHidden("http"), "isCounterHidden");
 		setProperty(Parameter.DISPLAYED_COUNTERS, "http,sql");

@@ -42,7 +42,7 @@ import net.bull.javamelody.internal.model.SessionInformations;
  * Test unitaire de la classe SessionListener.
  * @author Emeric Vernat
  */
-public class TestSessionListener {
+class TestSessionListener {
 	private SessionListener sessionListener;
 
 	private HttpSession createSession() {
@@ -67,7 +67,7 @@ public class TestSessionListener {
 
 	/** Test. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 		try {
 			final Field field = SessionListener.class.getDeclaredField("instanceCreated");
@@ -82,7 +82,7 @@ public class TestSessionListener {
 
 	/** Test. */
 	@Test
-	public void testGetSessionCount() {
+	void testGetSessionCount() {
 		sessionListener.sessionCreated(createSessionEvent());
 		if (SessionListener.getSessionCount() != 1) {
 			fail("getSessionCount");
@@ -91,7 +91,7 @@ public class TestSessionListener {
 
 	/** Test. */
 	@Test
-	public void testGetSessionAgeSum() {
+	void testGetSessionAgeSum() {
 		sessionListener.sessionCreated(createSessionEvent());
 		if (SessionListener.getSessionAgeSum() < 0) {
 			fail("getSessionAgeSum");
@@ -100,7 +100,7 @@ public class TestSessionListener {
 
 	/** Test. */
 	@Test
-	public void testInvalidateAllSessions() {
+	void testInvalidateAllSessions() {
 		final SessionTestImpl session = new SessionTestImpl(true);
 		sessionListener.sessionCreated(new HttpSessionEvent(session));
 		SessionListener.invalidateAllSessions();
@@ -111,7 +111,7 @@ public class TestSessionListener {
 
 	/** Test. */
 	@Test
-	public void testInvalidateSession() {
+	void testInvalidateSession() {
 		final SessionTestImpl session = new SessionTestImpl(true);
 		sessionListener.sessionCreated(new HttpSessionEvent(session));
 		SessionListener.invalidateSession(session.getId());
@@ -122,7 +122,7 @@ public class TestSessionListener {
 
 	/** Test. */
 	@Test
-	public void testGetAllSessionsInformations() {
+	void testGetAllSessionsInformations() {
 		final long now = System.currentTimeMillis();
 		sessionListener.sessionCreated(createSessionEvent("1", true, now));
 		sessionListener.sessionCreated(createSessionEvent("2", true, now + 2));
@@ -136,7 +136,7 @@ public class TestSessionListener {
 
 	/** Test. */
 	@Test
-	public void testGetSessionInformationsBySessionId() {
+	void testGetSessionInformationsBySessionId() {
 		final HttpSessionEvent sessionEvent = createSessionEvent();
 		sessionListener.sessionCreated(sessionEvent);
 		final SessionInformations sessionInformations = SessionListener
@@ -147,7 +147,7 @@ public class TestSessionListener {
 
 	/** Test. */
 	@Test
-	public void testContextInitialized() {
+	void testContextInitialized() {
 		ServletContext servletContext = createNiceMock(ServletContext.class);
 		expect(servletContext.getServerInfo()).andReturn("Mock").anyTimes();
 		expect(servletContext.getMajorVersion()).andReturn(5).anyTimes();
@@ -172,7 +172,7 @@ public class TestSessionListener {
 
 	/** Test. */
 	@Test
-	public void testContextDestroyed() {
+	void testContextDestroyed() {
 		final ServletContext servletContext = createNiceMock(ServletContext.class);
 		final ServletContextEvent servletContextEvent = new ServletContextEvent(servletContext);
 		replay(servletContext);
@@ -189,7 +189,7 @@ public class TestSessionListener {
 
 	/** Test. */
 	@Test
-	public void testSessionCreated() {
+	void testSessionCreated() {
 		final HttpSessionEvent sessionEvent = createSessionEvent();
 		sessionListener.sessionCreated(sessionEvent);
 		if (SessionListener.getSessionCount() != 1) {
@@ -206,7 +206,7 @@ public class TestSessionListener {
 
 	/** Test. */
 	@Test
-	public void testSessionDestroyed() {
+	void testSessionDestroyed() {
 		sessionListener.sessionCreated(createSessionEvent());
 		sessionListener.sessionDestroyed(createSessionEvent());
 		if (SessionListener.getSessionCount() != 0) {
@@ -219,7 +219,7 @@ public class TestSessionListener {
 
 	/** Test. */
 	@Test
-	public void testSessionDidActivate() {
+	void testSessionDidActivate() {
 		sessionListener.sessionDidActivate(createSessionEvent());
 		if (SessionListener.getSessionCount() != 1) {
 			fail("sessionDidActivate");
@@ -231,7 +231,7 @@ public class TestSessionListener {
 
 	/** Test. */
 	@Test
-	public void testSessionWillPassivate() {
+	void testSessionWillPassivate() {
 		sessionListener.sessionDidActivate(createSessionEvent());
 		sessionListener.sessionWillPassivate(createSessionEvent());
 		if (SessionListener.getSessionCount() != 0) {
@@ -244,7 +244,7 @@ public class TestSessionListener {
 
 	/** Test. */
 	@Test
-	public void testWithInstanceDisabled() {
+	void testWithInstanceDisabled() {
 		final SessionListener sessionListener1 = new SessionListener();
 		final SessionListener sessionListener2 = new SessionListener();
 		final ServletContext servletContext = createNiceMock(ServletContext.class);
@@ -266,7 +266,7 @@ public class TestSessionListener {
 
 	/** Test. */
 	@Test
-	public void registerSessionIfNeeded() {
+	void registerSessionIfNeeded() {
 		final HttpSession session = createSession();
 		sessionListener.registerSessionIfNeeded(session);
 		sessionListener.registerSessionIfNeeded(session);
@@ -281,7 +281,7 @@ public class TestSessionListener {
 
 	/** Test. */
 	@Test
-	public void testToString() {
+	void testToString() {
 		final String string = sessionListener.toString();
 		assertNotNull(string, "toString not null");
 		assertFalse(string.isEmpty(), "toString not empty");

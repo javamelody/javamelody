@@ -30,22 +30,22 @@ import net.bull.javamelody.internal.model.Counter;
  * Test unitaire de la classe MonitoringProxy.
  * @author Emeric Vernat
  */
-public class TestMonitoringProxy {
+class TestMonitoringProxy {
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test. */
 	@Test
-	public void testGetServicesCounter() {
+	void testGetServicesCounter() {
 		assertNotNull(MonitoringProxy.getServicesCounter(), "getServicesCounter");
 	}
 
 	/** Test. */
 	@Test
-	public void testProxy() {
+	void testProxy() {
 		final Counter servicesCounter = MonitoringProxy.getServicesCounter();
 		servicesCounter.clear();
 		// proxy sans spring aop

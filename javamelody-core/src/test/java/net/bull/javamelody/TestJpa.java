@@ -50,7 +50,7 @@ import net.bull.javamelody.internal.model.Counter;
  * Test unitaire pour JpaPersistence et JpaWrapper.
  * @author Emeric Vernat
  */
-public class TestJpa {
+class TestJpa {
 	private static final String PERSON_NAME = "emeric";
 
 	/**
@@ -58,7 +58,7 @@ public class TestJpa {
 	 */
 	@BeforeEach
 	@AfterEach
-	public void reset() {
+	void reset() {
 		JpaWrapper.getJpaCounter().clear();
 	}
 
@@ -67,7 +67,7 @@ public class TestJpa {
 	 */
 	@Test
 	@Disabled
-	public void simpleFind() {
+	void simpleFind() {
 		try {
 			Class.forName("org.apache.openjpa.persistence.PersistenceProviderImpl");
 		} catch (final ClassNotFoundException e) {
@@ -98,7 +98,7 @@ public class TestJpa {
 	 */
 	@Test
 	@Disabled
-	public void createAllQuery() {
+	void createAllQuery() {
 		try {
 			Class.forName("org.apache.openjpa.persistence.PersistenceProviderImpl");
 		} catch (final ClassNotFoundException e) {
@@ -192,7 +192,7 @@ public class TestJpa {
 	@Test
 	// OpenJPA is not yet compatible with JakartaEE9
 	@Disabled
-	public void testJpaPersistence() {
+	void testJpaPersistence() {
 		final PersistenceProvider jpaPersistence = getJpaPersistence();
 
 		final ProviderUtil providerUtil = jpaPersistence.getProviderUtil();
@@ -216,7 +216,7 @@ public class TestJpa {
 
 	@Test
 	@Disabled
-	public void testCreateContainerEntityManagerFactory() {
+	void testCreateContainerEntityManagerFactory() {
 		final PersistenceUnitInfoImpl persistenceUnitInfoImpl = new PersistenceUnitInfoImpl();
 		persistenceUnitInfoImpl
 				.setPersistenceXmlFileUrl(getClass().getResource("/META-INF/persistence.xml"));
@@ -231,7 +231,7 @@ public class TestJpa {
 
 	@Test
 	@Disabled
-	public void testCreateEntityManager() {
+	void testCreateEntityManager() {
 		final EntityManagerFactory emf = Persistence.createEntityManagerFactory("test-jse");
 		emf.createEntityManager();
 		JpaWrapper.getJpaCounter().setDisplayed(false);
@@ -242,7 +242,7 @@ public class TestJpa {
 	@Test
 	// OpenJPA is not yet compatible with JakartaEE9
 	@Disabled
-	public void testGenerateSchema() {
+	void testGenerateSchema() {
 		try {
 			final PersistenceUnitInfoImpl persistenceUnitInfoImpl = new PersistenceUnitInfoImpl();
 			persistenceUnitInfoImpl

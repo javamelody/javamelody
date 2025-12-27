@@ -42,12 +42,12 @@ import net.bull.javamelody.internal.web.MonitoringController;
  * Test unitaire de la classe MonitoringController.
  * @author Emeric Vernat
  */
-public class TestMonitoringController {
+class TestMonitoringController {
 	/**
 	 * Initialisation.
 	 */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 		final ServletContext context = createNiceMock(ServletContext.class);
 		expect(context.getMajorVersion()).andReturn(5).anyTimes();
@@ -61,7 +61,7 @@ public class TestMonitoringController {
 
 	/** Test. */
 	@Test
-	public void testWriteHtmlToLastShutdownFile() {
+	void testWriteHtmlToLastShutdownFile() {
 		final Counter sqlCounter = new Counter("sql", "db.png");
 		final Collector collector = new Collector("test", List.of(sqlCounter));
 		new MonitoringController(collector, null).writeHtmlToLastShutdownFile();
@@ -69,7 +69,7 @@ public class TestMonitoringController {
 
 	/** Test. */
 	@Test
-	public void testAddPdfContentTypeAndDisposition() {
+	void testAddPdfContentTypeAndDisposition() {
 		final Counter sqlCounter = new Counter("sql", "db.png");
 		final Collector collector = new Collector("test collector", List.of(sqlCounter));
 		final HttpServletRequest httpRequest = createNiceMock(HttpServletRequest.class);
@@ -95,7 +95,7 @@ public class TestMonitoringController {
 
 	/** Test. */
 	@Test
-	public void testCheckCsrfToken() {
+	void testCheckCsrfToken() {
 		final HttpServletRequest httpRequest0 = createNiceMock(HttpServletRequest.class);
 		replay(httpRequest0);
 		try {

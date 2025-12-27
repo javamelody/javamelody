@@ -35,18 +35,18 @@ import net.bull.javamelody.Utils;
  * Test unitaire de la classe CloudWatch.
  * @author Emeric Vernat
  */
-public class TestCloudWatch {
+class TestCloudWatch {
 	/**
 	 * Initialisation.
 	 */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test. */
 	@Test
-	public void test() {
+	void test() {
 		CloudWatch cloudWatch = CloudWatch.getInstance("/test", "hostname");
 		assertNull(cloudWatch, "getInstance");
 		setProperty(Parameter.CLOUDWATCH_NAMESPACE, "MyCompany/MyAppDomain");

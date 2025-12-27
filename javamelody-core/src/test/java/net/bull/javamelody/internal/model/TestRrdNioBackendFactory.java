@@ -25,11 +25,11 @@ import org.junit.jupiter.api.Test;
  * Test unitaire de la classe RrdNioBackendFactory.
  * @author Emeric Vernat
  */
-public class TestRrdNioBackendFactory {
+class TestRrdNioBackendFactory {
 
 	/** Test. */
 	@Test
-	public void testSyncPeriod() {
+	void testSyncPeriod() {
 		RrdNioBackendFactory.setSyncPeriod(60);
 		assertSame(60, RrdNioBackendFactory.getSyncPeriod(), "getSyncPeriod");
 	}

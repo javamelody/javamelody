@@ -28,22 +28,22 @@ import net.bull.javamelody.Utils;
  * Test unitaire de la classe PID.
  * @author Emeric Vernat
  */
-public class TestPID {
+class TestPID {
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test. */
 	@Test
-	public void testGetPID() {
+	void testGetPID() {
 		assertNotNull("getPID", PID.getPID());
 	}
 
 	/** Test. */
 	@Test
-	public void testGetPIDFromOS() {
+	void testGetPIDFromOS() {
 		assertNotNull("getPIDFromOS", PID.getPIDFromOS());
 	}
 }

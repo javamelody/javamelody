@@ -38,17 +38,17 @@ import net.bull.javamelody.internal.common.Parameters;
  * Test unitaire de la classe RemoteCall.
  * @author Emeric Vernat
  */
-public class TestRemoteCall {
+class TestRemoteCall {
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testCollect() throws IOException {
+	void testCollect() throws IOException {
 		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
 		final ServletContext context = createNiceMock(ServletContext.class);
 		expect(context.getMajorVersion()).andReturn(5).anyTimes();
@@ -64,7 +64,7 @@ public class TestRemoteCall {
 		remoteCall.collectGraphLastValue("cpu");
 		remoteCall.collectMBeanAttribute("java.lang:type=OperatingSystem.ProcessCpuTime");
 		remoteCall.executeActionAndCollectData(Action.GC, null, null, null, null, null);
-		assertEquals("getURL", new RemoteCall(new URL(url)).getURL().toString(), url);
+		assertEquals(url, new RemoteCall(new URL(url)).getURL().toString(), "getURL");
 		verify(context);
 		assertNotNull(new RemoteCall("http://dummy?p=1"), "");
 	}

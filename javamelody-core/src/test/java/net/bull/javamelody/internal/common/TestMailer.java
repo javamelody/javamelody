@@ -38,12 +38,12 @@ import net.bull.javamelody.Utils;
  * Test unitaire de la classe Mailer.
  * @author Emeric Vernat
  */
-public class TestMailer {
+class TestMailer {
 	private Mailer mailer;
 
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 		mailer = new Mailer("jndi name");
 	}
@@ -51,7 +51,7 @@ public class TestMailer {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testMailerSend() throws Exception {
+	void testMailerSend() throws Exception {
 		try {
 			send(null, false);
 		} catch (final NamingException e) {

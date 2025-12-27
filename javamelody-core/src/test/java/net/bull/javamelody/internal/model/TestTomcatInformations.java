@@ -258,7 +258,7 @@ public class TestTomcatInformations {
 
 	/** Test. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 		Utils.setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, Boolean.TRUE.toString());
 	}
@@ -266,7 +266,7 @@ public class TestTomcatInformations {
 	/** Test.
 	 * @throws JMException e */
 	@Test
-	public void testTomcatInformations() throws JMException {
+	void testTomcatInformations() throws JMException {
 		System.setProperty("catalina.home", "unknown");
 		// ce premier appel crée un MBeanServer
 		TomcatInformations.initMBeans();

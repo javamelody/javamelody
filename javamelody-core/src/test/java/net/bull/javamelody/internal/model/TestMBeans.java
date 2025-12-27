@@ -43,7 +43,7 @@ import net.bull.javamelody.internal.model.TestTomcatInformations.ThreadPool;
  * Test unitaire de la classe MBeans.
  * @author Emeric Vernat
  */
-public class TestMBeans {
+class TestMBeans {
 	private MBeans mbeans;
 	private MBeanServer mBeanServer;
 	private final List<ObjectName> mbeansList = new ArrayList<>();
@@ -51,7 +51,7 @@ public class TestMBeans {
 	/** Before.
 	 * @throws JMException e */
 	@BeforeEach
-	public void setUp() throws JMException {
+	void setUp() throws JMException {
 		Utils.initialize();
 		mbeans = new MBeans();
 		mBeanServer = MBeans.getPlatformMBeanServer();
@@ -69,7 +69,7 @@ public class TestMBeans {
 	/** After.
 	 * @throws JMException e */
 	@AfterEach
-	public void tearDown() throws JMException {
+	void tearDown() throws JMException {
 		for (final ObjectName registeredMBean : mbeansList) {
 			mBeanServer.unregisterMBean(registeredMBean);
 		}
@@ -77,18 +77,18 @@ public class TestMBeans {
 
 	/** Test. */
 	@Test
-	public void testGetTomcatThreadPools() {
+	void testGetTomcatThreadPools() {
 		assertNotNull(MBeansAccessor.getTomcatThreadPools(), "getTomcatThreadPools");
 	}
 
 	/** Test. */
 	@Test
-	public void testGetTomcatGlobalRequestProcessors() {
+	void testGetTomcatGlobalRequestProcessors() {
 		assertNotNull(MBeansAccessor.getTomcatGlobalRequestProcessors(), "getTomcatGlobalRequestProcessors");
 	}
 
 	@Test
-	public void testGetThreadAllocatedBytes() {
+	void testGetThreadAllocatedBytes() {
 		assertEquals(Math.round(ThreadInformations.getCurrentThreadAllocatedBytes() / 10000d),
 				Math.round((MBeansAccessor.getThreadAllocatedBytes(Thread.currentThread().getId()) - 432L) / 10000d),
 				"getThreadAllocatedBytes");
@@ -97,14 +97,14 @@ public class TestMBeans {
 	/** Test.
 	 * @throws JMException e */
 	@Test
-	public void testGetAttribute() throws JMException {
+	void testGetAttribute() throws JMException {
 		assertNotNull(mbeans.getAttribute(mbeansList.get(0), "currentThreadsBusy"), "getAttribute");
 	}
 
 	/** Test.
 	 * @throws JMException e */
 	@Test
-	public void testGetAllMBeanNodes() throws JMException {
+	void testGetAllMBeanNodes() throws JMException {
 		final List<MBeanNode> allMBeanNodes = MBeans.getAllMBeanNodes();
 		assertNotNull(allMBeanNodes, "getAllMBeanNodes");
 		for (final MBeanNode mbeanNode : allMBeanNodes) {
@@ -114,7 +114,7 @@ public class TestMBeans {
 	}
 
 	@Test
-	public void testToString() {
+	void testToString() {
 		final MBeanNode mBeanNode = new MBeanNode("name", "description",
 				List.of(new MBeanAttribute("name", "description", "formattedValue")));
 		assertNotNull(mBeanNode, "mbeanNode");
@@ -128,7 +128,7 @@ public class TestMBeans {
 
 	/** Test. */
 	@Test
-	public void testGetConvertedAttribute() {
+	void testGetConvertedAttribute() {
 		final String firstMBean = mbeansList.get(0).toString();
 		final String message = "getConvertedAttributes";
 		assertNotNull(message, MBeans.getConvertedAttributes(firstMBean + ".maxThreads"));
@@ -184,7 +184,7 @@ public class TestMBeans {
 	}
 
 	@Test
-	public void testGetConvertedAttribute_I18N() throws JMException {
+	void testGetConvertedAttribute_I18N() throws JMException {
 		final ObjectInstance mBean1 = mBeanServer.registerMBean(new ThreadPool() {
 			@Override
 			public int getmaxThreads() {
@@ -196,29 +196,39 @@ public class TestMBeans {
 
 		final String message = "testGetConvertedAttribute_I18N";
 		I18N.bindLocale(Locale.US);
-		assertEquals(message, "1,234",
-				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "maxThreads"));
-		assertEquals(message, "{committed=1, init=10, max=100, used=1,000}",
-				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "memoryUsage"));
+		assertEquals("1,234",
+				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "maxThreads"),
+				message);
+		assertEquals("{committed=1, init=10, max=100, used=1,000}",
+				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "memoryUsage"),
+				message);
 		I18N.bindLocale(Locale.FRANCE);
-		assertEquals(message, "1\u00a0234",
-				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "maxThreads"));
-		assertEquals(message, "{committed=1, init=10, max=100, used=1\u00a0000}",
-				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "memoryUsage"));
+		assertEquals("1\u00a0234",
+				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "maxThreads"),
+				message);
+		assertEquals("{committed=1, init=10, max=100, used=1\u00a0000}",
+				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "memoryUsage"),
+				message);
 		I18N.bindLocale(Locale.FRENCH);
-		assertEquals(message, "1\u00a0234",
-				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "maxThreads"));
-		assertEquals(message, "{committed=1, init=10, max=100, used=1\u00a0000}",
-				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "memoryUsage"));
+		assertEquals("1\u00a0234",
+				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "maxThreads"),
+				message);
+		assertEquals("{committed=1, init=10, max=100, used=1\u00a0000}",
+				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "memoryUsage"),
+				message);
 		I18N.bindLocale(Locale.ITALIAN);
-		assertEquals(message, "1.234",
-				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "maxThreads"));
-		assertEquals(message, "{committed=1, init=10, max=100, used=1.000}",
-				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "memoryUsage"));
+		assertEquals("1.234",
+				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "maxThreads"),
+				message);
+		assertEquals("{committed=1, init=10, max=100, used=1.000}",
+				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "memoryUsage"),
+				message);
 		I18N.bindLocale(Locale.ITALY);
-		assertEquals(message, "1.234",
-				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "maxThreads"));
-		assertEquals(message, "{committed=1, init=10, max=100, used=1.000}",
-				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "memoryUsage"));
+		assertEquals("1.234",
+				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "maxThreads"),
+				message);
+		assertEquals("{committed=1, init=10, max=100, used=1.000}",
+				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "memoryUsage"),
+				message);
 	}
 }

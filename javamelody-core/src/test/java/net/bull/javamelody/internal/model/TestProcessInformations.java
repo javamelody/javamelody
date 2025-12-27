@@ -35,16 +35,16 @@ import net.bull.javamelody.Utils;
  * Test unitaire de la classe ProcessInformations.
  * @author Emeric Vernat
  */
-public class TestProcessInformations {
+class TestProcessInformations {
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test. */
 	@Test
-	public void testReadPs() {
+	void testReadPs() {
 		final List<ProcessInformations> processInformations = ProcessInformations
 				.buildProcessInformations(getClass().getResourceAsStream("/tasklist.txt"), true,
 						false);
@@ -64,7 +64,7 @@ public class TestProcessInformations {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testExecuteAndReadPs() throws IOException {
+	void testExecuteAndReadPs() throws IOException {
 		final List<ProcessInformations> processes = ProcessInformations.buildProcessInformations();
 		assertNotNull(processes, "processes null");
 		assertFalse(processes.isEmpty(), "processes vide");

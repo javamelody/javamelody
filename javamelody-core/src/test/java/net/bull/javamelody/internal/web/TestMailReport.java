@@ -46,16 +46,16 @@ import net.bull.javamelody.internal.model.Period;
  * Test unitaire de la classe MailReport.
  * @author Emeric Vernat
  */
-public class TestMailReport {
+class TestMailReport {
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test. */
 	@Test
-	public void testScheduleReportMail() {
+	void testScheduleReportMail() {
 		final Timer timer = new Timer("test timer", true);
 		try {
 			final Counter counter = new Counter("http", null);
@@ -71,7 +71,7 @@ public class TestMailReport {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testSendReportMail() throws Exception {
+	void testSendReportMail() throws Exception {
 		final Counter counter = new Counter("http", null);
 		final Collector collector = new Collector("test", Collections.singletonList(counter));
 		final List<JavaInformations> javaInformationslist = Collections
@@ -108,7 +108,7 @@ public class TestMailReport {
 
 	/** Test. */
 	@Test
-	public void testGetNextExecutionDate() {
+	void testGetNextExecutionDate() {
 		assertNotNull(MailReport.getNextExecutionDate(Period.JOUR), "getNextExecutionDate");
 		assertNotNull(MailReport.getNextExecutionDate(Period.SEMAINE), "getNextExecutionDate");
 		assertNotNull(MailReport.getNextExecutionDate(Period.MOIS), "getNextExecutionDate");
@@ -116,7 +116,7 @@ public class TestMailReport {
 
 	/** Test. */
 	@Test
-	public void testGetMailPeriod() {
+	void testGetMailPeriod() {
 		for (final Period period : Period.values()) {
 			assertNotNull(period.getMailCode(), "getMailCode");
 			assertEquals(period,

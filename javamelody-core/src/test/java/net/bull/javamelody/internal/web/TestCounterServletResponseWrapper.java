@@ -31,17 +31,17 @@ import net.bull.javamelody.internal.web.TestCompressionServletResponseWrapper.Ht
  * Test unitaire des classes CounterServletResponseWrapper et CounterResponseStream.
  * @author Emeric Vernat
  */
-public class TestCounterServletResponseWrapper {
+class TestCounterServletResponseWrapper {
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testCounterServletResponseWrapper() throws IOException {
+	void testCounterServletResponseWrapper() throws IOException {
 		final CounterServletResponseWrapper wrapper = new CounterServletResponseWrapper(
 				new HttpResponse());
 		// stream est null pour l'instant
@@ -61,7 +61,7 @@ public class TestCounterServletResponseWrapper {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testCounterResponseStream() throws IOException {
+	void testCounterResponseStream() throws IOException {
 		final CounterResponseStream wrapper = new CounterResponseStream(new HttpResponse());
 		wrapper.write(1);
 		wrapper.write(new byte[8]);

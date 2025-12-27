@@ -67,19 +67,19 @@ import net.bull.javamelody.internal.model.TestDatabaseInformations;
  * Test unitaire de la classe PdfOtherReport.
  * @author Emeric Vernat
  */
-public class TestPdfOtherReport {
+class TestPdfOtherReport {
 	private static final String TEST_APP = "test app";
 
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testWriteHeapHistogram() throws IOException {
+	void testWriteHeapHistogram() throws IOException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		try (InputStream input = getClass().getResourceAsStream("/heaphisto.txt")) {
 			final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
@@ -101,7 +101,7 @@ public class TestPdfOtherReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testWriteSessionInformations() throws IOException {
+	void testWriteSessionInformations() throws IOException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 
 		final List<SessionInformations> sessions = new ArrayList<>();
@@ -135,8 +135,8 @@ public class TestPdfOtherReport {
 
 		// pays null
 		sessionPays.setCountry(null);
-		assertNull("countryDisplay null",
-				new SessionInformations(sessionPays, false).getCountryDisplay());
+		assertNull(new SessionInformations(sessionPays, false).getCountryDisplay(),
+				"countryDisplay null");
 		pdfOtherReport = new PdfOtherReport(TEST_APP, output);
 		pdfOtherReport.writeSessionInformations(
 				Collections.singletonList(new SessionInformations(sessionPays, false)));
@@ -146,7 +146,7 @@ public class TestPdfOtherReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testWriteProcessInformations() throws IOException {
+	void testWriteProcessInformations() throws IOException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 
 		PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
@@ -167,7 +167,7 @@ public class TestPdfOtherReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testWriteHotspots() throws IOException {
+	void testWriteHotspots() throws IOException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		final SamplingProfiler samplingProfiler = new SamplingProfiler(new ArrayList<>(), null);
 		final List<SampledMethod> emptyHotspots = samplingProfiler.getHotspots(100);
@@ -185,7 +185,7 @@ public class TestPdfOtherReport {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testWriteDatabaseInformations() throws Exception {
+	void testWriteDatabaseInformations() throws Exception {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 
 		TestDatabaseInformations.initJdbcDriverParameters();
@@ -201,7 +201,7 @@ public class TestPdfOtherReport {
 	 * @throws IOException e
 	 * @throws JMException e */
 	@Test
-	public void testWriteMBeans() throws IOException, JMException {
+	void testWriteMBeans() throws IOException, JMException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
 		final List<MBeanNode> allMBeanNodes = MBeans.getAllMBeanNodes();
@@ -217,7 +217,7 @@ public class TestPdfOtherReport {
 	 * @throws IOException e
 	 * @throws NamingException e */
 	@Test
-	public void testWriteJndi() throws NamingException, IOException {
+	void testWriteJndi() throws NamingException, IOException {
 		final String contextPath = "comp/env/";
 		final Context context = createNiceMock(Context.class);
 		final NamingEnumeration<Binding> enumeration = createNiceMock(NamingEnumeration.class);
@@ -258,7 +258,7 @@ public class TestPdfOtherReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testWriteRuntimeDependencies() throws IOException {
+	void testWriteRuntimeDependencies() throws IOException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		final Counter sqlCounter = new Counter("sql", null);
 		final Counter counter = new Counter("services", null, sqlCounter);
@@ -286,7 +286,7 @@ public class TestPdfOtherReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testWriteCounterSummaryPerClass() throws IOException {
+	void testWriteCounterSummaryPerClass() throws IOException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
 		final Counter counter = new Counter("services", null);
@@ -299,7 +299,7 @@ public class TestPdfOtherReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testWriteAllCurrentRequestsAsPart() throws IOException {
+	void testWriteAllCurrentRequestsAsPart() throws IOException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
 		final Counter counter = new Counter("services", null);
@@ -317,7 +317,7 @@ public class TestPdfOtherReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testWriteRequestAndGraphDetail() throws IOException {
+	void testWriteRequestAndGraphDetail() throws IOException {
 		final Counter sqlCounter = new Counter("sql", "db.png");
 		final Counter httpCounter = new Counter("http", "db.png", sqlCounter);
 		final Counter errorCounter = new Counter("error", "db.png");

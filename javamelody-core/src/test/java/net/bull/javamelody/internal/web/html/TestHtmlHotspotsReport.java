@@ -40,12 +40,12 @@ import net.bull.javamelody.internal.model.SamplingProfiler.SampledMethod;
  * Test unitaire de la classe HtmlHotspotsReport.
  * @author Emeric Vernat
  */
-public class TestHtmlHotspotsReport {
+class TestHtmlHotspotsReport {
 	private static final int NB_ROWS = 100;
 
 	/** Initialisation. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
@@ -61,7 +61,7 @@ public class TestHtmlHotspotsReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		final SamplingProfiler samplingProfiler = new SamplingProfiler(new ArrayList<>(), null);
 		final List<SampledMethod> emptyHotspots = samplingProfiler.getHotspots(NB_ROWS);
 		samplingProfiler.update();

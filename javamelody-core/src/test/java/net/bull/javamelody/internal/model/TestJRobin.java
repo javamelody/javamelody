@@ -39,27 +39,27 @@ import net.bull.javamelody.internal.common.Parameters;
  * Test unitaire de la classe JRobin.
  * @author Emeric Vernat
  */
-public class TestJRobin {
+class TestJRobin {
 	private static final String TEST_APPLICATION = "test";
 
 	/** Before.
 	 * @throws IOException e */
 	@BeforeEach
-	public void setUp() throws IOException {
+	void setUp() throws IOException {
 		Utils.initialize();
 		JRobin.initBackendFactory(new Timer(getClass().getSimpleName(), true));
 	}
 
 	/** After. */
 	@AfterEach
-	public void tearDown() {
+	void tearDown() {
 		JRobin.stop();
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		final Range range = Period.JOUR.getRange();
 		final Range customRange = Range.createCustomRange(
 				new Date(System.currentTimeMillis() - 24L * 60 * 60 * 1000), new Date());
@@ -79,7 +79,7 @@ public class TestJRobin {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testChinese() throws IOException {
+	void testChinese() throws IOException {
 		final Range range = Period.JOUR.getRange();
 		final Locale locale = Locale.getDefault();
 		try {
@@ -95,7 +95,7 @@ public class TestJRobin {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testInitAndResetFile() throws IOException {
+	void testInitAndResetFile() throws IOException {
 		final String application = TEST_APPLICATION;
 		final String jrobinName = "name";
 		final File dir = Parameters.getStorageDirectory(application);
@@ -134,7 +134,7 @@ public class TestJRobin {
 
 	/** Test. */
 	@Test
-	public void testDeleteObsoleteJRobinFiles() {
+	void testDeleteObsoleteJRobinFiles() {
 		JRobin.deleteObsoleteJRobinFiles(TEST_APPLICATION);
 		Utils.setProperty(Parameter.OBSOLETE_GRAPHS_DAYS, "1");
 		JRobin.deleteObsoleteJRobinFiles(TEST_APPLICATION);

@@ -19,13 +19,13 @@ import org.junit.jupiter.api.Test;
  * Multi-licensed: EPL / LGPL / GPL / AL / BSD / MIT.
  * Changed on format and java syntax by Emeric Vernat
  */
-public class TestBase64Coder {
+class TestBase64Coder {
 
 	/**
 	 * Test Base64Coder with constant strings.
 	 */
 	@Test
-	public void test1() {
+	void test1() {
 		check("Aladdin:open sesame", "QWxhZGRpbjpvcGVuIHNlc2FtZQ=="); // example from RFC 2617
 		check("", "");
 		check("1", "MQ==");
@@ -49,7 +49,7 @@ public class TestBase64Coder {
 	 * Line length below 76.
 	 */
 	@Test
-	public void test2() {
+	void test2() {
 		final int maxLineLen = 76 - 1; // the Base64 Mime encoder adds a CR/LF when a line is longer
 		final int maxDataBlockLen = maxLineLen * 3 / 4;
 		final Random rnd = new Random(0x538afb92);
@@ -59,7 +59,7 @@ public class TestBase64Coder {
 			rnd.nextBytes(b0);
 			final String e1 = new String(Base64Coder.encode(b0));
 			final String e2 = Base64.getEncoder().encodeToString(b0);
-			assertEquals("test2", e2, e1);
+			assertEquals(e2, e1, "test2");
 			final byte[] b1 = Base64Coder.decode(e1);
 			final byte[] b2 = Base64.getDecoder().decode(e2);
 			assertArrayEquals(b0, b1, "test2");
@@ -72,7 +72,7 @@ public class TestBase64Coder {
 	 * with random data.
 	 */
 	@Test
-	public void test3() {
+	void test3() {
 		final int maxDataBlockLen = 512;
 		final Random rnd = new Random(0x39ac7d6e);
 		for (int i = 0; i < 100; i++) {
@@ -83,7 +83,7 @@ public class TestBase64Coder {
 			// so we replace for linux
 			final String e1 = Base64Coder.encodeLines(b0).replace(System.lineSeparator(), "\r\n");
 			final String e2 = Base64.getMimeEncoder().encodeToString(b0);
-			assertEquals("test3", e2, e1.trim());
+			assertEquals(e2, e1.trim(), "test3");
 			final byte[] b1 = Base64Coder.decodeLines(e1);
 			final byte[] b2 = Base64.getMimeDecoder().decode(e2);
 			assertArrayEquals(b0, b1, "test3");

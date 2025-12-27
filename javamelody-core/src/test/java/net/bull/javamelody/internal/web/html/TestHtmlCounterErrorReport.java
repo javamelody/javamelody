@@ -39,10 +39,10 @@ import net.bull.javamelody.internal.model.CounterError;
  * Test unitaire de la classe HtmlCounterErrorReport.
  * @author Emeric Vernat
  */
-public class TestHtmlCounterErrorReport {
+class TestHtmlCounterErrorReport {
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
@@ -54,7 +54,7 @@ public class TestHtmlCounterErrorReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testCounterError() throws IOException {
+	void testCounterError() throws IOException {
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
 		final StringWriter writer = new StringWriter();
 		final HtmlCounterErrorReport report = new HtmlCounterErrorReport(errorCounter, writer);

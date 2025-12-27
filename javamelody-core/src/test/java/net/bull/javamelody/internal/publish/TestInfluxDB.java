@@ -32,19 +32,19 @@ import net.bull.javamelody.Utils;
  * Test unitaire de la classe InfluxDB.
  * @author Emeric Vernat
  */
-public class TestInfluxDB {
+class TestInfluxDB {
 	/**
 	 * Initialisation.
 	 */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		InfluxDB influxdb = InfluxDB.getInstance("/test", "hostname");
 		assertNull(influxdb, "getInstance");
 		setProperty(Parameter.INFLUXDB_URL, "http://localhost:8086/write?db=mydb");

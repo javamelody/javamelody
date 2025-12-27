@@ -44,12 +44,12 @@ import net.bull.javamelody.internal.model.JndiBinding;
  * Test unitaire de la classe HtmlSessionInformationsReport.
  * @author Emeric Vernat
  */
-public class TestHtmlJndiTreeReport {
+class TestHtmlJndiTreeReport {
 	private static final String JNDI_PREFIX = "java:";
 
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
@@ -62,7 +62,7 @@ public class TestHtmlJndiTreeReport {
 	 * @throws IOException e
 	 * @throws NamingException e */
 	@Test
-	public void testToHtml() throws IOException, NamingException {
+	void testToHtml() throws IOException, NamingException {
 		doToHtmlWithServerName("Mock");
 		doToHtmlWithServerName("GlassFish");
 		doToHtmlWithServerName("WebLogic");
@@ -81,7 +81,7 @@ public class TestHtmlJndiTreeReport {
 	 * @throws IOException e
 	 * @throws NamingException e */
 	@Test
-	public void testToHtmlWithContextPath() throws IOException, NamingException {
+	void testToHtmlWithContextPath() throws IOException, NamingException {
 		final ServletContext servletContext = createNiceMock(ServletContext.class);
 		expect(servletContext.getServerInfo()).andReturn("Mock").anyTimes();
 		replay(servletContext);

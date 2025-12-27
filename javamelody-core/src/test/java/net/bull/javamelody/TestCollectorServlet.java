@@ -45,7 +45,7 @@ import net.bull.javamelody.internal.web.FilterServletOutputStream;
  * Test unitaire de la classe CollectorServlet.
  * @author Emeric Vernat
  */
-public class TestCollectorServlet {
+class TestCollectorServlet {
 	private static final String TRUE = "true";
 	private static final String REMOTE_ADDR = "127.0.0.1"; // NOPMD
 	private static final String TEST = "test";
@@ -58,7 +58,7 @@ public class TestCollectorServlet {
 	 * @throws IOException e
 	 */
 	@BeforeEach
-	public void setUp() throws IOException {
+	void setUp() throws IOException {
 		tearDown();
 		Utils.initialize();
 		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", TRUE);
@@ -77,7 +77,7 @@ public class TestCollectorServlet {
 	 * @throws IOException e
 	 */
 	@AfterEach
-	public void tearDown() throws IOException {
+	void tearDown() throws IOException {
 		if (collectorServlet != null) {
 			collectorServlet.destroy();
 		}
@@ -88,7 +88,7 @@ public class TestCollectorServlet {
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testInit() throws ServletException, IOException {
+	void testInit() throws ServletException, IOException {
 		replay(config);
 		replay(context);
 		collectorServlet.init(config);
@@ -113,7 +113,7 @@ public class TestCollectorServlet {
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoGet() throws ServletException, IOException {
+	void testDoGet() throws ServletException, IOException {
 		doGet("a", null);
 		doGet(null, null);
 		doGet(".*", null);
@@ -154,7 +154,7 @@ public class TestCollectorServlet {
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoPost() throws ServletException, IOException {
+	void testDoPost() throws ServletException, IOException {
 		final List<String> nullUrl = Collections.singletonList(null);
 		doPost(null, nullUrl, false);
 		doPost(null, nullUrl, true);
@@ -231,7 +231,7 @@ public class TestCollectorServlet {
 
 	/** Test. */
 	@Test
-	public void testMainWinstone() {
+	void testMainWinstone() {
 		try {
 			Main.main(new String[] { "--help" });
 		} catch (final Exception e) {
@@ -241,7 +241,7 @@ public class TestCollectorServlet {
 	}
 
 	@Test
-	public void testAddCollectorApplication() throws IOException {
+	void testAddCollectorApplication() throws IOException {
 		CollectorServlet.addCollectorApplication("test", "http://localhost:8090/test");
 		CollectorServlet.removeCollectorApplication("test");
 	}

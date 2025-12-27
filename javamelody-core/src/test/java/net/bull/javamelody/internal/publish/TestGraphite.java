@@ -33,19 +33,19 @@ import net.bull.javamelody.Utils;
  * Test unitaire de la classe Graphite.
  * @author Emeric Vernat
  */
-public class TestGraphite {
+class TestGraphite {
 	/**
 	 * Initialisation.
 	 */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		Graphite graphite = Graphite.getInstance("/test", "hostname");
 		assertNull(graphite, "getInstance");
 		setProperty(Parameter.GRAPHITE_ADDRESS, "localhost:2003");

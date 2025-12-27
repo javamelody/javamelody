@@ -36,26 +36,26 @@ import net.bull.javamelody.internal.common.Parameters;
  * Test unitaire de la classe JdbcDriver.
  * @author Emeric Vernat
  */
-public class TestJdbcDriver {
+class TestJdbcDriver {
 	private JdbcDriver driver;
 
 	/** Test. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 		driver = new JdbcDriver();
 	}
 
 	/** Test. */
 	@Test
-	public void testGetLastConnectUrl() {
+	void testGetLastConnectUrl() {
 		Parameters.initJdbcDriverParameters(null, null);
 		assertNull(Parameters.getLastConnectUrl(), "getLastConnectUrl");
 	}
 
 	/** Test. */
 	@Test
-	public void testGetLastConnectInfo() {
+	void testGetLastConnectInfo() {
 		Parameters.initJdbcDriverParameters(null, null);
 		assertNull(Parameters.getLastConnectInfo(), "getLastConnectInfo");
 	}
@@ -63,7 +63,7 @@ public class TestJdbcDriver {
 	/** Test.
 	 * @throws SQLException e */
 	@Test
-	public void testConnect() throws SQLException {
+	void testConnect() throws SQLException {
 		final Properties info = new Properties();
 		try {
 			driver.connect(null, info);
@@ -86,13 +86,13 @@ public class TestJdbcDriver {
 	/** Test.
 	 * @throws SQLException e */
 	@Test
-	public void testAcceptsURL() throws SQLException {
+	void testAcceptsURL() throws SQLException {
 		assertTrue(driver.acceptsURL(null), "acceptsURL");
 	}
 
 	/** Test. */
 	@Test
-	public void testGetMajorVersion() {
+	void testGetMajorVersion() {
 		if (driver.getMajorVersion() >= 0) {
 			fail("getMajorVersion");
 		}
@@ -100,7 +100,7 @@ public class TestJdbcDriver {
 
 	/** Test. */
 	@Test
-	public void testGetMinorVersion() {
+	void testGetMinorVersion() {
 		if (driver.getMinorVersion() >= 0) {
 			fail("getMinorVersion");
 		}
@@ -109,19 +109,19 @@ public class TestJdbcDriver {
 	/** Test.
 	 * @throws SQLException e */
 	@Test
-	public void testGetPropertyInfo() throws SQLException {
+	void testGetPropertyInfo() throws SQLException {
 		assertNotNull(driver.getPropertyInfo(null, null), "getPropertyInfo");
 	}
 
 	/** Test. */
 	@Test
-	public void testJdbcCompliant() {
+	void testJdbcCompliant() {
 		assertTrue(driver.jdbcCompliant(), "jdbcCompliant");
 	}
 
 	/** Test. */
 	@Test
-	public void testToString() {
+	void testToString() {
 		final String string = driver.toString();
 		assertNotNull(string, "toString not null");
 		assertFalse(string.isEmpty(), "toString not empty");
@@ -130,7 +130,7 @@ public class TestJdbcDriver {
 	/** Test.
 	 * @throws SQLFeatureNotSupportedException e */
 	@Test
-	public void testGetParentLogger() throws SQLFeatureNotSupportedException {
+	void testGetParentLogger() throws SQLFeatureNotSupportedException {
 		assertNotNull(driver.getParentLogger(), "getParentLogger");
 	}
 }

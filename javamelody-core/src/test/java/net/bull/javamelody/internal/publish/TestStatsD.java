@@ -32,19 +32,19 @@ import net.bull.javamelody.Utils;
  * Test unitaire de la classe StatsD.
  * @author Emeric Vernat
  */
-public class TestStatsD {
+class TestStatsD {
 	/**
 	 * Initialisation.
 	 */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		Statsd statsd = Statsd.getInstance("/test", "hostname");
 		assertNull(statsd, "getInstance");
 		setProperty(Parameter.STATSD_ADDRESS, "localhost:8125");

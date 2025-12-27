@@ -34,19 +34,19 @@ import net.bull.javamelody.internal.model.Counter;
  * Test unitaire de la classe SpringRestTemplateInterceptor.
  * @author Emeric Vernat
  */
-public class TestSpringRestTemplateInterceptor {
+class TestSpringRestTemplateInterceptor {
 	private static final String TEST_CONTEXT_FILENAME = "spring-context.xml";
 	private static final String MONITORING_CONTEXT_FILENAME = "net/bull/javamelody/monitoring-spring.xml";
 
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test. */
 	@Test
-	public void testSpringAOP() {
+	void testSpringAOP() {
 		final Counter springCounter = MonitoringProxy.getSpringCounter();
 		springCounter.clear();
 		try (ConfigurableApplicationContext context = new ClassPathXmlApplicationContext(

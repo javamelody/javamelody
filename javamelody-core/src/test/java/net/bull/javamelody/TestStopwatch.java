@@ -28,9 +28,9 @@ import org.junit.jupiter.api.Test;
  * Test unitaire pour Stopwatch.
  * @author Emeric Vernat
  */
-public class TestStopwatch {
+class TestStopwatch {
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		final int requestsCount = MonitoringProxy.getServicesCounter().getRequestsCount();
 		final Stopwatch stopwatch = new Stopwatch("stopwatch name");
 		assertEquals("stopwatch name", stopwatch.getName(), "getName");

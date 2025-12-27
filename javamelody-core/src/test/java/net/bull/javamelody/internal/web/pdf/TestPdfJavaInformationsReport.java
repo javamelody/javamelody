@@ -42,19 +42,19 @@ import net.bull.javamelody.internal.model.TomcatInformations;
  * Test unitaire de la classe PdfJavaInformationsReport.
  * @author Emeric Vernat
  */
-public class TestPdfJavaInformationsReport {
+class TestPdfJavaInformationsReport {
 	private static final String TEST_APP = "test app";
 
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testTomcatInformations() throws Exception {
+	void testTomcatInformations() throws Exception {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(TEST_APP, null,
 				output);

@@ -40,10 +40,10 @@ import net.bull.javamelody.Utils;
  * et FilterServletOutputStream.
  * @author Emeric Vernat
  */
-public class TestCompressionServletResponseWrapper {
+class TestCompressionServletResponseWrapper {
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
@@ -252,7 +252,7 @@ public class TestCompressionServletResponseWrapper {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testCompressionServletResponseWrapper() throws IOException {
+	void testCompressionServletResponseWrapper() throws IOException {
 		final CompressionServletResponseWrapper wrapper = new CompressionServletResponseWrapper(
 				new HttpResponse(), 1024);
 		wrapper.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -293,7 +293,7 @@ public class TestCompressionServletResponseWrapper {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testCompressionResponseStream() throws IOException {
+	void testCompressionResponseStream() throws IOException {
 		final CompressionResponseStream stream = new CompressionResponseStream(new HttpResponse(),
 				1024);
 		stream.write(1);
@@ -315,7 +315,7 @@ public class TestCompressionServletResponseWrapper {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testFilterServletOutputStream() throws IOException {
+	void testFilterServletOutputStream() throws IOException {
 		final FilterServletOutputStream outputStream = new FilterServletOutputStream(
 				new ByteArrayOutputStream());
 		outputStream.write(1);

@@ -39,7 +39,7 @@ import net.bull.javamelody.internal.model.Base64Coder;
  * Test unitaire de la classe HttpAuth.
  * @author Emeric Vernat
  */
-public class TestHttpAuth {
+class TestHttpAuth {
 	private static final String USER_PWD = "user:pwd";
 	private static final String REMOTE_ADDR = "127.0.0.1"; // NOPMD
 
@@ -47,14 +47,14 @@ public class TestHttpAuth {
 	 * Initialisation.
 	 */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testIsAllowed() throws IOException {
+	void testIsAllowed() throws IOException {
 		assertTrue(isAllowed(), "no auth");
 		setProperty(Parameter.ALLOWED_ADDR_PATTERN, REMOTE_ADDR);
 		assertTrue(isAllowed(), "addr pattern");

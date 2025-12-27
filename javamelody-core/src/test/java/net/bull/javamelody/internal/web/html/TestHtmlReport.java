@@ -100,7 +100,7 @@ public class TestHtmlReport {
 
 	/** Initialisation. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 		javaInformationsList = Collections.singletonList(new JavaInformations(null, true));
 		sqlCounter = new Counter("sql", "db.png");
@@ -119,7 +119,7 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testSimpleToHtml() throws IOException {
+	void testSimpleToHtml() throws IOException {
 		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.TOUT, writer);
 		htmlReport.toHtml();
@@ -129,7 +129,7 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testToHtmlWithSession() throws IOException {
+	void testToHtmlWithSession() throws IOException {
 		final HttpSession session = createNiceMock(HttpSession.class);
 		replay(session);
 		try {
@@ -145,7 +145,7 @@ public class TestHtmlReport {
 	}
 
 	@Test
-	public void testToHtmlWithHsErrPid() throws IOException {
+	void testToHtmlWithHsErrPid() throws IOException {
 		final File hsErrPidFile = new File("./hs_err_pid12345.log");
 		try {
 			hsErrPidFile.createNewFile();
@@ -162,7 +162,7 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testEmptyCounter() throws IOException {
+	void testEmptyCounter() throws IOException {
 		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.TOUT, writer);
 		// rapport avec counter sans requête
@@ -175,7 +175,7 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testDoubleJavaInformations() throws IOException {
+	void testDoubleJavaInformations() throws IOException {
 		final List<JavaInformations> myJavaInformationsList = List
 				.of(new JavaInformations(null, true), new JavaInformations(null, true));
 		final HtmlReport htmlReport = new HtmlReport(collector, null, myJavaInformationsList,
@@ -187,7 +187,7 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testCounter() throws IOException {
+	void testCounter() throws IOException {
 		// counter avec 3 requêtes
 		setProperty(Parameter.WARNING_THRESHOLD_MILLIS, "500");
 		setProperty(Parameter.SEVERE_THRESHOLD_MILLIS, "1500");
@@ -235,7 +235,7 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testErrorCounter() throws IOException {
+	void testErrorCounter() throws IOException {
 		// errorCounter
 		errorCounter.addRequestForSystemError("error", -1, -1, -1, null);
 		errorCounter.addRequestForSystemError("error2", -1, -1, -1, "ma stack-trace");
@@ -254,7 +254,7 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testPeriodeNonTout() throws IOException {
+	void testPeriodeNonTout() throws IOException {
 		// counter avec période non TOUT et des requêtes
 		collector.collectWithoutErrors(javaInformationsList);
 		final String requestName = "test 1";
@@ -279,7 +279,7 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testWriteRequests() throws Exception {
+	void testWriteRequests() throws Exception {
 		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.SEMAINE, writer);
 		htmlReport.writeRequestAndGraphDetail("httpHitsRate");
@@ -328,7 +328,7 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testOtherWrites() throws Exception {
+	void testOtherWrites() throws Exception {
 		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.SEMAINE, writer);
 
@@ -379,7 +379,7 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testWriteConnections() throws Exception {
+	void testWriteConnections() throws Exception {
 		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.SEMAINE, writer);
 
@@ -408,7 +408,7 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testRootContexts() throws IOException {
+	void testRootContexts() throws IOException {
 		HtmlReport htmlReport;
 		// addRequest pour que CounterRequestContext.getCpuTime() soit appelée
 		counter.addRequest("first request", 100, 100, 100, false, 1000);
@@ -436,7 +436,7 @@ public class TestHtmlReport {
 	 * @throws IOException e */
 	@SuppressWarnings("deprecation")
 	@Test
-	public void testCache() throws IOException {
+	void testCache() throws IOException {
 		final String cacheName = "test 1";
 		final CacheManager cacheManager = CacheManager.getInstance();
 		cacheManager.addCache(cacheName);
@@ -475,7 +475,7 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testJCache() throws IOException {
+	void testJCache() throws IOException {
 		final String cacheName = "test 1";
 		final javax.cache.CacheManager jcacheManager = Caching.getCachingProvider()
 				.getCacheManager();
@@ -517,7 +517,7 @@ public class TestHtmlReport {
 	 * @throws IOException e
 	 * @throws SchedulerException e */
 	@Test
-	public void testJob() throws IOException, SchedulerException {
+	void testJob() throws IOException, SchedulerException {
 		// job quartz
 		initJobGlobalListener();
 		getJobCounter().clear();
@@ -602,7 +602,7 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testWithCollectorServer() throws IOException {
+	void testWithCollectorServer() throws IOException {
 		final CollectorServer collectorServer = new CollectorServer();
 		try {
 			final HtmlReport htmlReport = new HtmlReport(collector, collectorServer,
@@ -622,7 +622,7 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testWithNoDatabase() throws IOException {
+	void testWithNoDatabase() throws IOException {
 		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.TOUT, writer);
 		htmlReport.toHtml(null, null);
@@ -632,7 +632,7 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testHtmlCounterRequestContext() throws IOException {
+	void testHtmlCounterRequestContext() throws IOException {
 		// cas où counterReportsByCounterName est null
 		assertNotNull(new HtmlCounterRequestContextReport(
 				Collections.emptyList(), null, Collections.emptyList(), true, 500, writer),
@@ -670,7 +670,7 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testToHtmlEn() throws IOException {
+	void testToHtmlEn() throws IOException {
 		I18N.bindLocale(Locale.US);
 		Locale.setDefault(Locale.US);
 		try {

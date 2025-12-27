@@ -30,18 +30,18 @@ import net.bull.javamelody.Utils;
  * Test unitaire de la classe interne PdfJavaInformationsReport.Bar.
  * @author Emeric Vernat
  */
-public class TestPdfBar {
+class TestPdfBar {
 
 	/** Before. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testToPdf() throws IOException {
+	void testToPdf() throws IOException {
 		assertNotNull(Bar.toBar(0), "toBar");
 		assertNotNull(Bar.toBar(1), "toBar");
 		assertNotNull(Bar.toBar(10), "toBar");

@@ -31,12 +31,12 @@ import net.bull.javamelody.Utils;
  * Test unitaire de la classe Range.
  * @author Emeric Vernat
  */
-public class TestPeriodCounterFactory {
+class TestPeriodCounterFactory {
 	private PeriodCounterFactory periodCounterFactory;
 
 	/** Test. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 		final Counter sqlCounter = new Counter("sql", "db.png");
 		sqlCounter.setApplication("test");
@@ -47,7 +47,7 @@ public class TestPeriodCounterFactory {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		assertNotNull(periodCounterFactory.buildNewDayCounter(), "buildNewDayCounter");
 		assertNotNull(periodCounterFactory.createDayCounterAtDate(new Date()), "createDayCounterAtDate");
 		final Range customRange = Range.createCustomRange(

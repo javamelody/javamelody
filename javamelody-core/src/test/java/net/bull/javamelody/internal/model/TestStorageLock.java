@@ -35,19 +35,19 @@ import net.bull.javamelody.internal.common.Parameters;
  * Test unitaire de la classe StorageLock.
  * @author Emeric Vernat
  */
-public class TestStorageLock {
+class TestStorageLock {
 	/**
 	 * Initialisation.
 	 */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		final ServletContext context = createNiceMock(ServletContext.class);
 		replay(context);
 		Parameters.initialize(context);

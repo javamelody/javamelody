@@ -33,18 +33,18 @@ import net.bull.javamelody.internal.model.JavaInformations;
  * Test unitaire de la classe StatsD.
  * @author Emeric Vernat
  */
-public class TestMetricsPublisher {
+class TestMetricsPublisher {
 	/**
 	 * Initialisation.
 	 */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test. */
 	@Test
-	public void test() {
+	void test() {
 		final List<JavaInformations> javaInformationsList = new ArrayList<>();
 		javaInformationsList.add(new JavaInformations(null, false));
 		javaInformationsList.add(new JavaInformations(null, false));

@@ -92,7 +92,7 @@ import net.sf.ehcache.Element;
  * @author Emeric Vernat
  */
 // CHECKSTYLE:OFF
-public class TestMonitoringFilter {// NOPMD
+class TestMonitoringFilter {// NOPMD
 	// CHECKSTYLE:ON
 	private static final String FILTER_NAME = "monitoring";
 	// identique à HttpCookieManager.PERIOD_COOKIE_NAME
@@ -106,7 +106,7 @@ public class TestMonitoringFilter {// NOPMD
 	/**
 	 * Initialisation (deux Before ne garantissent pas l'ordre dans Eclipse).
 	 */
-	public TestMonitoringFilter() {
+	TestMonitoringFilter() {
 		super();
 		Utils.initialize();
 	}
@@ -116,7 +116,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws ServletException e
 	 */
 	@BeforeEach
-	public void setUp() throws ServletException {
+	void setUp() throws ServletException {
 		tearDown();
 		try {
 			final Field field = MonitoringFilter.class.getDeclaredField("instanceCreated");
@@ -156,7 +156,7 @@ public class TestMonitoringFilter {// NOPMD
 	}
 
 	@AfterEach
-	public void tearDown() {
+	void tearDown() {
 		if (monitoringFilter != null) {
 			monitoringFilter.destroy();
 			monitoringFilter = null;
@@ -166,7 +166,7 @@ public class TestMonitoringFilter {// NOPMD
 	/** Test.
 	 * @throws ServletException e */
 	@Test
-	public void testLog() throws ServletException {
+	void testLog() throws ServletException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRemoteAddr()).andReturn(REMOTE_ADDR);
 		expect(request.getRequestURI()).andReturn(CONTEXT_PATH + TEST_REQUEST);
@@ -187,7 +187,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoFilterNoHttp() throws ServletException, IOException {
+	void testDoFilterNoHttp() throws ServletException, IOException {
 		final FilterChain servletChain = createNiceMock(FilterChain.class);
 		final ServletRequest servletRequest = createNiceMock(ServletRequest.class);
 		final ServletResponse servletResponse = createNiceMock(ServletResponse.class);
@@ -215,7 +215,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoFilter() throws ServletException, IOException {
+	void testDoFilter() throws ServletException, IOException {
 		// displayed-counters
 		setProperty(Parameter.DISPLAYED_COUNTERS, "sql");
 		try {
@@ -306,7 +306,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoFilterWithSession() throws ServletException, IOException {
+	void testDoFilterWithSession() throws ServletException, IOException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		final HttpSession session = createNiceMock(HttpSession.class);
 		expect(request.getSession(false)).andReturn(session).anyTimes();
@@ -320,7 +320,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoFilterWithSessionBis() throws ServletException, IOException {
+	void testDoFilterWithSessionBis() throws ServletException, IOException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		final HttpSession session = createNiceMock(HttpSession.class);
 		expect(request.getSession(false)).andReturn(session);
@@ -339,7 +339,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoFilterWithSessionTer() throws ServletException, IOException {
+	void testDoFilterWithSessionTer() throws ServletException, IOException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		final HttpSession session = createNiceMock(HttpSession.class);
 		expect(request.getSession(false)).andReturn(session);
@@ -358,7 +358,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoFilterWithGWT() throws ServletException, IOException {
+	void testDoFilterWithGWT() throws ServletException, IOException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		final String textGwtRpc = "text/x-gwt-rpc";
 		expect(request.getContentType()).andReturn(textGwtRpc).anyTimes();
@@ -476,7 +476,7 @@ public class TestMonitoringFilter {// NOPMD
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testFilterServletResponseWrapper() throws IOException {
+	void testFilterServletResponseWrapper() throws IOException {
 		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 		expect(response.getOutputStream())
 				.andReturn(new FilterServletOutputStream(new ByteArrayOutputStream())).anyTimes();
@@ -507,7 +507,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoMonitoring() throws ServletException, IOException {
+	void testDoMonitoring() throws ServletException, IOException {
 		monitoring(Collections.emptyMap());
 		monitoring(Collections.singletonMap(HttpParameter.FORMAT, "html"));
 		monitoring(Collections.singletonMap(HttpParameter.FORMAT, "htmlbody"));
@@ -565,7 +565,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoMonitoringWithRum() throws ServletException, IOException {
+	void testDoMonitoringWithRum() throws ServletException, IOException {
 		try {
 			setProperty(Parameter.RUM_ENABLED, Boolean.TRUE.toString());
 			setUp();
@@ -616,7 +616,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoMonitoringWithMail() throws ServletException, IOException {
+	void testDoMonitoringWithMail() throws ServletException, IOException {
 		setProperty(Parameter.MAIL_SESSION, "testmailsession");
 		setProperty(Parameter.ADMIN_EMAILS, null);
 		setUp();
@@ -632,7 +632,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoMonitoringWithPeriod() throws ServletException, IOException {
+	void testDoMonitoringWithPeriod() throws ServletException, IOException {
 		final Map<HttpParameter, String> parameters = new HashMap<>();
 		parameters.put(HttpParameter.PERIOD, Period.JOUR.getCode());
 		monitoring(parameters);
@@ -648,7 +648,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoMonitoringWithResource() throws ServletException, IOException {
+	void testDoMonitoringWithResource() throws ServletException, IOException {
 		monitoring(Collections.singletonMap(HttpParameter.RESOURCE, "monitoring.css"));
 		monitoring(Collections.singletonMap(HttpParameter.RESOURCE, "beans.png"));
 	}
@@ -657,7 +657,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoMonitoringWithGraph() throws ServletException, IOException {
+	void testDoMonitoringWithGraph() throws ServletException, IOException {
 		final Map<HttpParameter, String> parameters = new HashMap<>();
 		parameters.put(HttpParameter.GRAPH, "usedMemory");
 		parameters.put(HttpParameter.WIDTH, "800");
@@ -671,7 +671,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoMonitoringWithParts() throws ServletException, IOException {
+	void testDoMonitoringWithParts() throws ServletException, IOException {
 		final Map<HttpParameter, String> parameters = new HashMap<>();
 
 		parameters.put(HttpParameter.PART, HttpPart.CURRENT_REQUESTS.getName());
@@ -752,7 +752,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoMonitoringWithPartsForSystemActions() throws ServletException, IOException {
+	void testDoMonitoringWithPartsForSystemActions() throws ServletException, IOException {
 		final Map<HttpParameter, String> parameters = new HashMap<>();
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		parameters.put(HttpParameter.PART, HttpPart.PROCESSES.getName());
@@ -798,7 +798,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoMonitoringWithReportParameter() throws ServletException, IOException {
+	void testDoMonitoringWithReportParameter() throws ServletException, IOException {
 		final Map<HttpParameter, String> parameters = new HashMap<>();
 		parameters.put(HttpParameter.REPORT, "customReport");
 		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "customReport", "");
@@ -899,7 +899,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoMonitoringWithActions() throws ServletException, IOException {
+	void testDoMonitoringWithActions() throws ServletException, IOException {
 		final Map<HttpParameter, String> parameters = new HashMap<>();
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		parameters.put(HttpParameter.ACTION, Action.GC.toString());
@@ -932,7 +932,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoMonitoringWithFormatPdf() throws ServletException, IOException {
+	void testDoMonitoringWithFormatPdf() throws ServletException, IOException {
 		final Map<HttpParameter, String> parameters = new HashMap<>();
 		parameters.put(HttpParameter.FORMAT, "pdf");
 		monitoring(parameters);
@@ -981,7 +981,7 @@ public class TestMonitoringFilter {// NOPMD
 	// CHECKSTYLE:OFF
 	@Test
 	// CHECKSTYLE:ON
-	public void testDoMonitoringWithFormatSerialized() throws ServletException, IOException {
+	void testDoMonitoringWithFormatSerialized() throws ServletException, IOException {
 		final Map<HttpParameter, String> parameters = new HashMap<>();
 		parameters.put(HttpParameter.FORMAT, TransportFormat.SERIALIZED.getCode());
 		monitoring(parameters);
@@ -1070,7 +1070,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoMonitoringWithFormatXml() throws ServletException, IOException {
+	void testDoMonitoringWithFormatXml() throws ServletException, IOException {
 		final Map<HttpParameter, String> parameters = new HashMap<>();
 		parameters.put(HttpParameter.FORMAT, TransportFormat.XML.getCode());
 		monitoring(parameters);
@@ -1093,7 +1093,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoMonitoringWithFormatJson() throws ServletException, IOException {
+	void testDoMonitoringWithFormatJson() throws ServletException, IOException {
 		final Map<HttpParameter, String> parameters = new HashMap<>();
 		parameters.put(HttpParameter.FORMAT, TransportFormat.JSON.getCode());
 		monitoring(parameters);
@@ -1119,7 +1119,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws IOException e
 	 */
 	@Test
-	public void testDoMonitoringWithFormatPrometheus() throws ServletException, IOException {
+	void testDoMonitoringWithFormatPrometheus() throws ServletException, IOException {
 		final Map<String, String> parameters = new HashMap<>();
 		parameters.put("format", "prometheus");
 		monitoring0(parameters, true);
@@ -1200,7 +1200,7 @@ public class TestMonitoringFilter {// NOPMD
 	}
 
 	@Test
-	public void testRegisterApplicationNodeInCollectServer() throws MalformedURLException {
+	void testRegisterApplicationNodeInCollectServer() throws MalformedURLException {
 		MonitoringFilter.registerApplicationNodeInCollectServer(null,
 				new URL("http://localhost:8080"), new URL("http://localhost:8081"));
 		MonitoringFilter.registerApplicationNodeInCollectServer("test",
@@ -1220,7 +1220,7 @@ public class TestMonitoringFilter {// NOPMD
 	}
 
 	@Test
-	public void testUnregisterApplicationNodeInCollectServer() throws IOException {
+	void testUnregisterApplicationNodeInCollectServer() throws IOException {
 		MonitoringFilter.unregisterApplicationNodeInCollectServer();
 	}
 

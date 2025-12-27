@@ -46,10 +46,10 @@ import net.bull.javamelody.internal.model.MavenArtifact;
  * Test unitaire de la classe HtmlDependenciesReport.
  * @author Emeric Vernat
  */
-public class TestHtmlDependenciesReport {
+class TestHtmlDependenciesReport {
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
@@ -59,7 +59,7 @@ public class TestHtmlDependenciesReport {
 	}
 
 	@Test
-	public void testEmptyDependencies() throws IOException {
+	void testEmptyDependencies() throws IOException {
 		final Map<String, MavenArtifact> webappDependencies = Collections.emptyMap();
 		final StringWriter writer = new StringWriter();
 		final HtmlDependenciesReport htmlDependenciesReport = new HtmlDependenciesReport(
@@ -71,7 +71,7 @@ public class TestHtmlDependenciesReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testDependencies() throws IOException {
+	void testDependencies() throws IOException {
 		final ServletContext context = createNiceMock(ServletContext.class);
 		final String javamelodyDir = "/META-INF/maven/net.bull.javamelody/";
 		final String webapp = javamelodyDir + "javamelody-test-webapp/";

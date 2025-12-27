@@ -44,17 +44,17 @@ import jakarta.servlet.http.HttpSession;
  * Test unitaire pour PluginMonitoringFilter.
  * @author Emeric Vernat
  */
-public class TestPluginMonitoringFilter {
+class TestPluginMonitoringFilter {
 	private static final String TEST_REQUEST = "/request";
 	private static final String CONTEXT_PATH = "/test";
 	private PluginMonitoringFilter pluginMonitoringFilter;
 
-	public static class MyPluginMonitoringFilter extends PluginMonitoringFilter {
+	static class MyPluginMonitoringFilter extends PluginMonitoringFilter {
 		// ras
 	}
 
 	@BeforeEach
-	public void init() throws ServletException {
+	void init() throws ServletException {
 		pluginMonitoringFilter = new MyPluginMonitoringFilter();
 		final FilterConfig config = createNiceMock(FilterConfig.class);
 		final ServletContext context = createNiceMock(ServletContext.class);
@@ -72,13 +72,13 @@ public class TestPluginMonitoringFilter {
 	}
 
 	@AfterEach
-	public void destroy() {
+	void destroy() {
 		pluginMonitoringFilter.destroy();
 		pluginMonitoringFilter = null;
 	}
 
 	@Test
-	public void testNoHttp() throws IOException, ServletException {
+	void testNoHttp() throws IOException, ServletException {
 		final ServletRequest request = createNiceMock(ServletRequest.class);
 		final ServletResponse response = createNiceMock(ServletResponse.class);
 		final FilterChain chain = createNiceMock(FilterChain.class);
@@ -92,7 +92,7 @@ public class TestPluginMonitoringFilter {
 	}
 
 	@Test
-	public void test() throws IOException, ServletException {
+	void test() throws IOException, ServletException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 		final FilterChain chain = createNiceMock(FilterChain.class);
@@ -110,7 +110,7 @@ public class TestPluginMonitoringFilter {
 	}
 
 	@Test
-	public void testWithRequestSessionIdValid() throws IOException, ServletException {
+	void testWithRequestSessionIdValid() throws IOException, ServletException {
 		final int sessionCount = SessionListener.getSessionCount();
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
@@ -132,7 +132,7 @@ public class TestPluginMonitoringFilter {
 	}
 
 	@Test
-	public void testWithSessionCreated() throws IOException, ServletException {
+	void testWithSessionCreated() throws IOException, ServletException {
 		final int sessionCount = SessionListener.getSessionCount();
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
@@ -161,7 +161,7 @@ public class TestPluginMonitoringFilter {
 	}
 
 	@Test
-	public void testWithSessionDestroyed() throws IOException, ServletException {
+	void testWithSessionDestroyed() throws IOException, ServletException {
 		final int sessionCount = SessionListener.getSessionCount();
 
 		pluginMonitoringFilter.unregisterInvalidatedSessions();

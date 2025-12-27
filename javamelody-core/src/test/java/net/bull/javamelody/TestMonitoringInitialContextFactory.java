@@ -34,26 +34,26 @@ import org.junit.jupiter.api.Test;
  * Test unitaire de la classe MonitoringInitialContextFactory.
  * @author Emeric Vernat
  */
-public class TestMonitoringInitialContextFactory implements InitialContextFactory {
+class TestMonitoringInitialContextFactory implements InitialContextFactory {
 	private static Context initialContext;
 
 	/** Initialisation.
 	 * @throws NamingException e */
 	@BeforeAll
-	public static void init() throws NamingException {
+	static void init() throws NamingException {
 		initialContext = new InitialContext();
 	}
 
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test.
 	 * @throws NamingException e */
 	@Test
-	public void test() throws NamingException {
+	void test() throws NamingException {
 		try {
 			Utils.setProperty(Context.INITIAL_CONTEXT_FACTORY, this.getClass().getName());
 			try {

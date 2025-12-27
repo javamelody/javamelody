@@ -36,23 +36,23 @@ import net.bull.javamelody.internal.model.Counter;
  * Test unitaire de la classe StrutsInterceptor.
  * @author Emeric Vernat
  */
-public class TestStrutsInterceptor {
+class TestStrutsInterceptor {
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test. */
 	@Test
-	public void testGetStrutsCounter() {
+	void testGetStrutsCounter() {
 		assertNotNull(MonitoringProxy.getStrutsCounter(), "getStrutsCounter");
 	}
 
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testStruts() throws Exception {
+	void testStruts() throws Exception {
 		final Counter strutsCounter = MonitoringProxy.getStrutsCounter();
 		strutsCounter.clear();
 		final StrutsInterceptor strutsInterceptor = new StrutsInterceptor();

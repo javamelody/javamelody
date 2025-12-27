@@ -37,10 +37,10 @@ import net.bull.javamelody.internal.model.ThreadInformations;
  * Test unitaire de la classe HtmlSessionInformationsReport.
  * @author Emeric Vernat
  */
-public class TestHtmlThreadInformationsReport {
+class TestHtmlThreadInformationsReport {
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
@@ -52,7 +52,7 @@ public class TestHtmlThreadInformationsReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testThreadInformations() throws IOException {
+	void testThreadInformations() throws IOException {
 		final StringWriter writer = new StringWriter();
 		new HtmlThreadInformationsReport(Collections.emptyList(), true, writer).toHtml();
 		assertNotEmptyAndClear(writer);

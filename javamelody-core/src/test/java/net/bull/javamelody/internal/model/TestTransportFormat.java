@@ -43,10 +43,10 @@ import net.bull.javamelody.internal.common.InputOutput;
  * Test unitaire de la classe TransportFormat.
  * @author Emeric Vernat
  */
-public class TestTransportFormat {
+class TestTransportFormat {
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
@@ -61,7 +61,7 @@ public class TestTransportFormat {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testWriteSerialized() throws IOException {
+	void testWriteSerialized() throws IOException {
 		final Counter counter = createCounter();
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		TransportFormat.SERIALIZED.writeSerializableTo(counter, output);
@@ -75,7 +75,7 @@ public class TestTransportFormat {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testWriteXml() throws IOException {
+	void testWriteXml() throws IOException {
 		final Counter counter = createCounter();
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		TransportFormat.XML.writeSerializableTo(counter, output);
@@ -85,7 +85,7 @@ public class TestTransportFormat {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testWriteJson() throws IOException {
+	void testWriteJson() throws IOException {
 		final Counter counter = createCounter();
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		TransportFormat.JSON.writeSerializableTo(counter, output);
@@ -96,10 +96,10 @@ public class TestTransportFormat {
 	 * @throws IOException e
 	 * @throws ClassNotFoundException e */
 	@Test
-	public void testReadSerializable() throws IOException, ClassNotFoundException {
+	void testReadSerializable() throws IOException, ClassNotFoundException {
 		final Counter counter = createCounter();
 		final Counter after = (Counter) serialize(counter);
-		assertEquals("counter", counter.toString(), after.toString());
+		assertEquals(counter.toString(), after.toString(), "counter");
 
 		assertNull(serialize(null), "null");
 
@@ -129,18 +129,18 @@ public class TestTransportFormat {
 	 * @throws IOException e
 	 * @throws ClassNotFoundException e */
 	@Test
-	public void testReadXml() throws IOException, ClassNotFoundException {
+	void testReadXml() throws IOException, ClassNotFoundException {
 		final Counter counter = createCounter();
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		TransportFormat.XML.writeSerializableTo(counter, output);
 		final ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
 		final Counter after = (Counter) TransportFormat.XML.readSerializableFrom(input);
-		assertEquals("counter", counter.toString(), after.toString());
+		assertEquals(counter.toString(), after.toString(), "counter");
 	}
 
 	/** Test. */
 	@Test
-	public void testReadJson() {
+	void testReadJson() {
 		Exception result = null;
 		try {
 			TransportFormat.JSON.readSerializableFrom(new ByteArrayInputStream(new byte[0]));
@@ -153,7 +153,7 @@ public class TestTransportFormat {
 
 	/** Test. */
 	@Test
-	public void testGetCode() {
+	void testGetCode() {
 		for (final TransportFormat tf : TransportFormat.values()) {
 			assertSame(tf, TransportFormat.valueOfIgnoreCase(tf.getCode()), "same");
 		}
@@ -161,7 +161,7 @@ public class TestTransportFormat {
 
 	/** Test. */
 	@Test
-	public void testGetMimeType() {
+	void testGetMimeType() {
 		for (final TransportFormat tf : TransportFormat.values()) {
 			assertNotNull(tf.getMimeType(), "mimeType");
 		}
@@ -170,7 +170,7 @@ public class TestTransportFormat {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testPump() throws IOException {
+	void testPump() throws IOException {
 		final Counter counter = createCounter();
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		TransportFormat.XML.writeSerializableTo(counter, output);
@@ -183,7 +183,7 @@ public class TestTransportFormat {
 
 	/** Test. */
 	@Test
-	public void testIsATransportFormat() {
+	void testIsATransportFormat() {
 		final String message = "isATransportFormat";
 		assertFalse(TransportFormat.isATransportFormat(null), message);
 		for (final TransportFormat transportFormat : TransportFormat.values()) {

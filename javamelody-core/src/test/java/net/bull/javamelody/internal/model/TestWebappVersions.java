@@ -33,19 +33,19 @@ import net.bull.javamelody.internal.common.Parameters;
  * Test unitaire de la classe CounterStorage.
  * @author Emeric Vernat
  */
-public class TestWebappVersions {
+class TestWebappVersions {
 	private static final String VERSIONS_FILENAME = "versions.properties";
 
 	/** Test. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		final String application = "unittest";
 		final File storageDirectory = Parameters.getStorageDirectory(application);
 		final File versionsFile = new File(storageDirectory, VERSIONS_FILENAME);

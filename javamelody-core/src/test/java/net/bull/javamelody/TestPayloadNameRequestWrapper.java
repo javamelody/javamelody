@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.HashMap;
+import java.nio.charset.StandardCharsets;import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.stream.XMLInputFactory;
@@ -50,7 +50,7 @@ import jakarta.servlet.http.HttpServletRequest;
  * Unit test for {@link PayloadNameRequestWrapper}.
  * @author rpaterson
  */
-public class TestPayloadNameRequestWrapper extends EasyMockSupport {
+class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	private static final String CONTENT_TYPE_TEXT_XML = "text/xml";
 
 	HttpServletRequest request;
@@ -66,7 +66,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	 * @throws IOException never
 	 */
 	@BeforeEach
-	public void setUp() throws IOException {
+	void setUp() throws IOException {
 		request = createNiceMock(HttpServletRequest.class);
 
 		//method
@@ -123,7 +123,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 
 	private static String slurp(InputStream stream) throws IOException {
 		final StringBuilder buffer = new StringBuilder();
-		final Reader reader = new InputStreamReader(stream);
+		final Reader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
 		int c = reader.read();
 		while (c != -1) {
 			buffer.append((char) c);
@@ -137,7 +137,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	 * @throws IOException on error
 	 */
 	@Test
-	public void testHttpGet() throws IOException {
+	void testHttpGet() throws IOException {
 		httpMethod = "GET";
 		contentType = "text/html";
 		body = "";
@@ -152,7 +152,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	}
 
 	@Test
-	public void testNoContentType() throws IOException {
+	void testNoContentType() throws IOException {
 		contentType = null;
 		body = "";
 		queryString = "key=value1&key=value2";
@@ -170,7 +170,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	 * @throws IOException on error
 	 */
 	@Test
-	public void testGwtRpc() throws IOException {
+	void testGwtRpc() throws IOException {
 		contentType = "text/x-gwt-rpc";
 		body = "7|0|4|http://site/path/com.example.GwtModuleName/|148050F6A52E484A068EAD552E9A6F2A|com.example.GwtRpcApi|gwtRpcMethodName|1|2|3|4|0|";
 
@@ -189,7 +189,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	 * @throws IOException on error
 	 */
 	@Test
-	public void testSoap11() throws IOException {
+	void testSoap11() throws IOException {
 		//example request from SOAP spec
 		//http://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Toc478383490
 		contentType = CONTENT_TYPE_TEXT_XML;
@@ -221,7 +221,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	 * @throws IOException on error
 	 */
 	@Test
-	public void testSoap11WithoutSOAPAction() throws IOException {
+	void testSoap11WithoutSOAPAction() throws IOException {
 		//example request from SOAP spec
 		//http://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Toc478383490
 		contentType = CONTENT_TYPE_TEXT_XML;
@@ -250,7 +250,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	 * @throws IOException on error
 	 */
 	@Test
-	public void testSoap11MandatoryHeader() throws IOException {
+	void testSoap11MandatoryHeader() throws IOException {
 		//example request from SOAP spec
 		//http://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Toc478383539
 
@@ -288,7 +288,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	 * @throws IOException on error
 	 */
 	@Test
-	public void testSoap11MultipleRequestParameters() throws IOException {
+	void testSoap11MultipleRequestParameters() throws IOException {
 		//example request from SOAP spec
 		//http://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Ref477795992
 
@@ -321,7 +321,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	 * @throws IOException on error
 	 */
 	@Test
-	public void testSoap12() throws IOException {
+	void testSoap12() throws IOException {
 		//example request from SOAP spec
 		//http://www.w3.org/TR/soap12-part0/#Ref47748839611
 
@@ -369,7 +369,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	 * @throws XMLStreamException on error
 	 */
 	@Test
-	public void testScanForChildTag() throws XMLStreamException {
+	void testScanForChildTag() throws XMLStreamException {
 		assertTrue(scanForChildTag("child", "<parent><child/></parent>"), "Could not find child tag");
 
 		assertFalse(scanForChildTag("notChild", "<parent><child/></parent>"), "Found wrong tag");

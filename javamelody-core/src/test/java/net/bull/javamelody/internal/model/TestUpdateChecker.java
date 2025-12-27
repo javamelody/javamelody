@@ -42,17 +42,17 @@ import net.sf.ehcache.CacheManager;
  * Test unitaire de la classe UpdateChecker.
  * @author Emeric Vernat
  */
-public class TestUpdateChecker {
+class TestUpdateChecker {
 
 	/** Before. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test. */
 	@Test
-	public void testInit() {
+	void testInit() {
 		Utils.setProperty(Parameter.UPDATE_CHECK_DISABLED, "true");
 		UpdateChecker.init(null, null, null);
 
@@ -61,7 +61,7 @@ public class TestUpdateChecker {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testCheckForUpdate() throws IOException {
+	void testCheckForUpdate() throws IOException {
 		final ServletContext context = createNiceMock(ServletContext.class);
 		expect(context.getMajorVersion()).andReturn(5).anyTimes();
 		expect(context.getMinorVersion()).andReturn(0).anyTimes();

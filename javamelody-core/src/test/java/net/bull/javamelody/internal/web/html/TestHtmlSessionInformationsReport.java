@@ -39,10 +39,10 @@ import net.bull.javamelody.internal.model.SessionInformations;
  * Test unitaire de la classe HtmlSessionInformationsReport.
  * @author Emeric Vernat
  */
-public class TestHtmlSessionInformationsReport {
+class TestHtmlSessionInformationsReport {
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
@@ -54,7 +54,7 @@ public class TestHtmlSessionInformationsReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testSessionsInformations() throws IOException {
+	void testSessionsInformations() throws IOException {
 		final List<SessionInformations> sessions = new ArrayList<>();
 		sessions.add(new SessionInformations(new SessionTestImpl(true), false));
 		sessions.add(new SessionInformations(new SessionTestImpl(false), false));
@@ -103,26 +103,32 @@ public class TestHtmlSessionInformationsReport {
 		final SessionTestImpl sessionUserAgent = new SessionTestImpl(true);
 		sessionUserAgent.setUserAgent(
 				"Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; AS; rv:11.0) like Gecko");
-		assertEquals("userAgent windows MSIE", "MSIE 11.0",
-				new SessionInformations(sessionUserAgent, false).getBrowser());
-		assertEquals("userAgent windows MSIE", "Windows 7",
-				new SessionInformations(sessionUserAgent, false).getOs());
+		assertEquals("MSIE 11.0",
+				new SessionInformations(sessionUserAgent, false).getBrowser(),
+				"userAgent windows MSIE");
+		assertEquals("Windows 7",
+				new SessionInformations(sessionUserAgent, false).getOs(),
+				"userAgent windows MSIE");
 
 		// userAgent Android
 		sessionUserAgent.setUserAgent(
 				"Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19");
-		assertEquals("userAgent android chrome", "Chrome/18.0.1025.133",
-				new SessionInformations(sessionUserAgent, false).getBrowser());
-		assertEquals("userAgent android chrome", "Android 4.0.4",
-				new SessionInformations(sessionUserAgent, false).getOs());
+		assertEquals("Chrome/18.0.1025.133",
+				new SessionInformations(sessionUserAgent, false).getBrowser(),
+				"userAgent android chrome");
+		assertEquals("Android 4.0.4",
+				new SessionInformations(sessionUserAgent, false).getOs(),
+				"userAgent android chrome");
 
 		// userAgent Mac OS
 		sessionUserAgent.setUserAgent(
 				"Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25");
-		assertEquals("userAgent mac OS safari", "Safari/8536.25",
-				new SessionInformations(sessionUserAgent, false).getBrowser());
-		assertEquals("userAgent mac OS safari", "CPU OS 6_0 like Mac OS X",
-				new SessionInformations(sessionUserAgent, false).getOs());
+		assertEquals("Safari/8536.25",
+				new SessionInformations(sessionUserAgent, false).getBrowser(),
+				"userAgent mac OS safari");
+		assertEquals("CPU OS 6_0 like Mac OS X",
+				new SessionInformations(sessionUserAgent, false).getOs(),
+				"userAgent mac OS safari");
 
 		// userAgent inconnu
 		sessionUserAgent.setUserAgent("n'importe quoi");

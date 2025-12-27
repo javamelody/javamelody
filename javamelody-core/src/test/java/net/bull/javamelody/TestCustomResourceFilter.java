@@ -46,7 +46,7 @@ import net.bull.javamelody.internal.common.Parameters;
  * Test unitaire de la classe CustomResourceFilter.
  * @author Emeric Vernat
  */
-public class TestCustomResourceFilter {
+class TestCustomResourceFilter {
 	private static final String MONITORING_CSS = "monitoring.css";
 	private static final Map<String, String> CUSTOM_RESOURCES = Collections
 			.singletonMap(MONITORING_CSS, "customMonitoring.css");
@@ -57,7 +57,7 @@ public class TestCustomResourceFilter {
 	 * Initialisation.
 	 */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		init(false);
 	}
 
@@ -91,7 +91,7 @@ public class TestCustomResourceFilter {
 	 * Finalisation.
 	 */
 	@AfterEach
-	public void tearDown() {
+	void tearDown() {
 		if (customResourceFilter != null) {
 			customResourceFilter.destroy();
 		}
@@ -103,7 +103,7 @@ public class TestCustomResourceFilter {
 	 * @throws ServletException e
 	 */
 	@Test
-	public void testCustomResource() throws IOException, ServletException {
+	void testCustomResource() throws IOException, ServletException {
 		doTestResource(MONITORING_CSS);
 	}
 
@@ -113,7 +113,7 @@ public class TestCustomResourceFilter {
 	 * @throws ServletException e
 	 */
 	@Test
-	public void testCustomResourceUsingForward() throws IOException, ServletException {
+	void testCustomResourceUsingForward() throws IOException, ServletException {
 		init(true);
 		doTestResource(MONITORING_CSS, true);
 	}
@@ -124,7 +124,7 @@ public class TestCustomResourceFilter {
 	 * @throws ServletException e
 	 */
 	@Test
-	public void testResource() throws IOException, ServletException {
+	void testResource() throws IOException, ServletException {
 		doTestResource("alert.png");
 	}
 
@@ -134,7 +134,7 @@ public class TestCustomResourceFilter {
 	 * @throws ServletException e
 	 */
 	@Test
-	public void testNoResource() throws IOException, ServletException {
+	void testNoResource() throws IOException, ServletException {
 		doTestResource(null);
 	}
 

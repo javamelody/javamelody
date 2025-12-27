@@ -11,7 +11,7 @@ import jakarta.persistence.NamedQuery;
  */
 @Entity
 @NamedQuery(name = "Person.findByName", query = "select p from Person p where p.name = :name")
-public class Person {
+class Person {
 	@Id
 	@GeneratedValue
 	private long id;
@@ -21,21 +21,21 @@ public class Person {
 	/**
 	 * @return id
 	 */
-	public long getId() {
+	long getId() {
 		return id;
 	}
 
 	/**
 	 * @return String
 	 */
-	public String getName() {
+	String getName() {
 		return name;
 	}
 
 	/**
 	 * @param name String
 	 */
-	public void setName(String name) {
+	void setName(String name) {
 		this.name = name;
 	}
 }

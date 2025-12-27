@@ -10,12 +10,12 @@ import net.bull.javamelody.Utils;
 /**
  * Created by zvrablik on 4/22/16.
  */
-public class CounterErrorTest {
+class CounterErrorTest {
 	/**
 	 * Init.
 	 */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
@@ -23,19 +23,19 @@ public class CounterErrorTest {
 	 * Test.
 	 */
 	@Test
-	public void testMessageAndStackTraceLengthSmall() {
+	void testMessageAndStackTraceLengthSmall() {
 		final String message = "aaaaaaaaaa";
 		final String stackTrace = "bbbbbbbb";
 		final CounterError counterError = new CounterError(message, stackTrace);
-		assertEquals("message", message, counterError.getMessage());
-		assertEquals("stackTrace", stackTrace, counterError.getStackTrace());
+		assertEquals(message, counterError.getMessage(), "message");
+		assertEquals(stackTrace, counterError.getStackTrace(), "stackTrace");
 	}
 
 	/**
 	 * Test.
 	 */
 	@Test
-	public void testMessageAndStackTraceLengthBig() {
+	void testMessageAndStackTraceLengthBig() {
 		final int messageMaxLength = 1000;
 		final int stackTraceMaxLength = 50000;
 		final StringBuilder message = new StringBuilder();

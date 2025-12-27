@@ -40,19 +40,19 @@ import net.bull.javamelody.internal.common.Parameters;
  * Test unitaire de la classe CounterStorage.
  * @author Emeric Vernat
  */
-public class TestCounterStorage {
+class TestCounterStorage {
 
 	@TempDir
-	public File tempDir;
+	File tempDir;
 
 	/** Test. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	@Test
-	public void testCorruptedFile() throws IOException {
+	void testCorruptedFile() throws IOException {
 		final File tempFile = new File(tempDir, "test.ser.gz");
 		try (ObjectOutputStream outputStream = new ObjectOutputStream(
 				new GZIPOutputStream(new FileOutputStream(tempFile)))) {
@@ -66,7 +66,7 @@ public class TestCounterStorage {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testDeleteObsoleteCounterFiles() throws IOException {
+	void testDeleteObsoleteCounterFiles() throws IOException {
 		final Counter counter = new Counter("http", null);
 		counter.setApplication("test counter");
 		final File storageDir = Parameters.getStorageDirectory(counter.getApplication());

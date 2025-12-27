@@ -27,15 +27,15 @@ import org.junit.jupiter.api.Test;
  * Test unitaire de la classe MessageDigestPasswordEncoder.
  * @author Emeric Vernat
  */
-public class TestMessageDigestPasswordEncoder {
+class TestMessageDigestPasswordEncoder {
 	/** Test.
 	 * @throws NoSuchAlgorithmException e */
 	@Test
-	public void testEncodePassword() throws NoSuchAlgorithmException {
+	void testEncodePassword() throws NoSuchAlgorithmException {
 		final String algorithm = "SHA-256";
 		final String password = "password";
 		final String hash = new MessageDigestPasswordEncoder(algorithm).encodePassword(password);
 		final String expectedHash = "{SHA-256}c33d66fe65ffcca1f2260e6982dbf0c614b6ea3ddfdb37d6142fbec0feca5245";
-		assertEquals("encodePassword", expectedHash, hash);
+		assertEquals(expectedHash, hash, "encodePassword");
 	}
 }

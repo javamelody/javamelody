@@ -42,7 +42,7 @@ import net.bull.javamelody.internal.model.Counter;
  * Test unitaire de la classe MonitoringSpringInterceptor.
  * @author Emeric Vernat
  */
-public class TestMonitoringSpringInterceptor {
+class TestMonitoringSpringInterceptor {
 	private static final String TEST_CONTEXT_FILENAME = "spring-context.xml";
 	private static final String MONITORING_CONTEXT_FILENAME = "net/bull/javamelody/monitoring-spring.xml";
 	private static final String MONITORING_CONTEXT_FILENAME2 = "net/bull/javamelody/monitoring-spring-scheduled.xml";
@@ -52,21 +52,21 @@ public class TestMonitoringSpringInterceptor {
 
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 		this.context = new ClassPathXmlApplicationContext(MONITORING_CONTEXT_FILENAME,
 				MONITORING_CONTEXT_FILENAME2, TEST_CONTEXT_FILENAME);
 	}
 
 	@AfterEach
-	public void destroy() {
+	void destroy() {
 		this.context.close();
 	}
 
 	/**
 	 * Test.
 	 */
-	public interface ITest {
+	interface ITest {
 		/**
 		 * Test.
 		 * @return Date
@@ -83,7 +83,7 @@ public class TestMonitoringSpringInterceptor {
 	/**
 	 * Test.
 	 */
-	public interface ScheduledTest {
+	interface ScheduledTest {
 		/**
 		 * Test.
 		 * @return Date
@@ -101,7 +101,7 @@ public class TestMonitoringSpringInterceptor {
 	/**
 	 * Test.
 	 */
-	public interface AnnotatedTest {
+	interface AnnotatedTest {
 		/**
 		 * Test.
 		 * @return Date
@@ -121,7 +121,7 @@ public class TestMonitoringSpringInterceptor {
 	 * Test.
 	 */
 	@MonitoredWithSpring(name = "test interface")
-	public interface AnnotatedTest2 {
+	interface AnnotatedTest2 {
 		/**
 		 * Test.
 		 * @return Date
@@ -140,7 +140,7 @@ public class TestMonitoringSpringInterceptor {
 	 */
 	@MonitoredWithSpring
 	@MonitoredWithGuice
-	public static class AnnotatedTestClass implements AnnotatedTest {
+	static class AnnotatedTestClass implements AnnotatedTest {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -161,7 +161,7 @@ public class TestMonitoringSpringInterceptor {
 	/**
 	 * Test.
 	 */
-	public static class AnnotatedTestClass2 implements AnnotatedTest2 {
+	static class AnnotatedTestClass2 implements AnnotatedTest2 {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -184,7 +184,7 @@ public class TestMonitoringSpringInterceptor {
 	 */
 	@MonitoredWithSpring(name = "test class")
 	@MonitoredWithGuice(name = "test class")
-	public static class AnnotatedTestOtherClass implements AnnotatedTest {
+	static class AnnotatedTestOtherClass implements AnnotatedTest {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -205,7 +205,7 @@ public class TestMonitoringSpringInterceptor {
 	/**
 	 * Test.
 	 */
-	public static class AnnotatedTestMethod implements AnnotatedTest {
+	static class AnnotatedTestMethod implements AnnotatedTest {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -229,7 +229,7 @@ public class TestMonitoringSpringInterceptor {
 	 * Test.
 	 */
 	@Controller
-	public static class AnnotatedTestController implements ITest {
+	static class AnnotatedTestController implements ITest {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -251,7 +251,7 @@ public class TestMonitoringSpringInterceptor {
 	 * Test.
 	 */
 	@Service
-	public static class AnnotatedTestService implements ITest {
+	static class AnnotatedTestService implements ITest {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -273,7 +273,7 @@ public class TestMonitoringSpringInterceptor {
 	 * Test.
 	 */
 	@Async
-	public static class AnnotatedTestAsync implements ITest {
+	static class AnnotatedTestAsync implements ITest {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -294,7 +294,7 @@ public class TestMonitoringSpringInterceptor {
 	/**
 	 * Test.
 	 */
-	public static class AnnotatedTestScheduled implements ScheduledTest {
+	static class AnnotatedTestScheduled implements ScheduledTest {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -314,19 +314,19 @@ public class TestMonitoringSpringInterceptor {
 
 	/** Test. */
 	@Test
-	public void testNewInstance() {
+	void testNewInstance() {
 		assertNotNull(new MonitoringSpringInterceptor(), "new MonitoringSpringInterceptor");
 	}
 
 	/** Test. */
 	@Test
-	public void testGetSpringCounter() {
+	void testGetSpringCounter() {
 		assertNotNull(MonitoringProxy.getSpringCounter(), "getSpringCounter");
 	}
 
 	/** Test. */
 	@Test
-	public void testMonitoredWithAnnotationPointcut() {
+	void testMonitoredWithAnnotationPointcut() {
 		final MonitoredWithAnnotationPointcut pointcut = new MonitoredWithAnnotationPointcut();
 		assertNotNull(pointcut, "new MonitoredWithAnnotationPointcut");
 		assertNotNull(pointcut.getClassFilter(), "classFilter");
@@ -337,7 +337,7 @@ public class TestMonitoringSpringInterceptor {
 	/** Test.
 	 * @throws ClassNotFoundException e */
 	@Test
-	public void testMonitoredWithInterfacePointcut() throws ClassNotFoundException {
+	void testMonitoredWithInterfacePointcut() throws ClassNotFoundException {
 		final MonitoredWithInterfacePointcut pointcut = new MonitoredWithInterfacePointcut();
 		assertNotNull(pointcut, "new MonitoredWithInterfacePointcut");
 		assertNotNull(pointcut.getClassFilter(), "classFilter");
@@ -349,7 +349,7 @@ public class TestMonitoringSpringInterceptor {
 
 	/** Test. */
 	@Test
-	public void testSpringAOP() {
+	void testSpringAOP() {
 		final Counter springCounter = MonitoringProxy.getSpringCounter();
 		springCounter.clear();
 		final SpringTestFacade springTestFacade = (SpringTestFacade) context
@@ -414,7 +414,7 @@ public class TestMonitoringSpringInterceptor {
 
 	/** Test. */
 	@Test
-	public void testSpringDataSourceBeanPostProcessor() {
+	void testSpringDataSourceBeanPostProcessor() {
 		// utilisation de l'InvocationHandler dans SpringDataSourceBeanPostProcessor
 		context.getType("dataSource2");
 		context.getBean("dataSource2");
@@ -431,7 +431,7 @@ public class TestMonitoringSpringInterceptor {
 
 	/** Test. */
 	@Test
-	public void testSpringDataSourceFactoryBean() {
+	void testSpringDataSourceFactoryBean() {
 		// utilisation de l'InvocationHandler dans SpringDataSourceFactoryBean
 		context.getType("wrappedDataSource");
 		context.getBean("wrappedDataSource");

@@ -41,12 +41,12 @@ import net.bull.javamelody.internal.common.Parameters;
  * Test unitaire de la classe JspWrapper.
  * @author Emeric Vernat
  */
-public class TestJspWrapper {
+class TestJspWrapper {
 	/**
 	 * Initialisation.
 	 */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
@@ -56,7 +56,7 @@ public class TestJspWrapper {
 	 * @throws IOException e
 	 */
 	@Test
-	public void testJspWrapper() throws ServletException, IOException {
+	void testJspWrapper() throws ServletException, IOException {
 		assertNotNull(JspWrapper.getJspCounter(), "getJspCounter");
 
 		final ServletContext servletContext = createNiceMock(ServletContext.class);

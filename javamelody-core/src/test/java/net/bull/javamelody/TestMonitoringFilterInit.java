@@ -41,7 +41,7 @@ import net.bull.javamelody.internal.common.Parameters;
  * Test unitaire de la classe MonitoringFilter.
  * @author Emeric Vernat
  */
-public class TestMonitoringFilterInit {
+class TestMonitoringFilterInit {
 	private static final String FILTER_NAME = "monitoring";
 	private FilterConfig config;
 	private ServletContext context;
@@ -50,7 +50,7 @@ public class TestMonitoringFilterInit {
 	/**
 	 * Initialisation (deux Before ne garantissent pas l'ordre dans Eclipse).
 	 */
-	public TestMonitoringFilterInit() {
+	TestMonitoringFilterInit() {
 		super();
 		Utils.initialize();
 	}
@@ -59,7 +59,7 @@ public class TestMonitoringFilterInit {
 	 * Initialisation.
 	 */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		tearDown();
 		// rq: pas setUpFirst ici car setUp est rappelée dans les méthodes
 		try {
@@ -87,7 +87,7 @@ public class TestMonitoringFilterInit {
 	}
 
 	@AfterEach
-	public void tearDown() {
+	void tearDown() {
 		if (monitoringFilter != null) {
 			monitoringFilter.destroy();
 			monitoringFilter = null;
@@ -98,7 +98,7 @@ public class TestMonitoringFilterInit {
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testInit() throws ServletException, IOException {
+	void testInit() throws ServletException, IOException {
 		init();
 		setUp();
 		expect(context

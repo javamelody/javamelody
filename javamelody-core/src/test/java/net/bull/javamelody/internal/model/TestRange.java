@@ -38,7 +38,7 @@ import net.bull.javamelody.internal.common.I18N;
  * Test unitaire de la classe Range.
  * @author Emeric Vernat
  */
-public class TestRange {
+class TestRange {
 	private static final long ONE_DAY_SECONDS = 24 * 60 * 60;
 	private static final long ONE_DAY_MILLIS = ONE_DAY_SECONDS * 1000;
 	private static final long ONE_MINUTE_MILLIS = 60 * 1000;
@@ -47,7 +47,7 @@ public class TestRange {
 
 	/** Test. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 		periodRange = Period.JOUR.getRange();
 		customRange = Range.createCustomRange(new Date(System.currentTimeMillis() - ONE_DAY_MILLIS),
@@ -56,35 +56,35 @@ public class TestRange {
 
 	/** Test. */
 	@Test
-	public void testGetPeriod() {
+	void testGetPeriod() {
 		assertNotNull(periodRange.getPeriod(), "getPeriod");
 		assertNull(customRange.getPeriod(), "getPeriod");
 	}
 
 	/** Test. */
 	@Test
-	public void testGetStartDate() {
+	void testGetStartDate() {
 		assertNull(periodRange.getStartDate(), "getStartDate");
 		assertNotNull(customRange.getStartDate(), "getStartDate");
 	}
 
 	/** Test. */
 	@Test
-	public void testGetEndDate() {
+	void testGetEndDate() {
 		assertNull(periodRange.getEndDate(), "getEndDate");
 		assertNotNull(customRange.getEndDate(), "getEndDate");
 	}
 
 	/** Test. */
 	@Test
-	public void testGetValue() {
+	void testGetValue() {
 		assertNotNull(periodRange.getValue(), "getValue");
 		assertNotNull(customRange.getValue(), "getValue");
 	}
 
 	/** Test. */
 	@Test
-	public void testParse() {
+	void testParse() {
 		I18N.bindLocale(Locale.FRENCH);
 		try {
 			final DateFormat dateFormat = I18N.createDateFormat();
@@ -134,21 +134,21 @@ public class TestRange {
 
 	/** Test. */
 	@Test
-	public void testGetLabel() {
+	void testGetLabel() {
 		assertNotNull(periodRange.getLabel(), "getLabel");
 		assertNotNull(customRange.getLabel(), "getLabel");
 	}
 
 	/** Test. */
 	@Test
-	public void testGetDurationDays() {
+	void testGetDurationDays() {
 		assertEquals(1L, periodRange.getDurationDays(), "getDurationDays");
 		assertEquals(1L, customRange.getDurationDays(), "getDurationDays");
 	}
 
 	/** Test. */
 	@Test
-	public void testToString() {
+	void testToString() {
 		final String string = periodRange.toString();
 		assertNotNull(string, "toString not null");
 		assertFalse(string.isEmpty(), "toString not empty");

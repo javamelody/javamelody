@@ -34,10 +34,10 @@ import net.bull.javamelody.internal.model.Counter;
  * Test unitaire de la classe MonitoringInterceptor.
  * @author Emeric Vernat
  */
-public class TestMonitoringInterceptor {
+class TestMonitoringInterceptor {
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
@@ -124,7 +124,7 @@ public class TestMonitoringInterceptor {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testMonitoringTarget() throws Exception {
+	void testMonitoringTarget() throws Exception {
 		final Counter ejbCounter = MonitoringProxy.getEjbCounter();
 		ejbCounter.clear();
 		final MonitoringTargetInterceptor interceptor = new MonitoringTargetInterceptor();
@@ -137,7 +137,7 @@ public class TestMonitoringInterceptor {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testMonitoringCdi() throws Exception {
+	void testMonitoringCdi() throws Exception {
 		final Counter ejbCounter = MonitoringProxy.getEjbCounter();
 		ejbCounter.clear();
 		final MonitoringCdiInterceptor interceptor = new MonitoringCdiInterceptor();
@@ -150,7 +150,7 @@ public class TestMonitoringInterceptor {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testMonitoringAsynchronousCdi() throws Exception {
+	void testMonitoringAsynchronousCdi() throws Exception {
 		final Counter ejbCounter = MonitoringProxy.getEjbCounter();
 		ejbCounter.clear();
 		final MonitoringAsynchronousCdiInterceptor interceptor = new MonitoringAsynchronousCdiInterceptor();
@@ -162,7 +162,7 @@ public class TestMonitoringInterceptor {
 
 	/** Test. */
 	@Test
-	public void testGetEjbCounter() {
+	void testGetEjbCounter() {
 		assertNotNull(MonitoringProxy.getEjbCounter(), "getEjbCounter");
 	}
 }

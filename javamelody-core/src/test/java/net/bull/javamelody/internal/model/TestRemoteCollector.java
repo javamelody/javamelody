@@ -34,13 +34,13 @@ import net.bull.javamelody.internal.common.Parameters;
  * Test unitaire de la classe Action.
  * @author Emeric Vernat
  */
-public class TestRemoteCollector {
+class TestRemoteCollector {
 	private RemoteCollector remoteCollector;
 
 	/** Check.
 	 * @throws IOException e */
 	@BeforeEach
-	public void setUp() throws IOException {
+	void setUp() throws IOException {
 		Utils.initialize();
 		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
 		final List<URL> urls = Collections.singletonList(new URL("http://localhost:8090/test"));
@@ -50,7 +50,7 @@ public class TestRemoteCollector {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testExecute() throws IOException {
+	void testExecute() throws IOException {
 		remoteCollector.executeActionAndCollectData(Action.CLEAR_COUNTER, "all", null, null, null,
 				null);
 		remoteCollector.executeActionAndCollectData(Action.INVALIDATE_SESSION, null, "nothing",
@@ -66,7 +66,7 @@ public class TestRemoteCollector {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testGetJRobin() throws IOException {
+	void testGetJRobin() throws IOException {
 		remoteCollector.collectJRobin("cpu", 50, 50);
 		remoteCollector.collectJRobins(50, 50);
 		remoteCollector.collectOtherJRobins(50, 50);
@@ -75,7 +75,7 @@ public class TestRemoteCollector {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testForSwing() throws IOException {
+	void testForSwing() throws IOException {
 		remoteCollector.setCookies("testcookies");
 		remoteCollector.setURLs(remoteCollector.getURLs());
 		remoteCollector.disableAggregation();

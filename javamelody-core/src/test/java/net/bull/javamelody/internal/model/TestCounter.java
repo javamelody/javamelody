@@ -52,7 +52,7 @@ public class TestCounter {
 
 	/** Initialisation. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 		counter = new Counter("test", null);
 		counter.bindContext("bind context", "bind my context", null, -1, -1);
@@ -60,7 +60,7 @@ public class TestCounter {
 
 	/** Finalisation. */
 	@AfterEach
-	public void tearDown() {
+	void tearDown() {
 		counter.unbindContext();
 	}
 
@@ -72,7 +72,7 @@ public class TestCounter {
 
 	/** Test. */
 	@Test
-	public void testAddRequest() {
+	void testAddRequest() {
 		final CounterRequest request = createCounterRequest();
 		// ce bindContext pour tester le cas où une requête est ajoutée avec un contexte et un contexte parent
 		// puis une requête ajoutée avec un contexte sans contexte parent
@@ -90,7 +90,7 @@ public class TestCounter {
 		after.get(0).removeHits(request);
 		after.get(0).removeHits(request);
 		// on teste le contenu des CounterRequest par le contenu de toString
-		assertEquals("requests", before.toString(), after.toString());
+		assertEquals(before.toString(), after.toString(), "requests");
 
 		// test addChildRequest dans addRequest
 		final Counter sqlCounter = new Counter("sql", null);
@@ -105,7 +105,7 @@ public class TestCounter {
 
 	/** Test. */
 	@Test
-	public void testAddRequestForSystemError() {
+	void testAddRequestForSystemError() {
 		final CounterRequest request = createCounterRequest();
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
 		errorCounter.setMaxRequestsCount(200);
@@ -116,7 +116,7 @@ public class TestCounter {
 		final List<CounterRequest> after = errorCounter.getOrderedRequests();
 		after.get(0).removeHits(request);
 		// on teste le contenu des CounterRequest par le contenu de toString
-		assertEquals("error requests", before.toString(), after.toString());
+		assertEquals(before.toString(), after.toString(), "error requests");
 		int i = 0;
 		while (errorCounter.getRequestsCount() < Counter.MAX_ERRORS_COUNT) {
 			errorCounter.addRequestForSystemError("request a" + i, 1, 0, 0, null);
@@ -140,7 +140,7 @@ public class TestCounter {
 
 	/** Test. */
 	@Test
-	public void testAddHits() {
+	void testAddHits() {
 		final CounterRequest counterRequest = createCounterRequest();
 		counter.addHits(counterRequest);
 		final List<CounterRequest> before = counter.getOrderedRequests();
@@ -149,7 +149,7 @@ public class TestCounter {
 		final List<CounterRequest> after = counter.getOrderedRequests();
 		after.get(0).removeHits(counterRequest);
 		// on teste le contenu des CounterRequest par le contenu de toString
-		assertEquals("requests", before.toString(), after.toString());
+		assertEquals(before.toString(), after.toString(), "requests");
 		// on remet counterRequests.getHits() à 0
 		counterRequest.removeHits(counterRequest);
 		// on teste l'ajout de hits avec counterRequests à 0 hit(s)
@@ -158,7 +158,7 @@ public class TestCounter {
 
 	/** Test. */
 	@Test
-	public void testCounterRequestRemoveHits() {
+	void testCounterRequestRemoveHits() {
 		final CounterRequest counterRequest = createCounterRequest();
 		final CounterRequest counterRequest2 = createCounterRequest();
 		// test de CounterRequest.removeHits (avec counterRequest2.hits == 0)
@@ -184,7 +184,7 @@ public class TestCounter {
 
 	/** Test. */
 	@Test
-	public void testRemoveRequest() {
+	void testRemoveRequest() {
 		final int count = counter.getRequestsCount();
 		counter.addRequest("remove request", 100, 50, 50, false, 1000);
 		counter.removeRequest("remove request");
@@ -193,7 +193,7 @@ public class TestCounter {
 
 	/** Test. */
 	@Test
-	public void testAddRequests() {
+	void testAddRequests() {
 		final CounterRequest counterRequest = createCounterRequest();
 		counter.addHits(counterRequest);
 		counter.bindContext("context", "context", null, -1, -1);
@@ -206,7 +206,7 @@ public class TestCounter {
 		final List<CounterRequest> after = counter.getOrderedRequests();
 		after.get(0).removeHits(counterRequest);
 		// on teste le contenu des CounterRequest par le contenu de toString
-		assertEquals("requests", before.toString(), after.toString());
+		assertEquals(before.toString(), after.toString(), "requests");
 
 		// test de la limitation à maxRequestsCount dans l'ajout de requêtes
 		final Counter counter2 = new Counter(counter.getName(), null);
@@ -226,7 +226,7 @@ public class TestCounter {
 
 	/** Test. */
 	@Test
-	public void testAddErrors() {
+	void testAddErrors() {
 		final CounterError beforeError = new CounterError("before", null);
 		assertNotNull(beforeError.toString(), "CounterError.toString()");
 		try {
@@ -263,14 +263,14 @@ public class TestCounter {
 
 	/** Test. */
 	@Test
-	public void testGetErrors() {
+	void testGetErrors() {
 		assertTrue(counter.getErrors().isEmpty(), "getErrors");
 		assertNotNull(new Counter(Counter.ERROR_COUNTER_NAME, null).getErrors(), "getErrors");
 	}
 
 	/** Test. */
 	@Test
-	public void testClear() {
+	void testClear() {
 		counter.addRequest("test clear", 100, 50, 50, false, 1000);
 		counter.clear();
 		assertEquals(0, counter.getRequestsCount(), "requests count");
@@ -278,18 +278,18 @@ public class TestCounter {
 
 	/** Test. */
 	@Test
-	public void testGetCounterRequest() {
+	void testGetCounterRequest() {
 		counter.unbindContext();
 		final String requestName = "get counter request";
 		counter.bindContext(requestName, "my context", null, -1, -1);
 		final CounterRequest counterRequest = counter
 				.getCounterRequest(counter.getOrderedRootCurrentContexts().get(0));
-		assertEquals("request name", requestName, counterRequest.getName());
+		assertEquals(requestName, counterRequest.getName(), "request name");
 	}
 
 	/** Test. */
 	@Test
-	public void testGetOrderedRequests() {
+	void testGetOrderedRequests() {
 		counter.clear();
 		counter.addRequest("test a", 0, 0, 0, false, 1000);
 		counter.addRequest("test b", 1000, 500, 500, false, 1000); // supérieur
@@ -301,7 +301,7 @@ public class TestCounter {
 
 	/** Test. */
 	@Test
-	public void testGetOrderedByHitsRequests() {
+	void testGetOrderedByHitsRequests() {
 		counter.clear();
 		counter.addRequest("test 1", 0, 0, 0, false, 1000);
 		counter.addRequest("test 2", 1000, 500, 500, false, 1000); // supérieur en hits
@@ -316,7 +316,7 @@ public class TestCounter {
 
 	/** Test. */
 	@Test
-	public void testGetOrderedRootCurrentContexts() {
+	void testGetOrderedRootCurrentContexts() {
 		counter.unbindContext();
 		final String requestName = "root context";
 
@@ -327,7 +327,7 @@ public class TestCounter {
 
 		final List<CounterRequestContext> rootContexts = counter.getOrderedRootCurrentContexts();
 		assertEquals(nbRootContexts + 1, rootContexts.size(), "contexts size");
-		assertEquals("context name", requestName, rootContexts.get(0).getRequestName());
+		assertEquals(requestName, rootContexts.get(0).getRequestName(), "context name");
 
 		final String string = rootContexts.get(0).toString();
 		assertNotNull(string, "toString not null");
@@ -360,7 +360,7 @@ public class TestCounter {
 
 	/** Test. */
 	@Test
-	public void testGetRequests() {
+	void testGetRequests() {
 		counter.clear();
 		final CounterRequest counterRequest = createCounterRequest();
 		counter.addHits(counterRequest);
@@ -371,23 +371,23 @@ public class TestCounter {
 
 	/** Test. */
 	@Test
-	public void testGetRequestsCount() {
+	void testGetRequestsCount() {
 		counter.addRequest("test requests count", 100, 50, 50, false, 1000);
 		assertEquals(counter.getRequests().size(), counter.getRequestsCount(), "requests count");
 	}
 
 	/** Test. */
 	@Test
-	public void testApplication() {
+	void testApplication() {
 		final String value = "app";
-		assertNotSame("application", value, counter.getApplication());
+		assertNotSame(value, counter.getApplication(), "application");
 		counter.setApplication(value);
-		assertSame("application", value, counter.getApplication());
+		assertSame(value, counter.getApplication(), "application");
 	}
 
 	/** Test. */
 	@Test
-	public void testRequestTransformPattern() {
+	void testRequestTransformPattern() {
 		final Pattern value = Pattern.compile("a*");
 		assertNotSame(value, counter.getRequestTransformPattern(), "request transform pattern");
 		counter.setRequestTransformPattern(value);
@@ -396,7 +396,7 @@ public class TestCounter {
 
 	/** Test. */
 	@Test
-	public void testStartDate() {
+	void testStartDate() {
 		final Date value = new Date(System.currentTimeMillis() + 1000);
 		assertNotSame(value, counter.getStartDate(), "start date");
 		counter.setStartDate(value);
@@ -405,7 +405,7 @@ public class TestCounter {
 
 	/** Test. */
 	@Test
-	public void testDisplayed() {
+	void testDisplayed() {
 		final boolean value = false;
 		assertNotSame(value, counter.isDisplayed(), "displayed");
 		counter.setDisplayed(value);
@@ -414,7 +414,7 @@ public class TestCounter {
 
 	/** Test. */
 	@Test
-	public void testErrorCounter() {
+	void testErrorCounter() {
 		final String message = "errorCounter";
 		assertFalse(new Counter("http", null).isErrorCounter(), message);
 		assertTrue(new Counter("error", null).isErrorCounter(), message);
@@ -424,14 +424,14 @@ public class TestCounter {
 
 	/** Test. */
 	@Test
-	public void testJobCounter() {
+	void testJobCounter() {
 		assertFalse(new Counter("spring", null).isJobCounter(), "jobCounter");
 		assertTrue(new Counter("job", null).isJobCounter(), "jobCounter");
 	}
 
 	/** Test. */
 	@Test
-	public void testJspOrStrutsCounter() {
+	void testJspOrStrutsCounter() {
 		assertFalse(new Counter("http", null).isJspOrStrutsCounter(), "jspOrStrutsCounter");
 		assertTrue(new Counter("jsp", null).isJspOrStrutsCounter(), "jspOrStrutsCounter");
 		assertTrue(new Counter("struts", null).isJspOrStrutsCounter(), "jspOrStrutsCounter");
@@ -439,7 +439,7 @@ public class TestCounter {
 
 	/** Test. */
 	@Test
-	public void testBusinessFacadeCounter() {
+	void testBusinessFacadeCounter() {
 		final String message = "businessFacadeCounter";
 		assertFalse(new Counter("log", null).isBusinessFacadeCounter(), message);
 		assertTrue(new Counter("services", null).isBusinessFacadeCounter(), message);
@@ -451,7 +451,7 @@ public class TestCounter {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testReadFromFile() throws IOException {
+	void testReadFromFile() throws IOException {
 		// test pour un counter vide
 		counter.clear();
 		counter.writeToFile();
@@ -471,7 +471,7 @@ public class TestCounter {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testWriteToFile() throws IOException {
+	void testWriteToFile() throws IOException {
 		// test pour un counter vide
 		counter.clear();
 		counter.writeToFile();
@@ -482,12 +482,12 @@ public class TestCounter {
 		counter.addRequest("test writeToFile", 100, 50, 50, false, 1000);
 		final String before = counter.toString();
 		counter.writeToFile();
-		assertEquals("counter", before, counter.toString());
+		assertEquals(before, counter.toString(), "counter");
 	}
 
 	/** Test. */
 	@Test
-	public void testToString() {
+	void testToString() {
 		counter.addRequest("test toString", 100, 50, 50, false, 1000);
 		final String string = counter.toString();
 		assertNotNull(string, "toString not null");

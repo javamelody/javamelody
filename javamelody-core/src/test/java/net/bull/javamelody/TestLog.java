@@ -32,14 +32,14 @@ import net.bull.javamelody.internal.model.Counter;
  * Test unitaire des classes Log4J2Appender, LogbackAppender et LoggingHandler.
  * @author Emeric Vernat
  */
-public class TestLog {
+class TestLog {
 	private LogbackAppender logbackAppender;
 	private Log4J2Appender log4j2Appender;
 	private LoggingHandler loggingHandler;
 
 	/** Initialisation. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 		logbackAppender = new LogbackAppender();
 		log4j2Appender = new Log4J2Appender();
@@ -48,7 +48,7 @@ public class TestLog {
 
 	/** Test. */
 	@Test
-	public void testGetSingleton() {
+	void testGetSingleton() {
 		assertNotNull(LogbackAppender.getSingleton(),"getSingleton not null");
 		assertNotNull(Log4J2Appender.getSingleton(), "getSingleton not null");
 		assertSame(Log4J2Appender.getSingleton(), Log4J2Appender.getSingleton(), "getSingleton same");
@@ -58,7 +58,7 @@ public class TestLog {
 
 	/** Test. */
 	@Test
-	public void testRegister() {
+	void testRegister() {
 		try {
 			logbackAppender.register();
 			log4j2Appender.register();
@@ -72,14 +72,14 @@ public class TestLog {
 
 	/** Test. */
 	@Test
-	public void testFlush() {
+	void testFlush() {
 		loggingHandler.flush();
 		assertNotNull(loggingHandler, "flush");
 	}
 
 	/** Test. */
 	@Test
-	public void testClose() {
+	void testClose() {
 		logbackAppender.stop();
 		loggingHandler.close();
 		assertNotNull(loggingHandler, "close");
@@ -87,7 +87,7 @@ public class TestLog {
 
 	/** Test. */
 	@Test
-	public void testAppend() {
+	void testAppend() {
 		try {
 			logbackAppender.register();
 			log4j2Appender.register();

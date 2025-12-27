@@ -46,19 +46,19 @@ import net.bull.javamelody.internal.model.VirtualMachine;
  * Test unitaire de la classe HtmlHeapHistogramReport.
  * @author Emeric Vernat
  */
-public class TestHtmlHeapHistogramReport {
+class TestHtmlHeapHistogramReport {
 	private static final String EXCEPTION = "exception";
 
 	/** Initialisation. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Finalisation.
 	 * @throws Exception e */
 	@AfterEach
-	public void tearDown() throws Exception {
+	void tearDown() throws Exception {
 		VirtualMachine.detach();
 	}
 
@@ -74,7 +74,7 @@ public class TestHtmlHeapHistogramReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testHeapHistoSun() throws IOException {
+	void testHeapHistoSun() throws IOException {
 		try (InputStream input = getClass().getResourceAsStream("/heaphisto.txt")) {
 			final HeapHistogram heapHistogram = new HeapHistogram(input, false);
 			report(heapHistogram);
@@ -84,7 +84,7 @@ public class TestHtmlHeapHistogramReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testHeapHistoJdk9() throws IOException {
+	void testHeapHistoJdk9() throws IOException {
 		try (InputStream input = getClass().getResourceAsStream("/heaphisto_jdk9.txt")) {
 			final HeapHistogram heapHistogram = new HeapHistogram(input, false);
 			report(heapHistogram);
@@ -94,7 +94,7 @@ public class TestHtmlHeapHistogramReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testHeapHistoJdkEa() throws IOException {
+	void testHeapHistoJdkEa() throws IOException {
 		try (InputStream input = getClass().getResourceAsStream("/heaphisto_jdk-ea.txt")) {
 			final HeapHistogram heapHistogram = new HeapHistogram(input, false);
 			report(heapHistogram);
@@ -104,7 +104,7 @@ public class TestHtmlHeapHistogramReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testHeapHistoBEA() throws IOException {
+	void testHeapHistoBEA() throws IOException {
 		try (InputStream input = getClass().getResourceAsStream("/heaphisto_jrockit.txt")) {
 			final HeapHistogram heapHistogram = new HeapHistogram(input, true);
 			report(heapHistogram);
@@ -113,7 +113,7 @@ public class TestHtmlHeapHistogramReport {
 
 	/** Test. */
 	@Test
-	public void testHeapHistoClassInfoParseLong() {
+	void testHeapHistoClassInfoParseLong() {
 		assertEquals(100 * 1024, HeapHistogram.ClassInfo.parseLongWithK("100k"), "parseLongWithK");
 		assertEquals(100, HeapHistogram.ClassInfo.parseLongWithK("100"), "parseLongWithK");
 	}
@@ -145,7 +145,7 @@ public class TestHtmlHeapHistogramReport {
 
 	/** Test. */
 	@Test
-	public void testVirtualMachine() {
+	void testVirtualMachine() {
 		// rq : on ne peut pas tester complètement VirtualMachine
 		// car eclipse et maven lance junit dans un jre (sans tools.jar) et non dans un jdk
 		final boolean supported = VirtualMachine.isSupported();

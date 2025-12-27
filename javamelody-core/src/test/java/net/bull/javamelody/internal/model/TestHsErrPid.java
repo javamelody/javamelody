@@ -30,11 +30,11 @@ import org.junit.jupiter.api.Test;
  * Test unitaire de la classe HsErrPid.
  * @author Emeric Vernat
  */
-public class TestHsErrPid {
+class TestHsErrPid {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testBuildHsErrPidList() throws IOException {
+	void testBuildHsErrPidList() throws IOException {
 		final List<HsErrPid> hsErrPidList = HsErrPid.buildHsErrPidList();
 		final File file = new File("./hs_err_pid12345.log");
 		final File file2 = new File("./hs_err_pid67890.log");

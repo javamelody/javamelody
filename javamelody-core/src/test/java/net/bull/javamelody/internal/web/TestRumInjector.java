@@ -38,7 +38,7 @@ import net.bull.javamelody.internal.model.Counter;
  * Test for RumInjector.
  * @author Emeric Vernat
  */
-public class TestRumInjector {
+class TestRumInjector {
 
 	private static class NullServletOutputStream extends ServletOutputStream {
 		NullServletOutputStream() {
@@ -65,7 +65,7 @@ public class TestRumInjector {
 	 * Test.
 	 */
 	@Test
-	public void testIsRumResource() {
+	void testIsRumResource() {
 		assertTrue(RumInjector.isRumResource("boomerang.min.js"), "isRumResource");
 		assertFalse(RumInjector.isRumResource("notboomerang"), "isRumResource");
 	}
@@ -75,7 +75,7 @@ public class TestRumInjector {
 	 * @throws IOException e
 	 */
 	@Test
-	public void testCreateRumResponseWrapper() throws IOException {
+	void testCreateRumResponseWrapper() throws IOException {
 		final String requestName = "test GET";
 
 		final HttpServletRequest httpRequest = createNiceMock(HttpServletRequest.class);
@@ -178,7 +178,7 @@ public class TestRumInjector {
 	 * Test.
 	 */
 	@Test
-	public void testAddRumHit() {
+	void testAddRumHit() {
 		final Counter httpCounter = new Counter(Counter.HTTP_COUNTER_NAME, "dbweb.png");
 		// test null requestName
 		addRumHit(httpCounter, null, null, null, null, null);

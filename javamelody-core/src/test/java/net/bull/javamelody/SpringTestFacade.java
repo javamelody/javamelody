@@ -24,7 +24,7 @@ import java.util.Date;
  * Interface test de bean Spring.
  * @author Emeric Vernat
  */
-public interface SpringTestFacade {
+interface SpringTestFacade {
 	/**
 	 * Méthode test de service sur la façade.
 	 * @return Date

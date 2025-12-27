@@ -44,12 +44,12 @@ import net.bull.javamelody.internal.model.TomcatInformations;
  * Test unitaire de la classe HtmlJavaInformationsReport.
  * @author Emeric Vernat
  */
-public class TestHtmlJavaInformationsReport {
+class TestHtmlJavaInformationsReport {
 	private StringWriter writer;
 
 	/** Initialisation. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 		// pour testTomcatInformations (si la classe TomcatInformations est déjà chargée,
 		// c'est trop tard, et c'est pourquoi cela doit être défini au lancement de junit)
@@ -59,7 +59,7 @@ public class TestHtmlJavaInformationsReport {
 
 	/** Test. */
 	@Test
-	public void testGetApplicationServerIconName() {
+	void testGetApplicationServerIconName() {
 		assertNotNull(HtmlJavaInformationsReport.getApplicationServerIconName("Tomcat"),
 				"getApplicationServerIconName");
 		assertNull(HtmlJavaInformationsReport.getApplicationServerIconName("unknown"),
@@ -68,7 +68,7 @@ public class TestHtmlJavaInformationsReport {
 
 	/** Test. */
 	@Test
-	public void testGetOSIconName() {
+	void testGetOSIconName() {
 		assertNotNull(HtmlJavaInformationsReport.getOSIconName("Linux"), "getOSIconName");
 		assertNull(HtmlJavaInformationsReport.getOSIconName("unknown"), "getOSIconName");
 	}
@@ -77,7 +77,7 @@ public class TestHtmlJavaInformationsReport {
 	 * @throws IOException e
 	 * @throws JMException e */
 	@Test
-	public void testTomcatInformations() throws IOException, JMException {
+	void testTomcatInformations() throws IOException, JMException {
 		final MBeanServer mBeanServer = MBeans.getPlatformMBeanServer();
 		final List<ObjectName> mBeans = new ArrayList<>();
 		try {
@@ -136,7 +136,7 @@ public class TestHtmlJavaInformationsReport {
 
 	/** Test. */
 	@Test
-	public void testToBar() {
+	void testToBar() {
 		assertNotNull(HtmlJavaInformationsReport.toBar(0), "toBar");
 		assertNotNull(HtmlJavaInformationsReport.toBar(1), "toBar");
 		assertNotNull(HtmlJavaInformationsReport.toBar(10), "toBar");

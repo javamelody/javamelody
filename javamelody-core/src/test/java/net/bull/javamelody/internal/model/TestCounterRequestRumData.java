@@ -26,12 +26,12 @@ import org.junit.jupiter.api.Test;
  * Test for CounterRequestRumData.
  * @author Emeric Vernat
  */
-public class TestCounterRequestRumData {
+class TestCounterRequestRumData {
 	/**
 	 * Test.
 	 */
 	@Test
-	public void test() {
+	void test() {
 		final CounterRequestRumData rumData = new CounterRequestRumData();
 		assertNotNull(rumData.toString(), "toString");
 		assertEquals(0, rumData.getHits(), "getHits");

@@ -40,30 +40,30 @@ import net.bull.javamelody.internal.model.Counter;
  * Test unitaire de la classe MonitoringGuiceInterceptor.
  * @author Emeric Vernat
  */
-public class TestMonitoringGuiceInterceptor {
+class TestMonitoringGuiceInterceptor {
 	private static final String REQUESTS_COUNT = "requestsCount";
 
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test. */
 	@Test
-	public void testNewInstance() {
+	void testNewInstance() {
 		assertNotNull(new MonitoringGuiceInterceptor(), "new MonitoringGuiceInterceptor");
 	}
 
 	/** Test. */
 	@Test
-	public void testGetGuiceCounter() {
+	void testGetGuiceCounter() {
 		assertNotNull(MonitoringProxy.getGuiceCounter(), "getGuiceCounter");
 	}
 
 	/** Test. */
 	@Test
-	public void testGuiceAOP() {
+	void testGuiceAOP() {
 		final Counter guiceCounter = MonitoringProxy.getGuiceCounter();
 		guiceCounter.clear();
 

@@ -28,29 +28,29 @@ import org.junit.jupiter.api.Test;
  * Test unitaire de la classe Parameter.
  * @author Emeric Vernat
  */
-public class TestParameter {
+class TestParameter {
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test. */
 	@Test
-	public void testGetParameterValue() {
+	void testGetParameterValue() {
 		assertNull(Parameter.DATASOURCES.getValue(), "getValue");
 	}
 
 	/** Test. */
 	@Test
-	public void testSetParameterValue() {
+	void testSetParameterValue() {
 		Parameter.DATASOURCES.setValue("jdbc/DataSource");
 		assertEquals(Parameter.DATASOURCES.getValue(), "jdbc/DataSource", "getValue");
 	}
 
 	/** Test. */
 	@Test
-	public void testParameterValueOfIgnoreCase() {
+	void testParameterValueOfIgnoreCase() {
 		assertNotNull(Parameter.valueOfIgnoreCase(Parameter.DISABLED.toString()), "Parameter.valueOfIgnoreCase");
 	}
 }

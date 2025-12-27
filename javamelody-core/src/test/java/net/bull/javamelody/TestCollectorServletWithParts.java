@@ -51,7 +51,7 @@ import net.bull.javamelody.internal.web.FilterServletOutputStream;
  * Test unitaire de la classe CollectorServlet.
  * @author Emeric Vernat
  */
-public class TestCollectorServletWithParts {
+class TestCollectorServletWithParts {
 	private static final String TRUE = "true";
 	private static final String TEST = "test";
 	private CollectorServlet collectorServlet;
@@ -62,7 +62,7 @@ public class TestCollectorServletWithParts {
 	 * @throws ServletException e
 	 */
 	@BeforeEach
-	public void setUp() throws IOException, ServletException {
+	void setUp() throws IOException, ServletException {
 		tearDown();
 		Utils.initialize();
 		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", TRUE);
@@ -99,7 +99,7 @@ public class TestCollectorServletWithParts {
 	 * @throws IOException e
 	 */
 	@AfterEach
-	public void tearDown() throws IOException {
+	void tearDown() throws IOException {
 		if (collectorServlet != null) {
 			collectorServlet.destroy();
 		}
@@ -110,7 +110,7 @@ public class TestCollectorServletWithParts {
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoPart() throws IOException, ServletException {
+	void testDoPart() throws IOException, ServletException {
 		final Map<HttpParameter, String> parameters = new LinkedHashMap<>();
 		// partParameter null: monitoring principal
 		parameters.put(HttpParameter.PART, null);
@@ -148,7 +148,7 @@ public class TestCollectorServletWithParts {
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoPartForSystemActions() throws IOException, ServletException {
+	void testDoPartForSystemActions() throws IOException, ServletException {
 		final Map<HttpParameter, String> parameters = new LinkedHashMap<>();
 		parameters.put(HttpParameter.PART, HttpPart.WEB_XML.getName());
 		doPart(parameters);
@@ -190,7 +190,7 @@ public class TestCollectorServletWithParts {
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoCompressedSerializable() throws IOException, ServletException {
+	void testDoCompressedSerializable() throws IOException, ServletException {
 		final Map<HttpParameter, String> parameters = new LinkedHashMap<>();
 		parameters.put(HttpParameter.FORMAT, "xml");
 		// partParameter null: monitoring principal
@@ -229,7 +229,7 @@ public class TestCollectorServletWithParts {
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoCompressedSerializableForSystemActions()
+	void testDoCompressedSerializableForSystemActions()
 			throws IOException, ServletException {
 		final Map<HttpParameter, String> parameters = new LinkedHashMap<>();
 		parameters.put(HttpParameter.FORMAT, "xml");
@@ -262,7 +262,7 @@ public class TestCollectorServletWithParts {
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testAction() throws IOException, ServletException {
+	void testAction() throws IOException, ServletException {
 		final Map<HttpParameter, String> parameters = new LinkedHashMap<>();
 		parameters.put(HttpParameter.APPLICATION, TEST);
 		parameters.put(HttpParameter.ACTION, Action.GC.toString());

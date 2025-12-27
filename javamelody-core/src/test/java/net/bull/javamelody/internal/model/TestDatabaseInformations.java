@@ -60,14 +60,14 @@ public class TestDatabaseInformations {
 
 	/** setup. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 		connection = initH2();
 	}
 
 	/** tearDown. */
 	@AfterEach
-	public void tearDown() {
+	void tearDown() {
 		if (connection != null) {
 			try {
 				connection.close();
@@ -81,7 +81,7 @@ public class TestDatabaseInformations {
 	 * @throws NamingException e
 	 * @throws SQLException e */
 	@Test
-	public void testDatabaseInformations() throws SQLException, NamingException {
+	void testDatabaseInformations() throws SQLException, NamingException {
 		final int requestIndex = 0;
 		final DatabaseInformations databaseInformations = new DatabaseInformations(requestIndex);
 		assertSame(requestIndex, databaseInformations.getSelectedRequestIndex(), "getSelectedRequestIndex");
@@ -94,7 +94,7 @@ public class TestDatabaseInformations {
 
 	/** Test. */
 	@Test
-	public void testDatabase() {
+	void testDatabase() {
 		for (final Database database : Database.values()) {
 			final List<String> requestNames = database.getRequestNames();
             assertFalse(requestNames.isEmpty(), "getRequestNames");
@@ -108,7 +108,7 @@ public class TestDatabaseInformations {
 	 * @throws NamingException e
 	 * @throws SQLException e */
 	@Test
-	public void testExplainPlanFor() throws SQLException, NamingException {
+	void testExplainPlanFor() throws SQLException, NamingException {
 		DatabaseInformations.explainPlanFor("select 1");
 	}
 }

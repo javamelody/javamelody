@@ -45,9 +45,9 @@ import jakarta.servlet.ServletContext;
  * Test unitaire pour JsfActionHelper et JsfActionListener.
  * @author Emeric Vernat
  */
-public class TestJsf {
-	public static class AppFactory extends ApplicationFactoryImpl {
-		public AppFactory() {
+class TestJsf {
+	static class AppFactory extends ApplicationFactoryImpl {
+		AppFactory() {
 			super();
 			setApplication(new ApplicationImpl());
 		}
@@ -57,7 +57,7 @@ public class TestJsf {
 	@Disabled
 	// Test skipped because of IllegalArgumentException: Could not create type
 	//	at net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:170)
-	public void testInitJsfActionListener() throws NoSuchMethodException, SecurityException,
+	void testInitJsfActionListener() throws NoSuchMethodException, SecurityException,
 			InvocationTargetException, IllegalAccessException {
 		final ServletContext servletContext = createNiceMock(ServletContext.class);
 		expect(servletContext.getInitParameter("com.sun.faces.enableTransitionTimeNoOpFlash"))

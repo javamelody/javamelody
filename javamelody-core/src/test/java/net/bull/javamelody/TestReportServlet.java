@@ -48,14 +48,14 @@ import net.bull.javamelody.internal.web.FilterServletOutputStream;
  * Test unitaire de la classe ReportServlet.
  * @author Emeric Vernat
  */
-public class TestReportServlet {
+class TestReportServlet {
 	private static final String CONTEXT_PATH = "/test";
 
 	/**
 	 * Initialisation.
 	 */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 		try {
 			final Field field = MonitoringFilter.class.getDeclaredField("instanceCreated");
@@ -68,7 +68,7 @@ public class TestReportServlet {
 
 	/** Test. */
 	@Test
-	public void testDestroy() {
+	void testDestroy() {
 		new ReportServlet().destroy();
 	}
 
@@ -76,7 +76,7 @@ public class TestReportServlet {
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoGet() throws ServletException, IOException {
+	void testDoGet() throws ServletException, IOException {
 		doGet(Collections.emptyMap(), true);
 
 		setProperty(Parameter.ALLOWED_ADDR_PATTERN, "256.*");

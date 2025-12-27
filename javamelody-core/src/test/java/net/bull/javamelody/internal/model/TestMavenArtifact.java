@@ -48,7 +48,7 @@ import net.bull.javamelody.internal.common.Parameters;
  * Test for MavenArtifact.
  * @author Emeric Vernat
  */
-public class TestMavenArtifact {
+class TestMavenArtifact {
 	private static final String MAVEN_CENTRAL = "https://repo1.maven.org/maven2";
 
 	private static final File LOCAL_REPO = new File(
@@ -65,7 +65,7 @@ public class TestMavenArtifact {
 
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
@@ -75,7 +75,7 @@ public class TestMavenArtifact {
 	 * @throws IOException e
 	 */
 	@Test
-	public void testGetSourceJarFile() throws ClassNotFoundException, IOException {
+	void testGetSourceJarFile() throws ClassNotFoundException, IOException {
 		final File storageDirectory = Parameters
 				.getStorageDirectory(Parameters.getCurrentApplication());
 		rmdir(new File(storageDirectory, "poms"));
@@ -93,7 +93,7 @@ public class TestMavenArtifact {
 	 * @throws IOException e
 	 */
 	@Test
-	public void testGetWebappDependencies() throws IOException {
+	void testGetWebappDependencies() throws IOException {
 		final ServletContext context = createNiceMock(ServletContext.class);
 		final String javamelodyDir = "/META-INF/maven/net.bull.javamelody/";
 		final String webapp = javamelodyDir + "javamelody-test-webapp/";

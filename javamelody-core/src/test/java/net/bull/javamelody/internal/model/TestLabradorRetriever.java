@@ -40,17 +40,17 @@ import net.bull.javamelody.internal.common.Parameters;
  * Test unitaire de la classe LabradorRetriever.
  * @author Emeric Vernat
  */
-public class TestLabradorRetriever {
+class TestLabradorRetriever {
 	/** Check. */
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Utils.initialize();
 	}
 
 	/** Test.
 		 * @throws IOException e */
 	@Test
-	public void testCall() throws IOException {
+	void testCall() throws IOException {
 		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "false");
 		final File file = File.createTempFile("test", ".ser");
 		try {
@@ -73,7 +73,7 @@ public class TestLabradorRetriever {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testCopyTo() throws IOException {
+	void testCopyTo() throws IOException {
 		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "false");
 		final File file = File.createTempFile("testLabradorRetriever", null);
 		try {

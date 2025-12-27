@@ -62,7 +62,7 @@ public class TestJdbcWrapper {
 	/** Test.
 	 * @throws SQLException e */
 	@BeforeEach
-	public void setUp() throws SQLException {
+	void setUp() throws SQLException {
 		Utils.initialize();
 		Utils.setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, Boolean.TRUE.toString());
 		driver = new JdbcDriver();
@@ -72,7 +72,7 @@ public class TestJdbcWrapper {
 
 	/** Test. */
 	@Test
-	public void testRebindDataSources() {
+	void testRebindDataSources() {
 		// test rebind et stop (sans conteneur)
 		jdbcWrapper.rebindDataSources();
 		Utils.setProperty(Parameter.REWRAP_DATASOURCES, "true");
@@ -83,7 +83,7 @@ public class TestJdbcWrapper {
 	/** Test.
 	 * @throws NamingException e */
 	@Test
-	public void testCreateContextProxy() throws NamingException {
+	void testCreateContextProxy() throws NamingException {
 		final Context context = jdbcWrapper.createContextProxy(new InitialContext());
 		assertNotNull(context, "createContextProxy");
 		context.close();
@@ -101,7 +101,7 @@ public class TestJdbcWrapper {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testCreateDataSourceProxy() throws Exception {
+	void testCreateDataSourceProxy() throws Exception {
 		// on fait le ménage au cas où TestMonitoringSpringInterceptor ait été exécuté juste avant
 		cleanUp();
 
@@ -152,7 +152,7 @@ public class TestJdbcWrapper {
 	 * @throws SQLException e
 	 * @throws IllegalAccessException e */
 	@Test
-	public void testCreateConnectionProxy() throws SQLException, IllegalAccessException {
+	void testCreateConnectionProxy() throws SQLException, IllegalAccessException {
 		DriverManager.registerDriver(driver);
 		final int usedConnectionCount = JdbcWrapper.getUsedConnectionCount();
 		// nécessite la dépendance vers la base de données H2
@@ -220,7 +220,7 @@ public class TestJdbcWrapper {
 	 * @throws SQLException e
 	 * @throws IllegalAccessException e */
 	@Test
-	public void testCreateConnectionProxyOrRewrapIfJBossOrGlassfish()
+	void testCreateConnectionProxyOrRewrapIfJBossOrGlassfish()
 			throws SQLException, IllegalAccessException {
 		DriverManager.registerDriver(driver);
 		// nécessite la dépendance vers la base de données H2
@@ -233,7 +233,7 @@ public class TestJdbcWrapper {
 	 * @throws SQLException e
 	 * @throws IllegalAccessException e */
 	@Test
-	public void testRewrapConnection() throws SQLException, IllegalAccessException {
+	void testRewrapConnection() throws SQLException, IllegalAccessException {
 		DriverManager.registerDriver(driver);
 		// nécessite la dépendance vers la base de données H2
 		final Connection connection = DriverManager.getConnection(H2_DATABASE_URL);
@@ -244,7 +244,7 @@ public class TestJdbcWrapper {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testRewrapDataSource() throws Exception {
+	void testRewrapDataSource() throws Exception {
 		final org.apache.tomcat.dbcp.dbcp2.BasicDataSource tomcat2DataSource = new org.apache.tomcat.dbcp.dbcp2.BasicDataSource();
 		tomcat2DataSource.setUrl(H2_DATABASE_URL);
 		rewrapDataSource(tomcat2DataSource);
@@ -268,7 +268,7 @@ public class TestJdbcWrapper {
 	/** Test.
 	 * @throws SQLException e */
 	@Test
-	public void testStatementProxy() throws SQLException {
+	void testStatementProxy() throws SQLException {
 		DriverManager.registerDriver(driver);
 		// nécessite la dépendance vers la base de données H2
 		Connection connection = DriverManager.getConnection(H2_DATABASE_URL);
@@ -304,13 +304,13 @@ public class TestJdbcWrapper {
 
 	/** Test. */
 	@Test
-	public void testGetSqlCounter() {
+	void testGetSqlCounter() {
 		assertNotNull(jdbcWrapper.getSqlCounter(), "getSqlCounter");
 	}
 
 	/** Test. */
 	@Test
-	public void testIsEqualsMethod() {
+	void testIsEqualsMethod() {
 		assertTrue(JdbcWrapper.isEqualsMethod(EQUALS, new Object[] { "" }), "isEqualsMethod1");
 		assertFalse(JdbcWrapper.isEqualsMethod("notequals", new Object[] { "" }), "isEqualsMethod2");
 		assertFalse(JdbcWrapper.isEqualsMethod(EQUALS, null), "isEqualsMethod3");
@@ -319,7 +319,7 @@ public class TestJdbcWrapper {
 
 	/** Test. */
 	@Test
-	public void testIsHashCodeMethod() {
+	void testIsHashCodeMethod() {
 		assertTrue(JdbcWrapper.isHashCodeMethod("hashCode", new Object[] {}), "isHashCodeMethod1");
 		assertTrue(JdbcWrapper.isHashCodeMethod("hashCode", null), "isHashCodeMethod2");
 		assertFalse(JdbcWrapper.isHashCodeMethod("nothashCode", new Object[] {}), "isHashCodeMethod3");
@@ -328,7 +328,7 @@ public class TestJdbcWrapper {
 
 	/** Test. */
 	@Test
-	public void testConnectionInformationsComparator() {
+	void testConnectionInformationsComparator() {
 		final ConnectionInformations connectionInformations = new ConnectionInformations();
 		final ConnectionInformations connectionInformations2 = new ConnectionInformations();
 		final List<ConnectionInformations> list = Arrays.asList(connectionInformations,
@@ -338,7 +338,7 @@ public class TestJdbcWrapper {
 
 	/** Test. */
 	@Test
-	public void testInitServletContext() {
+	void testInitServletContext() {
 		final String[] servers = { "JBoss", "WildFly", "GlassFish",
 				"Sun Java System Application Server", "WebLogic", };
 		for (final String serverName : servers) {
@@ -352,7 +352,7 @@ public class TestJdbcWrapper {
 
 	/** Test. */
 	@Test
-	public void testIsSqlMonitoringDisabled() {
+	void testIsSqlMonitoringDisabled() {
 		Utils.setProperty(Parameter.DISABLED, "false");
 		jdbcWrapper.getSqlCounter().setDisplayed(true);
 		assertFalse(jdbcWrapper.isSqlMonitoringDisabled(), "isSqlMonitoringDisabled1");

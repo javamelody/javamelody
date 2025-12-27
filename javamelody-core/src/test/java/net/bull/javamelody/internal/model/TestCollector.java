@@ -63,14 +63,14 @@ import net.sf.ehcache.CacheManager;
  * @author Emeric Vernat
  */
 // CHECKSTYLE:OFF
-public class TestCollector {
+class TestCollector {
 	// CHECKSTYLE:ON
 	private static final String TEST = "test";
 
 	/** Before.
 	 * @throws IOException e */
 	@BeforeEach
-	public void setUp() throws IOException {
+	void setUp() throws IOException {
 		Utils.initialize();
 		JRobin.initBackendFactory(new Timer(getClass().getSimpleName(), true));
 		Parameters.getStorageDirectory(TEST).mkdirs();
@@ -87,7 +87,7 @@ public class TestCollector {
 
 	/** After. */
 	@AfterEach
-	public void tearDown() {
+	void tearDown() {
 		JRobin.stop();
 	}
 
@@ -98,14 +98,14 @@ public class TestCollector {
 
 	/** Test. */
 	@Test
-	public void testNewCollector() {
+	void testNewCollector() {
 		assertNotNull(createCollectorWithOneCounter(), "collector");
 	}
 
 	/** Test.
 	 * @throws SchedulerException e */
 	@Test
-	public void testToString() throws SchedulerException {
+	void testToString() throws SchedulerException {
 		final Collector collector = createCollectorWithOneCounter();
 		assertToStringNotEmpty("collector", collector);
 		assertToStringNotEmpty("java", new JavaInformations(null, false));
@@ -145,7 +145,7 @@ public class TestCollector {
 
 	/** Test. */
 	@Test
-	public void testClearCounter() {
+	void testClearCounter() {
 		final Counter counter = createCounter();
 		final Collector collector = new Collector("test collector",
 				Collections.singletonList(counter));
@@ -163,15 +163,14 @@ public class TestCollector {
 
 	/** Test. */
 	@Test
-	public void testGetApplication() {
-		assertEquals("getApplication", "test collector",
-				createCollectorWithOneCounter().getApplication());
+	void testGetApplication() {
+		assertEquals("test collector",	createCollectorWithOneCounter().getApplication(), "getApplication");
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testCollectWithoutErrors() throws IOException {
+	void testCollectWithoutErrors() throws IOException {
 		final Counter counter = createCounter();
 		final Counter jspCounter = new Counter(Counter.JSP_COUNTER_NAME, null);
 		final Counter strutsCounter = new Counter(Counter.STRUTS_COUNTER_NAME, null);
@@ -239,7 +238,7 @@ public class TestCollector {
 	/** Test.
 	 * @throws JMException e */
 	@Test
-	public void testCollectTomcatInformations() throws JMException {
+	void testCollectTomcatInformations() throws JMException {
 		final MBeanServer mBeanServer = MBeans.getPlatformMBeanServer();
 		final List<ObjectName> mBeans = new ArrayList<>();
 		try {
@@ -271,7 +270,7 @@ public class TestCollector {
 
 	/** Test. */
 	@Test
-	public void testRemoveRequest() {
+	void testRemoveRequest() {
 		final Counter counter = new Counter("error", null);
 		counter.setMaxRequestsCount(1);
 		final Collector collector = new Collector(TEST, Collections.singletonList(counter));
@@ -308,7 +307,7 @@ public class TestCollector {
 
 	/** Test. */
 	@Test
-	public void testGetCounterByName() {
+	void testGetCounterByName() {
 		final Counter counter = createCounter();
 		final Collector collector = new Collector("test collector2",
 				Collections.singletonList(counter));
@@ -319,7 +318,7 @@ public class TestCollector {
 
 	/** Test. */
 	@Test
-	public void testGetCounterByRequestId() {
+	void testGetCounterByRequestId() {
 		final Counter counter = createCounter();
 		final Collector collector = new Collector("test collector3",
 				Collections.singletonList(counter));
@@ -333,7 +332,7 @@ public class TestCollector {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testGetRangeCountersToBeDisplayed() throws IOException {
+	void testGetRangeCountersToBeDisplayed() throws IOException {
 		final Counter counter = createCounter();
 		final Collector collector = new Collector(TEST, Collections.singletonList(counter));
 		if (collector.getCounters().isEmpty()) {
@@ -362,7 +361,7 @@ public class TestCollector {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testGetRangeCounter() throws IOException {
+	void testGetRangeCounter() throws IOException {
 		final Counter counter = createCounter();
 		final Counter counter2 = new Counter("sql", null);
 		final Collector collector = new Collector(TEST, List.of(counter, counter2));
@@ -382,14 +381,14 @@ public class TestCollector {
 
 	/** Test. */
 	@Test
-	public void testDeleteObsoleteFiles() {
+	void testDeleteObsoleteFiles() {
 		final Collector collector = createCollectorWithOneCounter();
 		collector.deleteObsoleteFiles();
 	}
 
 	/** Test. */
 	@Test
-	public void testStop() {
+	void testStop() {
 		final Collector collector = createCollectorWithOneCounter();
 		collector.stop();
 		if (collector.getCounters().isEmpty()) {
@@ -411,7 +410,7 @@ public class TestCollector {
 
 	/** Test. */
 	@Test
-	public void testJavaInformations() {
+	void testJavaInformations() {
 		final JavaInformations javaInformations = new JavaInformations(null, true);
 		javaInformations.getUnixMaxFileDescriptorCount();
 		javaInformations.getContextPath();
@@ -424,13 +423,13 @@ public class TestCollector {
 
 	/** Test. */
 	@Test
-	public void testThreadInformations() {
+	void testThreadInformations() {
 		assertTrue(ThreadInformations.getCurrentThreadCpuTime() > 0, "getCurrentThreadCpuTime");
 	}
 
 	/** Test. */
 	@Test
-	public void testCollectorSamplingProfiler() {
+	void testCollectorSamplingProfiler() {
 		final SamplingProfiler samplingProfiler = new SamplingProfiler();
 		final List<Counter> counters = Collections.emptyList();
 		final Collector collector = new Collector("test", counters, samplingProfiler);
@@ -449,7 +448,7 @@ public class TestCollector {
 	 * @throws IOException e
 	 * @throws SQLException e */
 	@Test
-	public void testCollectorServer() throws IOException, SQLException {
+	void testCollectorServer() throws IOException, SQLException {
 		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
 
 		// ce test ne fait que vérifier s'il n'y a pas d'erreur inattendue
@@ -503,7 +502,7 @@ public class TestCollector {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testCollectorMail() throws IOException {
+	void testCollectorMail() throws IOException {
 		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
 
 		// test mail_session
