@@ -21,8 +21,8 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -49,9 +49,9 @@ import java.util.Set;
 import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -115,7 +115,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * Initialisation.
 	 * @throws ServletException e
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() throws ServletException {
 		tearDown();
 		try {
@@ -155,7 +155,7 @@ public class TestMonitoringFilter {// NOPMD
 		verify(context);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		if (monitoringFilter != null) {
 			monitoringFilter.destroy();
@@ -232,7 +232,7 @@ public class TestMonitoringFilter {// NOPMD
 				request = createNiceMock(HttpServletRequest.class);
 				doFilter(request);
 			} catch (final IllegalArgumentException e) {
-				assertNotNull("ok", e);
+				assertNotNull(e, "ok");
 			}
 		} finally {
 			setProperty(Parameter.DISPLAYED_COUNTERS, null);
@@ -463,7 +463,7 @@ public class TestMonitoringFilter {// NOPMD
 			try {
 				monitoringFilter.doFilter(request, response, chain);
 			} catch (final Throwable t) { // NOPMD
-				assertNotNull("ok", t);
+				assertNotNull(t, "ok");
 			}
 		} else {
 			monitoringFilter.doFilter(request, response, chain);
@@ -484,9 +484,9 @@ public class TestMonitoringFilter {// NOPMD
 		final CounterServletResponseWrapper wrappedResponse = new CounterServletResponseWrapper(
 				response);
 		replay(response);
-		assertNotNull("getOutputStream", wrappedResponse.getOutputStream());
-		assertNotNull("getOutputStream bis", wrappedResponse.getOutputStream());
-		assertNotNull("getOutputStream", wrappedResponse.getCharacterEncoding());
+		assertNotNull(wrappedResponse.getOutputStream(), "getOutputStream");
+		assertNotNull(wrappedResponse.getOutputStream(), "getOutputStream bis");
+		assertNotNull(wrappedResponse.getCharacterEncoding(), "getOutputStream");
 		wrappedResponse.close();
 		verify(response);
 
@@ -497,8 +497,8 @@ public class TestMonitoringFilter {// NOPMD
 		final CounterServletResponseWrapper wrappedResponse2 = new CounterServletResponseWrapper(
 				response);
 		replay(response2);
-		assertNotNull("getWriter", wrappedResponse2.getWriter());
-		assertNotNull("getWriter bis", wrappedResponse2.getWriter());
+		assertNotNull(wrappedResponse2.getWriter(), "getWriter");
+		assertNotNull(wrappedResponse2.getWriter(), "getWriter bis");
 		wrappedResponse2.close();
 		verify(response2);
 	}
@@ -1195,7 +1195,7 @@ public class TestMonitoringFilter {// NOPMD
 		verify(chain);
 
 		if (checkResultContent) {
-			assertTrue("result", output.size() != 0 || stringWriter.getBuffer().length() != 0);
+			assertTrue(output.size() != 0 || stringWriter.getBuffer().length() != 0, "result");
 		}
 	}
 
@@ -1209,13 +1209,13 @@ public class TestMonitoringFilter {// NOPMD
 			MonitoringFilter.registerApplicationNodeInCollectServer(null, null,
 					new URL("http://localhost:8081"));
 		} catch (final IllegalArgumentException e) {
-			assertNotNull("e", e);
+			assertNotNull(e, "e");
 		}
 		try {
 			MonitoringFilter.registerApplicationNodeInCollectServer(null,
 					new URL("http://localhost:8080"), null);
 		} catch (final IllegalArgumentException e) {
-			assertNotNull("e", e);
+			assertNotNull(e, "e");
 		}
 	}
 

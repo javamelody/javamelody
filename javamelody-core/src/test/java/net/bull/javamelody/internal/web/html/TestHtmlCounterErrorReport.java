@@ -21,14 +21,14 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Collections;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.http.HttpServletRequest;
 import net.bull.javamelody.Utils;
@@ -41,13 +41,13 @@ import net.bull.javamelody.internal.model.CounterError;
  */
 public class TestHtmlCounterErrorReport {
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
 
 	private static void assertNotEmptyAndClear(StringWriter writer) {
-		assertTrue("rapport vide", writer.getBuffer().length() > 0);
+		assertTrue(writer.getBuffer().length() > 0, "rapport vide");
 		writer.getBuffer().setLength(0);
 	}
 

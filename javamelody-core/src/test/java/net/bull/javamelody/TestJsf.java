@@ -27,8 +27,8 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Enumeration;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import com.sun.faces.application.ApplicationFactoryImpl;
 import com.sun.faces.application.ApplicationImpl;
@@ -54,7 +54,7 @@ public class TestJsf {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	// Test skipped because of IllegalArgumentException: Could not create type
 	//	at net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:170)
 	public void testInitJsfActionListener() throws NoSuchMethodException, SecurityException,

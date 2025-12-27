@@ -21,8 +21,8 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,8 +30,8 @@ import java.util.Timer;
 
 import javax.naming.NoInitialContextException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.ServletContext;
 import net.bull.javamelody.Parameter;
@@ -48,7 +48,7 @@ import net.bull.javamelody.internal.model.Period;
  */
 public class TestMailReport {
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -65,7 +65,7 @@ public class TestMailReport {
 			timer.cancel();
 		}
 		// n'importe
-		assertNotNull("MailReport", timer.purge());
+		assertNotNull(timer.purge(), "MailReport");
 	}
 
 	/** Test.
@@ -81,13 +81,13 @@ public class TestMailReport {
 		try {
 			new MailReport().sendReportMail(collector, false, javaInformationslist, Period.SEMAINE);
 		} catch (final NoInitialContextException e) {
-			assertNotNull("ok", e);
+			assertNotNull(e, "ok");
 		}
 		setProperty(Parameter.MAIL_SUBJECT_PREFIX, "[javamelody] ");
 		try {
 			new MailReport().sendReportMail(collector, false, javaInformationslist, Period.SEMAINE);
 		} catch (final NoInitialContextException e) {
-			assertNotNull("ok", e);
+			assertNotNull(e, "ok");
 		}
 
 		// sendReportMailForLocalServer
@@ -101,7 +101,7 @@ public class TestMailReport {
 		try {
 			new MailReport().sendReportMailForLocalServer(collector, Period.SEMAINE);
 		} catch (final NoInitialContextException e) {
-			assertNotNull("ok", e);
+			assertNotNull(e, "ok");
 		}
 		verify(context);
 	}
@@ -109,30 +109,33 @@ public class TestMailReport {
 	/** Test. */
 	@Test
 	public void testGetNextExecutionDate() {
-		assertNotNull("getNextExecutionDate", MailReport.getNextExecutionDate(Period.JOUR));
-		assertNotNull("getNextExecutionDate", MailReport.getNextExecutionDate(Period.SEMAINE));
-		assertNotNull("getNextExecutionDate", MailReport.getNextExecutionDate(Period.MOIS));
+		assertNotNull(MailReport.getNextExecutionDate(Period.JOUR), "getNextExecutionDate");
+		assertNotNull(MailReport.getNextExecutionDate(Period.SEMAINE), "getNextExecutionDate");
+		assertNotNull(MailReport.getNextExecutionDate(Period.MOIS), "getNextExecutionDate");
 	}
 
 	/** Test. */
 	@Test
 	public void testGetMailPeriod() {
 		for (final Period period : Period.values()) {
-			assertNotNull("getMailCode", period.getMailCode());
-			assertEquals("valueOfByMailCode", period,
-					Period.valueOfByMailCode(period.getMailCode()));
+			assertNotNull(period.getMailCode(), "getMailCode");
+			assertEquals(period,
+					Period.valueOfByMailCode(period.getMailCode()),
+					"valueOfByMailCode");
 		}
 		try {
 			Period.valueOfByMailCode("unknown");
 		} catch (final IllegalArgumentException e) {
-			assertNotNull("ok", e);
+			assertNotNull(e, "ok");
 		}
 
-		assertEquals("getMailPeriods", Collections.singletonList(Period.SEMAINE),
-				MailReport.getMailPeriods());
+		assertEquals(Collections.singletonList(Period.SEMAINE),
+				MailReport.getMailPeriods(),
+				"getMailPeriods");
 		setProperty(Parameter.MAIL_PERIODS, Period.JOUR.getMailCode());
-		assertEquals("getMailPeriods", Collections.singletonList(Period.JOUR),
-				MailReport.getMailPeriods());
+		assertEquals(Collections.singletonList(Period.JOUR),
+				MailReport.getMailPeriods(),
+				"getMailPeriods");
 	}
 
 	private static void setProperty(Parameter parameter, String value) {

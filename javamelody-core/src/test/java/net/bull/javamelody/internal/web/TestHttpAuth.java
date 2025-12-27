@@ -21,13 +21,13 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -46,7 +46,7 @@ public class TestHttpAuth {
 	/**
 	 * Initialisation.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -55,28 +55,28 @@ public class TestHttpAuth {
 	 * @throws IOException e */
 	@Test
 	public void testIsAllowed() throws IOException {
-		assertTrue("no auth", isAllowed());
+		assertTrue(isAllowed(), "no auth");
 		setProperty(Parameter.ALLOWED_ADDR_PATTERN, REMOTE_ADDR);
-		assertTrue("addr pattern", isAllowed());
+		assertTrue(isAllowed(), "addr pattern");
 		setProperty(Parameter.ALLOWED_ADDR_PATTERN, "none");
-		assertFalse("addr pattern", isAllowed());
+		assertFalse(isAllowed(), "addr pattern");
 		setProperty(Parameter.ALLOWED_ADDR_PATTERN, null);
 		setProperty(Parameter.AUTHORIZED_USERS, USER_PWD);
-		assertFalse("authorized users", isAllowed(null));
-		assertFalse("authorized users", isAllowed("not BASIC"));
-		assertTrue("authorized users", isAllowed("BASIC " + Base64Coder.encodeString(USER_PWD)));
+		assertFalse(isAllowed(null), "authorized users");
+		assertFalse(isAllowed("not BASIC"), "authorized users");
+		assertTrue(isAllowed("BASIC " + Base64Coder.encodeString(USER_PWD)), "authorized users");
 		setProperty(Parameter.AUTHORIZED_USERS, "none");
-		assertFalse("authorized users", isAllowed("BASIC " + Base64Coder.encodeString(USER_PWD)));
+		assertFalse(isAllowed("BASIC " + Base64Coder.encodeString(USER_PWD)), "authorized users");
 
 		// check lock
 		final HttpAuth httpAuth = new HttpAuth();
 		setProperty(Parameter.AUTHORIZED_USERS, USER_PWD);
 		// 20 > HttpAuth.AUTH_FAILURES_MAX
 		for (int i = 0; i < 20; i++) {
-			assertFalse("lock",
-					isAllowed(httpAuth, "BASIC " + Base64Coder.encodeString("notuser:notpwd")));
+			assertFalse(isAllowed(httpAuth, "BASIC " + Base64Coder.encodeString("notuser:notpwd")),
+					"lock");
 		}
-		assertFalse("lock", isAllowed(httpAuth, "BASIC " + Base64Coder.encodeString(USER_PWD)));
+		assertFalse(isAllowed(httpAuth, "BASIC " + Base64Coder.encodeString(USER_PWD)), "lock");
 	}
 
 	private boolean isAllowed() throws IOException {

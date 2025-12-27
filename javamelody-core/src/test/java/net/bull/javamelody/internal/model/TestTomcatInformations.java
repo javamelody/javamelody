@@ -21,7 +21,7 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -32,8 +32,8 @@ import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.ServletContext;
 import net.bull.javamelody.Parameter;
@@ -257,7 +257,7 @@ public class TestTomcatInformations {
 	}
 
 	/** Test. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 		Utils.setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, Boolean.TRUE.toString());
@@ -270,8 +270,7 @@ public class TestTomcatInformations {
 		System.setProperty("catalina.home", "unknown");
 		// ce premier appel crée un MBeanServer
 		TomcatInformations.initMBeans();
-		assertNotNull("buildTomcatInformationsList",
-				TomcatInformations.buildTomcatInformationsList());
+		assertNotNull(TomcatInformations.buildTomcatInformationsList(), "buildTomcatInformationsList");
 		final MBeanServer mBeanServer = MBeans.getPlatformMBeanServer();
 		final List<ObjectName> mBeans = new ArrayList<>();
 		mBeans.add(
@@ -282,8 +281,7 @@ public class TestTomcatInformations {
 		TomcatInformations.initMBeans();
 		try {
 			// les appels suivants réutilise le MBeanServer créé
-			assertNotNull("buildTomcatInformationsList",
-					TomcatInformations.buildTomcatInformationsList());
+			assertNotNull(TomcatInformations.buildTomcatInformationsList(), "buildTomcatInformationsList");
 			mBeans.add(
 					mBeanServer
 							.registerMBean(new GlobalRequestProcessor(),
@@ -291,8 +289,7 @@ public class TestTomcatInformations {
 											"Catalina:type=GlobalRequestProcessor,name=http-8080"))
 							.getObjectName());
 			TomcatInformations.initMBeans();
-			assertNotNull("buildTomcatInformationsList",
-					TomcatInformations.buildTomcatInformationsList());
+			assertNotNull(TomcatInformations.buildTomcatInformationsList(), "buildTomcatInformationsList");
 			for (final TomcatInformations tomcatInformations : TomcatInformations
 					.buildTomcatInformationsList()) {
 				tomcatInformations.toString();

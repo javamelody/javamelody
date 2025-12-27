@@ -17,17 +17,17 @@
  */
 package net.bull.javamelody.internal.model;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.Utils;
 
@@ -37,7 +37,7 @@ import net.bull.javamelody.Utils;
  */
 public class TestProcessInformations {
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -48,16 +48,16 @@ public class TestProcessInformations {
 		final List<ProcessInformations> processInformations = ProcessInformations
 				.buildProcessInformations(getClass().getResourceAsStream("/tasklist.txt"), true,
 						false);
-		assertSame("processes", processInformations.size(), 49);
+		assertSame(49, processInformations.size(), "processes");
 		checkProcesses(processInformations, true);
 		final List<ProcessInformations> processInformations2 = ProcessInformations
 				.buildProcessInformations(getClass().getResourceAsStream("/ps.txt"), false, false);
-		assertSame("processes", processInformations2.size(), 118);
+		assertSame(118, processInformations2.size(), "processes");
 		checkProcesses(processInformations2, false);
 		final List<ProcessInformations> processInformations3 = ProcessInformations
 				.buildProcessInformations(getClass().getResourceAsStream("/ps_aix.txt"), false,
 						true);
-		assertSame("processes", processInformations3.size(), 15);
+		assertSame(15, processInformations3.size(), "processes");
 		checkProcesses(processInformations3, false);
 	}
 
@@ -66,8 +66,8 @@ public class TestProcessInformations {
 	@Test
 	public void testExecuteAndReadPs() throws IOException {
 		final List<ProcessInformations> processes = ProcessInformations.buildProcessInformations();
-		assertNotNull("processes null", processes);
-		assertFalse("processes vide", processes.isEmpty());
+		assertNotNull(processes, "processes null");
+		assertFalse(processes.isEmpty(), "processes vide");
 		final boolean windows = System.getProperty("os.name").toLowerCase(Locale.getDefault())
 				.contains("windows");
 		checkProcesses(processes, windows);
@@ -75,19 +75,19 @@ public class TestProcessInformations {
 
 	private void checkProcesses(List<ProcessInformations> processInformations, boolean windows) {
 		for (final ProcessInformations process : processInformations) {
-			assertNotNull("user", process.getUser());
-			assertTrue("pid", process.getPid() >= 0);
+			assertNotNull(process.getUser(), "user");
+			assertTrue(process.getPid() >= 0, "pid");
 			if (!windows) {
-				assertTrue("cpuPercentage", process.getCpuPercentage() >= 0);
-				assertTrue("memPercentage", process.getMemPercentage() >= 0);
-				assertTrue("rss", process.getRss() >= 0);
-				assertNotNull("tty", process.getTty());
-				assertNotNull("stat", process.getStat());
-				assertNotNull("start", process.getStart());
+				assertTrue(process.getCpuPercentage() >= 0, "cpuPercentage");
+				assertTrue(process.getMemPercentage() >= 0, "memPercentage");
+				assertTrue(process.getRss() >= 0, "rss");
+				assertNotNull(process.getTty(), "tty");
+				assertNotNull(process.getStat(), "stat");
+				assertNotNull(process.getStart(), "start");
 			}
-			assertTrue("vsz", process.getVsz() >= 0);
-			assertNotNull("cpuTime", process.getCpuTime());
-			assertNotNull("command", process.getCommand());
+			assertTrue(process.getVsz() >= 0, "vsz");
+			assertNotNull(process.getCpuTime(), "cpuTime");
+			assertNotNull(process.getCommand(), "command");
 		}
 	}
 }

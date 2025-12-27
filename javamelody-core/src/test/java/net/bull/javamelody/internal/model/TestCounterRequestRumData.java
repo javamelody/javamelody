@@ -17,10 +17,10 @@
  */
 package net.bull.javamelody.internal.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for CounterRequestRumData.
@@ -33,41 +33,41 @@ public class TestCounterRequestRumData {
 	@Test
 	public void test() {
 		final CounterRequestRumData rumData = new CounterRequestRumData();
-		assertNotNull("toString", rumData.toString());
-		assertEquals("getHits", 0, rumData.getHits());
-		assertEquals("getNetworkTimeMean", -1, rumData.getNetworkTimeMean());
-		assertEquals("getDomProcessingMean", -1, rumData.getDomProcessingMean());
-		assertEquals("getPageRenderingMean", -1, rumData.getPageRenderingMean());
+		assertNotNull(rumData.toString(), "toString");
+		assertEquals(0, rumData.getHits(), "getHits");
+		assertEquals(-1, rumData.getNetworkTimeMean(), "getNetworkTimeMean");
+		assertEquals(-1, rumData.getDomProcessingMean(), "getDomProcessingMean");
+		assertEquals(-1, rumData.getPageRenderingMean(), "getPageRenderingMean");
 
 		rumData.addHits(rumData);
-		assertEquals("getHits", 0, rumData.getHits());
+		assertEquals(0, rumData.getHits(), "getHits");
 		rumData.removeHits(rumData);
-		assertEquals("getHits", 0, rumData.getHits());
+		assertEquals(0, rumData.getHits(), "getHits");
 		rumData.addHit(-1, 0, 0);
 		rumData.addHit(0, -1, 0);
 		rumData.addHit(0, 0, -1);
 		rumData.addHit(300001, 0, 0);
 		rumData.addHit(0, 300001, 0);
 		rumData.addHit(0, 0, 300001);
-		assertEquals("getHits", 0, rumData.getHits());
+		assertEquals(0, rumData.getHits(), "getHits");
 
 		rumData.addHit(10, 20, 30);
-		assertEquals("getHits", 1, rumData.getHits());
+		assertEquals(1, rumData.getHits(), "getHits");
 		rumData.addHit(10, 20, 30);
-		assertEquals("getHits", 2, rumData.getHits());
-		assertEquals("getNetworkTimeMean", 10, rumData.getNetworkTimeMean());
-		assertEquals("getDomProcessingMean", 20, rumData.getDomProcessingMean());
-		assertEquals("getPageRenderingMean", 30, rumData.getPageRenderingMean());
+		assertEquals(2, rumData.getHits(), "getHits");
+		assertEquals(10, rumData.getNetworkTimeMean(), "getNetworkTimeMean");
+		assertEquals(20, rumData.getDomProcessingMean(), "getDomProcessingMean");
+		assertEquals(30, rumData.getPageRenderingMean(), "getPageRenderingMean");
 
 		final CounterRequestRumData clone = rumData.clone();
-		assertEquals("getHits", 2, clone.getHits());
-		assertEquals("getNetworkTimeMean", 10, clone.getNetworkTimeMean());
-		assertEquals("getDomProcessingMean", 20, clone.getDomProcessingMean());
-		assertEquals("getPageRenderingMean", 30, clone.getPageRenderingMean());
+		assertEquals(2, clone.getHits(), "getHits");
+		assertEquals(10, clone.getNetworkTimeMean(), "getNetworkTimeMean");
+		assertEquals(20, clone.getDomProcessingMean(), "getDomProcessingMean");
+		assertEquals(30, clone.getPageRenderingMean(), "getPageRenderingMean");
 
 		rumData.addHits(rumData);
-		assertEquals("getHits", 4, rumData.getHits());
+		assertEquals(4, rumData.getHits(), "getHits");
 		rumData.removeHits(rumData);
-		assertEquals("getHits", 0, rumData.getHits());
+		assertEquals(0, rumData.getHits(), "getHits");
 	}
 }

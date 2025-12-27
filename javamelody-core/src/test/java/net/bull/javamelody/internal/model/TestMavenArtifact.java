@@ -21,8 +21,8 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,8 +36,8 @@ import java.util.Set;
 
 import org.easymock.IAnswer;
 import org.jrobin.graph.RrdGraph;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.ServletContext;
 import net.bull.javamelody.Parameter;
@@ -64,7 +64,7 @@ public class TestMavenArtifact {
 	}
 
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -83,9 +83,9 @@ public class TestMavenArtifact {
 
 		final Class<?> clazz = Class.forName("org.apache.commons.dbcp2.BasicDataSource");
 		final URL location = clazz.getProtectionDomain().getCodeSource().getLocation();
-		assertNotNull("getSourceJarFile", MavenArtifact.getSourceJarFile(location));
+		assertNotNull(MavenArtifact.getSourceJarFile(location), "getSourceJarFile");
 		Utils.setProperty(Parameter.MAVEN_REPOSITORIES, LOCAL_REPO.getPath() + ',' + MAVEN_CENTRAL);
-		assertNotNull("getSourceJarFile", MavenArtifact.getSourceJarFile(location));
+		assertNotNull(MavenArtifact.getSourceJarFile(location), "getSourceJarFile");
 	}
 
 	/**
@@ -114,19 +114,19 @@ public class TestMavenArtifact {
 		replay(context);
 		Parameters.initialize(context);
 		final Map<String, MavenArtifact> webappDependencies = MavenArtifact.getWebappDependencies();
-		assertFalse("getWebappDependencies", webappDependencies.isEmpty());
+		assertFalse(webappDependencies.isEmpty(), "getWebappDependencies");
 		verify(context);
 		for (final MavenArtifact dependency : webappDependencies.values()) {
 			if (dependency != null) {
-				assertNotNull("groupId", dependency.getGroupId());
-				assertNotNull("artifactId", dependency.getArtifactId());
-				assertNotNull("version", dependency.getVersion());
+				assertNotNull(dependency.getGroupId(), "groupId");
+				assertNotNull(dependency.getArtifactId(), "artifactId");
+				assertNotNull(dependency.getVersion(), "version");
 				if ("jrobin".equals(dependency.getArtifactId())) {
-					assertNotNull("name", dependency.getName());
-					assertNotNull("url", dependency.getUrl());
-					assertNotNull("licenseUrlsByName", dependency.getLicenseUrlsByName());
-					assertNotNull("allDependencies", dependency.getAllDependencies());
-					assertNotNull("toString", dependency.toString());
+					assertNotNull(dependency.getName(), "name");
+					assertNotNull(dependency.getUrl(), "url");
+					assertNotNull(dependency.getLicenseUrlsByName(), "licenseUrlsByName");
+					assertNotNull(dependency.getAllDependencies(), "allDependencies");
+					assertNotNull(dependency.toString(), "toString");
 				}
 			}
 		}

@@ -17,12 +17,12 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test unitaire pour Stopwatch.
@@ -33,20 +33,19 @@ public class TestStopwatch {
 	public void test() throws Exception {
 		final int requestsCount = MonitoringProxy.getServicesCounter().getRequestsCount();
 		final Stopwatch stopwatch = new Stopwatch("stopwatch name");
-		assertEquals("getName", "stopwatch name", stopwatch.getName());
-		assertTrue("getDuration", stopwatch.getDuration() >= 0);
-		assertFalse("isClosed", stopwatch.isClosed());
+		assertEquals("stopwatch name", stopwatch.getName(), "getName");
+		assertTrue(stopwatch.getDuration() >= 0, "getDuration");
+		assertFalse(stopwatch.isClosed(), "isClosed");
 		stopwatch.close();
-		assertTrue("isClosed", stopwatch.isClosed());
+		assertTrue(stopwatch.isClosed(), "isClosed");
 		final long duration = stopwatch.getDuration();
 		Thread.sleep(10);
-		assertEquals("getDuration", duration, stopwatch.getDuration());
-		assertEquals("requestsCount", requestsCount + 1,
-				MonitoringProxy.getServicesCounter().getRequestsCount());
+		assertEquals(duration, stopwatch.getDuration(), "getDuration");
+		assertEquals(requestsCount + 1, MonitoringProxy.getServicesCounter().getRequestsCount(), "requestsCount");
 		try {
 			stopwatch.close();
 		} catch (final IllegalStateException e) {
-			assertNotNull("e", e);
+			assertNotNull(e, "e");
 		}
 	}
 }

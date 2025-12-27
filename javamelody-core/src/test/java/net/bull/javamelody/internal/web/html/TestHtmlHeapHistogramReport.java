@@ -17,10 +17,10 @@
  */
 package net.bull.javamelody.internal.web.html;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,9 +28,9 @@ import java.io.StringWriter;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.common.HttpPart;
@@ -50,14 +50,14 @@ public class TestHtmlHeapHistogramReport {
 	private static final String EXCEPTION = "exception";
 
 	/** Initialisation. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
 
 	/** Finalisation.
 	 * @throws Exception e */
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		VirtualMachine.detach();
 	}
@@ -67,7 +67,7 @@ public class TestHtmlHeapHistogramReport {
 	}
 
 	private static void assertNotEmptyAndClear(final StringWriter writer) {
-		assertTrue("rapport vide", writer.getBuffer().length() > 0);
+		assertTrue(writer.getBuffer().length() > 0, "rapport vide");
 		writer.getBuffer().setLength(0);
 	}
 
@@ -114,8 +114,8 @@ public class TestHtmlHeapHistogramReport {
 	/** Test. */
 	@Test
 	public void testHeapHistoClassInfoParseLong() {
-		assertEquals("parseLongWithK", 100 * 1024, HeapHistogram.ClassInfo.parseLongWithK("100k"));
-		assertEquals("parseLongWithK", 100, HeapHistogram.ClassInfo.parseLongWithK("100"));
+		assertEquals(100 * 1024, HeapHistogram.ClassInfo.parseLongWithK("100k"), "parseLongWithK");
+		assertEquals(100, HeapHistogram.ClassInfo.parseLongWithK("100"), "parseLongWithK");
 	}
 
 	private void report(HeapHistogram heapHistogram) throws IOException {
@@ -137,7 +137,7 @@ public class TestHtmlHeapHistogramReport {
 
 		final ClassInfo classInfo = heapHistogram.getHeapHistogram().get(0);
 		classInfo.hashCode();
-		assertEquals("classInfo", classInfo, classInfo);
+		assertEquals(classInfo, classInfo, "classInfo");
 		if (classInfo.equals(new Object())) {
 			fail("classInfo");
 		}
@@ -164,7 +164,7 @@ public class TestHtmlHeapHistogramReport {
 			// timeout de 10s pour certains envionnements de tests
 			thread.join(10000);
 		} catch (final InterruptedException e) {
-			assertNotNull(EXCEPTION, e);
+			assertNotNull(e, EXCEPTION);
 		}
 	}
 
@@ -172,22 +172,22 @@ public class TestHtmlHeapHistogramReport {
 		try {
 			VirtualMachine.getJvmVirtualMachine();
 		} catch (final Exception e) {
-			assertNotNull(EXCEPTION, e);
+			assertNotNull(e, EXCEPTION);
 		}
 		try {
 			VirtualMachine.heapHisto();
 		} catch (final Exception e) {
-			assertNotNull(EXCEPTION, e);
+			assertNotNull(e, EXCEPTION);
 		}
 		try {
 			VirtualMachine.createHeapHistogram();
 		} catch (final Exception e) {
-			assertNotNull(EXCEPTION, e);
+			assertNotNull(e, EXCEPTION);
 		}
 		try {
 			VirtualMachine.detach();
 		} catch (final Exception e) {
-			assertNotNull(EXCEPTION, e);
+			assertNotNull(e, EXCEPTION);
 		}
 	}
 }

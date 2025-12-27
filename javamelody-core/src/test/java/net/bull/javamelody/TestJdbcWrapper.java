@@ -21,10 +21,10 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
@@ -43,8 +43,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.ServletContext;
 import net.bull.javamelody.internal.model.ConnectionInformations;
@@ -61,7 +61,7 @@ public class TestJdbcWrapper {
 
 	/** Test.
 	 * @throws SQLException e */
-	@Before
+	@BeforeEach
 	public void setUp() throws SQLException {
 		Utils.initialize();
 		Utils.setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, Boolean.TRUE.toString());
@@ -85,7 +85,7 @@ public class TestJdbcWrapper {
 	@Test
 	public void testCreateContextProxy() throws NamingException {
 		final Context context = jdbcWrapper.createContextProxy(new InitialContext());
-		assertNotNull("createContextProxy", context);
+		assertNotNull(context, "createContextProxy");
 		context.close();
 
 		final Context mockContext = createNiceMock(Context.class);
@@ -105,9 +105,8 @@ public class TestJdbcWrapper {
 		// on fait le ménage au cas où TestMonitoringSpringInterceptor ait été exécuté juste avant
 		cleanUp();
 
-		assertTrue("getBasicDataSourceProperties0",
-				JdbcWrapper.getBasicDataSourceProperties().isEmpty());
-		assertEquals("getMaxConnectionCount0", -1, JdbcWrapper.getMaxConnectionCount());
+		assertTrue(JdbcWrapper.getBasicDataSourceProperties().isEmpty(), "getBasicDataSourceProperties0");
+		assertEquals(-1, JdbcWrapper.getMaxConnectionCount(), "getMaxConnectionCount0");
 
 		final org.apache.tomcat.jdbc.pool.DataSource tomcatJdbcDataSource = new org.apache.tomcat.jdbc.pool.DataSource();
 		tomcatJdbcDataSource.setUrl(H2_DATABASE_URL);
@@ -115,24 +114,23 @@ public class TestJdbcWrapper {
 		tomcatJdbcDataSource.setMaxActive(123);
 		final DataSource tomcatJdbcProxy = jdbcWrapper.createDataSourceProxy("test2",
 				tomcatJdbcDataSource);
-		assertNotNull("createDataSourceProxy1", tomcatJdbcProxy);
+		assertNotNull(tomcatJdbcProxy, "createDataSourceProxy1");
 		tomcatJdbcProxy.getConnection().close();
-		assertFalse("getBasicDataSourceProperties1",
-				JdbcWrapper.getBasicDataSourceProperties().isEmpty());
-		assertEquals("getMaxConnectionCount1", 123, JdbcWrapper.getMaxConnectionCount());
+		assertFalse(JdbcWrapper.getBasicDataSourceProperties().isEmpty(), "getBasicDataSourceProperties1");
+		assertEquals(123, JdbcWrapper.getMaxConnectionCount(), "getMaxConnectionCount1");
 
 		final org.apache.commons.dbcp2.BasicDataSource dbcp2DataSource = new org.apache.commons.dbcp2.BasicDataSource();
 		dbcp2DataSource.setUrl(H2_DATABASE_URL);
 		dbcp2DataSource.setMaxTotal(456);
 		final DataSource dbcp2Proxy = jdbcWrapper.createDataSourceProxy(dbcp2DataSource);
-		assertNotNull("createDataSourceProxy2b", dbcp2Proxy);
+		assertNotNull(dbcp2Proxy, "createDataSourceProxy2b");
 
 		final org.apache.tomcat.dbcp.dbcp2.BasicDataSource tomcat2DataSource = new org.apache.tomcat.dbcp.dbcp2.BasicDataSource();
 		tomcat2DataSource.setUrl(H2_DATABASE_URL);
 		tomcat2DataSource.setMaxTotal(789);
 		final DataSource tomcat2Proxy = jdbcWrapper.createDataSourceProxy("test",
 				tomcat2DataSource);
-		assertNotNull("createDataSourceProxy3b", tomcat2Proxy);
+		assertNotNull(tomcat2Proxy, "createDataSourceProxy3b");
 	}
 
 	private static void cleanUp() throws NoSuchFieldException, IllegalAccessException {
@@ -159,15 +157,13 @@ public class TestJdbcWrapper {
 		final int usedConnectionCount = JdbcWrapper.getUsedConnectionCount();
 		// nécessite la dépendance vers la base de données H2
 		Connection connection = DriverManager.getConnection(H2_DATABASE_URL);
-		assertEquals("getUsedConnectionCount1", usedConnectionCount,
-				JdbcWrapper.getUsedConnectionCount());
+		assertEquals(usedConnectionCount, JdbcWrapper.getUsedConnectionCount(), "getUsedConnectionCount1");
 		try {
 			jdbcWrapper.rewrapConnection(connection);
 			connection = jdbcWrapper.createConnectionProxy(connection);
-			assertEquals("getUsedConnectionCount1", usedConnectionCount + 1,
-					JdbcWrapper.getUsedConnectionCount());
-			assertNotNull("createConnectionProxy", connection);
-			assertEquals(EQUALS, connection, connection);
+			assertEquals(usedConnectionCount + 1, JdbcWrapper.getUsedConnectionCount(), "getUsedConnectionCount1");
+			assertNotNull(connection, "createConnectionProxy");
+			assertEquals(connection, connection, EQUALS);
 			connection.hashCode();
 
 			final int activeConnectionCount = JdbcWrapper.getActiveConnectionCount();
@@ -175,21 +171,18 @@ public class TestJdbcWrapper {
 			connection.prepareStatement("select 1").close();
 			connection.prepareCall("select 2").close();
 
-			assertEquals("getActiveConnectionCount", activeConnectionCount,
-					JdbcWrapper.getActiveConnectionCount());
+			assertEquals(activeConnectionCount, JdbcWrapper.getActiveConnectionCount(), "getActiveConnectionCount");
 
 			connection.rollback();
 
 			jdbcWrapper.getSqlCounter().setDisplayed(false);
 			connection = jdbcWrapper.createConnectionProxy(connection);
-			assertEquals("getUsedConnectionCount2", usedConnectionCount + 1,
-					JdbcWrapper.getUsedConnectionCount());
+			assertEquals(usedConnectionCount + 1, JdbcWrapper.getUsedConnectionCount(), "getUsedConnectionCount2");
 			jdbcWrapper.getSqlCounter().setDisplayed(true);
 			Utils.setProperty(Parameter.DISABLED, "true");
 			try {
 				connection = jdbcWrapper.createConnectionProxy(connection);
-				assertEquals("getUsedConnectionCount3", usedConnectionCount + 1,
-						JdbcWrapper.getUsedConnectionCount());
+				assertEquals(usedConnectionCount + 1, JdbcWrapper.getUsedConnectionCount(), "getUsedConnectionCount3");
 			} finally {
 				Utils.setProperty(Parameter.DISABLED, "false");
 			}
@@ -197,28 +190,25 @@ public class TestJdbcWrapper {
 			// il peut arriver que getConnectionInformationsList retourne une liste vide
 			// si la classe JdbcWrapper a été initialisée alors que system-actions-enabled=false
 			// ou que no-database=true ce est le cas vu l'ordre des tests dans le script ant
-			assertNotNull("getConnectionInformationsList",
-					JdbcWrapper.getConnectionInformationsList());
+			assertNotNull(JdbcWrapper.getConnectionInformationsList(), "getConnectionInformationsList");
 		} finally {
 			connection.close();
 		}
-		assertEquals("getUsedConnectionCount4", usedConnectionCount,
-				JdbcWrapper.getUsedConnectionCount());
+		assertEquals(usedConnectionCount, JdbcWrapper.getUsedConnectionCount(), "getUsedConnectionCount4");
 		connection = DriverManager.getConnection(H2_DATABASE_URL + "?driver=org.h2.Driver");
 		try {
-			assertEquals("getUsedConnectionCount1", usedConnectionCount + 1,
-					JdbcWrapper.getUsedConnectionCount());
+			assertEquals(usedConnectionCount + 1, JdbcWrapper.getUsedConnectionCount(), "getUsedConnectionCount1");
 		} finally {
 			connection.close();
 		}
 
-		assertEquals("proxy of proxy", connection, jdbcWrapper.createConnectionProxy(connection));
+		assertEquals(connection, jdbcWrapper.createConnectionProxy(connection), "proxy of proxy");
 
 		final InvocationHandler dummy = (proxy, method, args) -> null;
 		final List<Class<?>> interfaces = List.of(new Class<?>[] { Connection.class });
 		connection = DriverManager.getConnection(H2_DATABASE_URL);
 		try {
-			assertNotNull("createProxy", JdbcWrapper.createProxy(connection, dummy, interfaces));
+			assertNotNull(JdbcWrapper.createProxy(connection, dummy, interfaces), "createProxy");
 		} finally {
 			connection.close();
 		}
@@ -285,7 +275,7 @@ public class TestJdbcWrapper {
 		try {
 			connection = jdbcWrapper.createConnectionProxy(connection);
 			try (Statement statement = connection.createStatement()) {
-				assertFalse(EQUALS, statement.equals(statement));
+				assertFalse(statement.equals(statement), EQUALS);
 				statement.hashCode();
 
 				statement.executeQuery("select 1").close();
@@ -304,7 +294,7 @@ public class TestJdbcWrapper {
 				try {
 					statement.execute("invalid sql");
 				} catch (final SQLException e) {
-					assertNotNull("ok", e);
+					assertNotNull(e, "ok");
 				}
 			}
 		} finally {
@@ -315,28 +305,25 @@ public class TestJdbcWrapper {
 	/** Test. */
 	@Test
 	public void testGetSqlCounter() {
-		assertNotNull("getSqlCounter", jdbcWrapper.getSqlCounter());
+		assertNotNull(jdbcWrapper.getSqlCounter(), "getSqlCounter");
 	}
 
 	/** Test. */
 	@Test
 	public void testIsEqualsMethod() {
-		assertTrue("isEqualsMethod1", JdbcWrapper.isEqualsMethod(EQUALS, new Object[] { "" }));
-		assertFalse("isEqualsMethod2",
-				JdbcWrapper.isEqualsMethod("notequals", new Object[] { "" }));
-		assertFalse("isEqualsMethod3", JdbcWrapper.isEqualsMethod(EQUALS, null));
-		assertFalse("isEqualsMethod4", JdbcWrapper.isEqualsMethod(EQUALS, new Object[] { "", "" }));
+		assertTrue(JdbcWrapper.isEqualsMethod(EQUALS, new Object[] { "" }), "isEqualsMethod1");
+		assertFalse(JdbcWrapper.isEqualsMethod("notequals", new Object[] { "" }), "isEqualsMethod2");
+		assertFalse(JdbcWrapper.isEqualsMethod(EQUALS, null), "isEqualsMethod3");
+		assertFalse(JdbcWrapper.isEqualsMethod(EQUALS, new Object[] { "", "" }), "isEqualsMethod4");
 	}
 
 	/** Test. */
 	@Test
 	public void testIsHashCodeMethod() {
-		assertTrue("isHashCodeMethod1", JdbcWrapper.isHashCodeMethod("hashCode", new Object[] {}));
-		assertTrue("isHashCodeMethod2", JdbcWrapper.isHashCodeMethod("hashCode", null));
-		assertFalse("isHashCodeMethod3",
-				JdbcWrapper.isHashCodeMethod("nothashCode", new Object[] {}));
-		assertFalse("isHashCodeMethod4",
-				JdbcWrapper.isHashCodeMethod("hashCode", new Object[] { "" }));
+		assertTrue(JdbcWrapper.isHashCodeMethod("hashCode", new Object[] {}), "isHashCodeMethod1");
+		assertTrue(JdbcWrapper.isHashCodeMethod("hashCode", null), "isHashCodeMethod2");
+		assertFalse(JdbcWrapper.isHashCodeMethod("nothashCode", new Object[] {}), "isHashCodeMethod3");
+		assertFalse(JdbcWrapper.isHashCodeMethod("hashCode", new Object[] { "" }), "isHashCodeMethod4");
 	}
 
 	/** Test. */
@@ -368,13 +355,13 @@ public class TestJdbcWrapper {
 	public void testIsSqlMonitoringDisabled() {
 		Utils.setProperty(Parameter.DISABLED, "false");
 		jdbcWrapper.getSqlCounter().setDisplayed(true);
-		assertFalse("isSqlMonitoringDisabled1", jdbcWrapper.isSqlMonitoringDisabled());
+		assertFalse(jdbcWrapper.isSqlMonitoringDisabled(), "isSqlMonitoringDisabled1");
 		Utils.setProperty(Parameter.DISABLED, "true");
-		assertTrue("isSqlMonitoringDisabled2", jdbcWrapper.isSqlMonitoringDisabled());
+		assertTrue(jdbcWrapper.isSqlMonitoringDisabled(), "isSqlMonitoringDisabled2");
 		Utils.setProperty(Parameter.DISABLED, "false");
 		jdbcWrapper.getSqlCounter().setDisplayed(false);
-		assertTrue("isSqlMonitoringDisabled3", jdbcWrapper.isSqlMonitoringDisabled());
+		assertTrue(jdbcWrapper.isSqlMonitoringDisabled(), "isSqlMonitoringDisabled3");
 		jdbcWrapper.getSqlCounter().setDisplayed(true);
-		assertFalse("isSqlMonitoringDisabled4", jdbcWrapper.isSqlMonitoringDisabled());
+		assertFalse(jdbcWrapper.isSqlMonitoringDisabled(), "isSqlMonitoringDisabled4");
 	}
 }

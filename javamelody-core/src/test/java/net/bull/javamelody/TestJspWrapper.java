@@ -22,13 +22,13 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
@@ -45,7 +45,7 @@ public class TestJspWrapper {
 	/**
 	 * Initialisation.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -57,7 +57,7 @@ public class TestJspWrapper {
 	 */
 	@Test
 	public void testJspWrapper() throws ServletException, IOException {
-		assertNotNull("getJspCounter", JspWrapper.getJspCounter());
+		assertNotNull(JspWrapper.getJspCounter(), "getJspCounter");
 
 		final ServletContext servletContext = createNiceMock(ServletContext.class);
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
@@ -99,18 +99,18 @@ public class TestJspWrapper {
 		try {
 			wrappedRequestDispatcher2.forward(request, response);
 		} catch (final UnknownError e) {
-			assertNotNull("ok", e);
+			assertNotNull(e, "ok");
 		}
 		final RequestDispatcher wrappedRequestDispatcher3 = wrappedRequest
 				.getRequestDispatcher(url3);
 		try {
 			wrappedRequestDispatcher3.forward(request, response);
 		} catch (final IllegalStateException e) {
-			assertNotNull("ok", e);
+			assertNotNull(e, "ok");
 		}
 		final RequestDispatcher wrappedRequestDispatcher4 = wrappedRequest
 				.getRequestDispatcher(url4);
-		assertNull("getRequestDispatcher(null)", wrappedRequestDispatcher4);
+		assertNull(wrappedRequestDispatcher4, "getRequestDispatcher(null)");
 		verify(request);
 		verify(response);
 		verify(requestDispatcher);

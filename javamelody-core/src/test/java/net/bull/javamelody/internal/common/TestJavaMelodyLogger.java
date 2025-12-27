@@ -22,8 +22,8 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.http.HttpServletRequest;
 import net.bull.javamelody.JavaMelodyLogger;
@@ -36,7 +36,7 @@ import net.bull.javamelody.Utils;
 public class TestJavaMelodyLogger {
 
 	/** Initialisation. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}

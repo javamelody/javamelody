@@ -18,11 +18,11 @@
 package net.bull.javamelody;
 
 import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -39,8 +39,8 @@ import javax.xml.stream.XMLStreamReader;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.easymock.EasyMockSupport;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.ReadListener;
 import jakarta.servlet.ServletInputStream;
@@ -65,7 +65,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	 * Setup.
 	 * @throws IOException never
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() throws IOException {
 		request = createNiceMock(HttpServletRequest.class);
 
@@ -146,9 +146,9 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 		final PayloadNameRequestWrapper wrapper = new PayloadNameRequestWrapper(request);
 		wrapper.initialize();
 
-		assertNull("Should not have found name for HTTP GET", wrapper.getPayloadRequestName());
+		assertNull(wrapper.getPayloadRequestName(), "Should not have found name for HTTP GET");
 
-		assertEquals("Content was changed", body, slurp(wrapper.getInputStream()));
+		assertEquals(body, slurp(wrapper.getInputStream()), "Content was changed");
 	}
 
 	@Test
@@ -160,9 +160,9 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 		final PayloadNameRequestWrapper wrapper = new PayloadNameRequestWrapper(request);
 		wrapper.initialize();
 
-		assertNull("Should not have found name for HTTP GET", wrapper.getPayloadRequestName());
+		assertNull(wrapper.getPayloadRequestName(), "Should not have found name for HTTP GET");
 
-		assertEquals("Content was changed", body, slurp(wrapper.getInputStream()));
+		assertEquals(body, slurp(wrapper.getInputStream()), "Content was changed");
 	}
 
 	/**
@@ -177,12 +177,11 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 		final PayloadNameRequestWrapper wrapper = new PayloadNameRequestWrapper(request);
 		wrapper.initialize();
 
-		assertEquals("Could not parse GWT-RPC request", ".gwtRpcMethodName",
-				wrapper.getPayloadRequestName());
-		assertEquals("GWT-RPC request type unrecognized", "GWT-RPC",
-				wrapper.getPayloadRequestType());
+		assertEquals(".gwtRpcMethodName", wrapper.getPayloadRequestName(),
+				"Could not parse GWT-RPC request");
+		assertEquals("GWT-RPC", wrapper.getPayloadRequestType(), "GWT-RPC request type unrecognized");
 
-		assertEquals("Content was changed", body, slurp(wrapper.getInputStream()));
+		assertEquals(body, slurp(wrapper.getInputStream()), "Content was changed");
 	}
 
 	/**
@@ -208,13 +207,13 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 		final PayloadNameRequestWrapper wrapper = new PayloadNameRequestWrapper(request);
 		wrapper.initialize();
 
-		assertEquals("Could not parse SOAP 1.1 request", ".GetLastTradePrice",
-				wrapper.getPayloadRequestName());
-		assertEquals("SOAP request type unrecognized", "SOAP", wrapper.getPayloadRequestType());
+		assertEquals(".GetLastTradePrice", wrapper.getPayloadRequestName(),
+				"Could not parse SOAP 1.1 request");
+		assertEquals("SOAP", wrapper.getPayloadRequestType(), "SOAP request type unrecognized");
 
-		assertEquals("Content was changed", body, slurp(wrapper.getInputStream()));
+		assertEquals(body, slurp(wrapper.getInputStream()), "Content was changed");
 
-		assertNotNull("getReader", wrapper.getReader());
+		assertNotNull(wrapper.getReader(), "getReader");
 	}
 
 	/**
@@ -240,10 +239,10 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 		final PayloadNameRequestWrapper wrapper = new PayloadNameRequestWrapper(request);
 		wrapper.initialize();
 
-		assertNull("Could not parse SOAP 1.1 request", wrapper.getPayloadRequestName());
-		assertNull("SOAP request type unrecognized", wrapper.getPayloadRequestType());
+		assertNull(wrapper.getPayloadRequestName(), "Could not parse SOAP 1.1 request");
+		assertNull(wrapper.getPayloadRequestType(), "SOAP request type unrecognized");
 
-		assertEquals("Content was changed", body, slurp(wrapper.getInputStream()));
+		assertEquals(body, slurp(wrapper.getInputStream()), "Content was changed");
 	}
 
 	/**
@@ -277,11 +276,11 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 		final PayloadNameRequestWrapper wrapper = new PayloadNameRequestWrapper(request);
 		wrapper.initialize();
 
-		assertEquals("Could not parse SOAP 1.1 request with 'mandatory header'",
-				".GetLastTradePrice", wrapper.getPayloadRequestName());
-		assertEquals("SOAP request type unrecognized", "SOAP", wrapper.getPayloadRequestType());
+		assertEquals(".GetLastTradePrice", wrapper.getPayloadRequestName(),
+				"Could not parse SOAP 1.1 request with 'mandatory header'");
+		assertEquals("SOAP", wrapper.getPayloadRequestType(), "SOAP request type unrecognized");
 
-		assertEquals("Content was changed", body, slurp(wrapper.getInputStream()));
+		assertEquals(body, slurp(wrapper.getInputStream()), "Content was changed");
 	}
 
 	/**
@@ -310,11 +309,11 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 		final PayloadNameRequestWrapper wrapper = new PayloadNameRequestWrapper(request);
 		wrapper.initialize();
 
-		assertEquals("Could not parse SOAP 1.1 request with mutliple request parameters",
-				".GetLastTradePriceDetailed", wrapper.getPayloadRequestName());
-		assertEquals("SOAP request type unrecognized", "SOAP", wrapper.getPayloadRequestType());
+		assertEquals(".GetLastTradePriceDetailed", wrapper.getPayloadRequestName(),
+				"Could not parse SOAP 1.1 request with mutliple request parameters");
+		assertEquals("SOAP", wrapper.getPayloadRequestType(), "SOAP request type unrecognized");
 
-		assertEquals("Content was changed", body, slurp(wrapper.getInputStream()));
+		assertEquals(body, slurp(wrapper.getInputStream()), "Content was changed");
 	}
 
 	/**
@@ -356,13 +355,13 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 		final PayloadNameRequestWrapper wrapper = new PayloadNameRequestWrapper(request);
 		wrapper.initialize();
 
-		assertEquals("Could not parse SOAP 1.2 request", ".chargeReservation",
-				wrapper.getPayloadRequestName());
-		assertEquals("SOAP request type unrecognized", "SOAP", wrapper.getPayloadRequestType());
+		assertEquals(".chargeReservation", wrapper.getPayloadRequestName(),
+				"Could not parse SOAP 1.2 request");
+		assertEquals("SOAP", wrapper.getPayloadRequestType(), "SOAP request type unrecognized");
 
-		assertEquals("Content was changed", body, slurp(wrapper.getInputStream()));
+		assertEquals(body, slurp(wrapper.getInputStream()), "Content was changed");
 
-		assertNotNull("getReader", wrapper.getReader());
+		assertNotNull(wrapper.getReader(), "getReader");
 	}
 
 	/**
@@ -371,14 +370,13 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	 */
 	@Test
 	public void testScanForChildTag() throws XMLStreamException {
-		assertTrue("Could not find child tag",
-				scanForChildTag("child", "<parent><child/></parent>"));
+		assertTrue(scanForChildTag("child", "<parent><child/></parent>"), "Could not find child tag");
 
-		assertFalse("Found wrong tag", scanForChildTag("notChild", "<parent><child/></parent>"));
+		assertFalse(scanForChildTag("notChild", "<parent><child/></parent>"), "Found wrong tag");
 
 		//don't find descendant tags
-		assertFalse("Found descendant tag",
-				scanForChildTag("descendant", "<parent><child><descendant/></child></parent>"));
+		assertFalse(scanForChildTag("descendant", "<parent><child><descendant/></child></parent>"),
+				"Found descendant tag");
 	}
 
 	private boolean scanForChildTag(String tagName, String xml) throws XMLStreamException {
@@ -392,7 +390,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 		final boolean found = PayloadNameRequestWrapper.scanForChildTag(reader, tagName);
 
 		if (found) {
-			assertEquals("Found wrong tag", tagName, reader.getLocalName());
+			assertEquals(tagName, reader.getLocalName(), "Found wrong tag");
 		}
 
 		reader.close();

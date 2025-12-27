@@ -17,13 +17,13 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Random;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -40,7 +40,7 @@ import net.bull.javamelody.internal.model.Counter;
  */
 public class TestJobGlobalListener {
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -48,7 +48,7 @@ public class TestJobGlobalListener {
 	/** Test. */
 	@Test
 	public void testGetJobCounter() {
-		assertNotNull("getJobCounter", JobGlobalListener.getJobCounter());
+		assertNotNull(JobGlobalListener.getJobCounter(), "getJobCounter");
 	}
 
 	/** Test.
@@ -87,7 +87,7 @@ public class TestJobGlobalListener {
 			// JobTestImpl fait un sleep de 2s au plus, donc on attend les jobs pour les compter
 			Thread.sleep(3000);
 
-			assertTrue("requestsCount", jobCounter.getRequestsCount() > 0);
+			assertTrue(jobCounter.getRequestsCount() > 0, "requestsCount");
 		} finally {
 			scheduler.shutdown();
 			JobGlobalListener.destroyJobGlobalListener();

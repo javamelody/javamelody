@@ -21,15 +21,15 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Timer;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.ServletContext;
 import net.bull.javamelody.Parameter;
@@ -45,7 +45,7 @@ import net.sf.ehcache.CacheManager;
 public class TestUpdateChecker {
 
 	/** Before. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -72,7 +72,7 @@ public class TestUpdateChecker {
 		final Collector collector = new Collector("test",
 				List.of(new Counter("http", null), new Counter("sql", null)));
 		JRobin.initBackendFactory(new Timer(getClass().getSimpleName(), true));
-		assertNotNull("SessionListener", new SessionListener());
+		assertNotNull(new SessionListener(), "SessionListener");
 		TestDatabaseInformations.initJdbcDriverParameters();
 		collector.collectWithoutErrors(List.of(new JavaInformations(null, true)));
 		final String serverUrl = "http://dummy";
@@ -82,7 +82,7 @@ public class TestUpdateChecker {
 			updateCheckerCollectorServer.checkForUpdate();
 		} catch (final UnknownHostException e) {
 			// UnknownHostException is ok for url http://dummy
-			assertNotNull("updateCheckerCollectorServer", updateCheckerCollectorServer);
+			assertNotNull(updateCheckerCollectorServer, "updateCheckerCollectorServer");
 		}
 		Utils.setProperty(Parameter.NO_DATABASE, "true");
 		Utils.setProperty(Parameter.LOG, "true");
@@ -95,7 +95,7 @@ public class TestUpdateChecker {
 			updateChecker.checkForUpdate();
 		} catch (final UnknownHostException e) {
 			// UnknownHostException is ok for url http://dummy
-			assertNotNull("updateChecker", updateChecker);
+			assertNotNull(updateChecker, "updateChecker");
 		}
 		CacheManager.getInstance().removeCache("test");
 	}

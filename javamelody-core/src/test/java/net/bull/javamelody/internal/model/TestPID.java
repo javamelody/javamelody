@@ -17,10 +17,10 @@
  */
 package net.bull.javamelody.internal.model;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.Utils;
 
@@ -30,7 +30,7 @@ import net.bull.javamelody.Utils;
  */
 public class TestPID {
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}

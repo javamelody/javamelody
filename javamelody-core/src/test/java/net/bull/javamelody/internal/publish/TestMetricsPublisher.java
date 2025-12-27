@@ -17,13 +17,13 @@
  */
 package net.bull.javamelody.internal.publish;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.Utils;
@@ -37,7 +37,7 @@ public class TestMetricsPublisher {
 	/**
 	 * Initialisation.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -48,16 +48,16 @@ public class TestMetricsPublisher {
 		final List<JavaInformations> javaInformationsList = new ArrayList<>();
 		javaInformationsList.add(new JavaInformations(null, false));
 		javaInformationsList.add(new JavaInformations(null, false));
-		assertEquals("getMetricsPublishers", 0,
-				MetricsPublisher.getMetricsPublishers(javaInformationsList).size());
+		assertEquals(0, MetricsPublisher.getMetricsPublishers(javaInformationsList).size(),
+				"getMetricsPublishers");
 		setProperty(Parameter.GRAPHITE_ADDRESS, "localhost:2003");
 		setProperty(Parameter.STATSD_ADDRESS, "localhost:8125");
 		setProperty(Parameter.CLOUDWATCH_NAMESPACE, "MyCompany/MyAppDomain");
 		System.setProperty("aws.region", "us-west-1");
 		setProperty(Parameter.INFLUXDB_URL, "http://localhost:8086/write?db=mydb");
 		setProperty(Parameter.DATADOG_API_KEY, "9775a026f1ca7d1c6c5af9d94d9595a4");
-		assertEquals("getMetricsPublishers", 5,
-				MetricsPublisher.getMetricsPublishers(javaInformationsList).size());
+		assertEquals(5, MetricsPublisher.getMetricsPublishers(javaInformationsList).size(),
+				"getMetricsPublishers");
 	}
 
 	private static void setProperty(Parameter parameter, String value) {

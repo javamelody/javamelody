@@ -17,14 +17,14 @@
  */
 package net.bull.javamelody.internal.publish;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.amazonaws.SdkClientException;
 
@@ -39,7 +39,7 @@ public class TestCloudWatch {
 	/**
 	 * Initialisation.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -48,7 +48,7 @@ public class TestCloudWatch {
 	@Test
 	public void test() {
 		CloudWatch cloudWatch = CloudWatch.getInstance("/test", "hostname");
-		assertNull("getInstance", cloudWatch);
+		assertNull(cloudWatch, "getInstance");
 		setProperty(Parameter.CLOUDWATCH_NAMESPACE, "MyCompany/MyAppDomain");
 		System.setProperty("aws.region", "us-west-1");
 		try {
@@ -57,7 +57,7 @@ public class TestCloudWatch {
 			// for ant tests
 			return;
 		}
-		assertNotNull("getInstance", cloudWatch);
+		assertNotNull(cloudWatch, "getInstance");
 		cloudWatch.addValue("metric", 1);
 		cloudWatch.addValue("metric", 2);
 		cloudWatch.addValue("metric", 3);
@@ -67,7 +67,7 @@ public class TestCloudWatch {
 		} catch (final SdkClientException | IOException e) {
 			exception = true;
 		}
-		assertTrue("no credentials provided", exception);
+		assertTrue(exception, "no credentials provided");
 		setProperty(Parameter.CLOUDWATCH_NAMESPACE, null);
 		System.getProperties().remove("aws.region");
 		cloudWatch.stop();

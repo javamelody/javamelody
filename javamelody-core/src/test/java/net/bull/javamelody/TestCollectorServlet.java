@@ -21,16 +21,16 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
@@ -57,12 +57,15 @@ public class TestCollectorServlet {
 	 * Initialisation.
 	 * @throws IOException e
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() throws IOException {
 		tearDown();
 		Utils.initialize();
 		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", TRUE);
 		Utils.setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
+
+		Utils.setProperty(Parameter.LOG, TRUE);
+
 		config = createNiceMock(ServletConfig.class);
 		context = createNiceMock(ServletContext.class);
 		expect(config.getServletContext()).andReturn(context).anyTimes();
@@ -73,7 +76,7 @@ public class TestCollectorServlet {
 	 * Terminaison.
 	 * @throws IOException e
 	 */
-	@After
+	@AfterEach
 	public void tearDown() throws IOException {
 		if (collectorServlet != null) {
 			collectorServlet.destroy();
@@ -233,7 +236,7 @@ public class TestCollectorServlet {
 			Main.main(new String[] { "--help" });
 		} catch (final Exception e) {
 			// cela s'arrête sur le jar winstone qui n'est pas disponible en tests unitaires
-			assertNotNull("ok", e);
+			assertNotNull(e, "ok");
 		}
 	}
 

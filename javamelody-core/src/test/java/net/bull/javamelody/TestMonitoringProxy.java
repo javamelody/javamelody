@@ -17,12 +17,12 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.internal.model.Counter;
 
@@ -32,7 +32,7 @@ import net.bull.javamelody.internal.model.Counter;
  */
 public class TestMonitoringProxy {
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -40,7 +40,7 @@ public class TestMonitoringProxy {
 	/** Test. */
 	@Test
 	public void testGetServicesCounter() {
-		assertNotNull("getServicesCounter", MonitoringProxy.getServicesCounter());
+		assertNotNull(MonitoringProxy.getServicesCounter(), "getServicesCounter");
 	}
 
 	/** Test. */
@@ -53,31 +53,31 @@ public class TestMonitoringProxy {
 				.createProxy(new SpringTestFacadeImpl());
 
 		servicesCounter.setDisplayed(false);
-		assertNotNull("now()", springTestFacade.now());
+		assertNotNull(springTestFacade.now(), "now()");
 		final String requestsCount = "requestsCount";
-		assertSame(requestsCount, 0, servicesCounter.getRequestsCount());
+		assertSame(0, servicesCounter.getRequestsCount(), requestsCount);
 
 		servicesCounter.setDisplayed(true);
-		assertNotNull("now()", springTestFacade.now());
-		assertSame(requestsCount, 1, servicesCounter.getRequestsCount());
+		assertNotNull(springTestFacade.now(), "now()");
+		assertSame(1, servicesCounter.getRequestsCount(), requestsCount);
 
 		try {
 			springTestFacade.throwError();
 		} catch (final Error e) {
-			assertSame(requestsCount, 2, servicesCounter.getRequestsCount());
+			assertSame(2, servicesCounter.getRequestsCount(), requestsCount);
 		}
 		try {
 			springTestFacade.throwException();
 		} catch (final Exception e) {
-			assertSame(requestsCount, 3, servicesCounter.getRequestsCount());
+			assertSame(3, servicesCounter.getRequestsCount(), requestsCount);
 		}
 
 		final SpringTestFacade springTestFacade2 = MonitoringProxy
 				.createProxy(new SpringTestFacadeImpl(), "my facade name");
-		assertNotNull("now()", springTestFacade2.now());
-		assertSame(requestsCount, 4, servicesCounter.getRequestsCount());
+		assertNotNull(springTestFacade2.now(), "now()");
+		assertSame(4, servicesCounter.getRequestsCount(), requestsCount);
 
-		assertEquals("getName", "facade name",
-				new MonitoringProxy(new SpringTestFacadeImpl(), "facade name").getName());
+		assertEquals("facade name",
+				new MonitoringProxy(new SpringTestFacadeImpl(), "facade name").getName(), "getName");
 	}
 }

@@ -17,13 +17,13 @@
  */
 package net.bull.javamelody.internal.publish;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.Utils;
@@ -36,7 +36,7 @@ public class TestStatsD {
 	/**
 	 * Initialisation.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -46,10 +46,10 @@ public class TestStatsD {
 	@Test
 	public void test() throws IOException {
 		Statsd statsd = Statsd.getInstance("/test", "hostname");
-		assertNull("getInstance", statsd);
+		assertNull(statsd, "getInstance");
 		setProperty(Parameter.STATSD_ADDRESS, "localhost:8125");
 		statsd = Statsd.getInstance("/test", "hostname");
-		assertNotNull("getInstance", statsd);
+		assertNotNull(statsd, "getInstance");
 		statsd.addValue("metric", 1);
 		statsd.addValue("metric", 2);
 		statsd.addValue("metric", 3);
@@ -57,7 +57,7 @@ public class TestStatsD {
 		statsd.stop();
 		setProperty(Parameter.STATSD_ADDRESS, "localhost");
 		statsd = Statsd.getInstance("/test", "hostname");
-		assertNotNull("getInstance", statsd);
+		assertNotNull(statsd, "getInstance");
 		statsd.stop();
 	}
 

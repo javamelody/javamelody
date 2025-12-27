@@ -17,16 +17,15 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.CounterRequestMXBean.CounterRequestAggregationData;
 import net.bull.javamelody.CounterRequestMXBean.CounterRequestData;
 import net.bull.javamelody.CounterRequestMXBean.CounterRequestMXBeanImpl;
 import net.bull.javamelody.internal.model.Counter;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test unitaire des classes internes de CounterRequestMXBean.
@@ -35,7 +34,7 @@ import net.bull.javamelody.internal.model.Counter;
 public class TestCounterRequestMxBean {
 
 	/** Before. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -49,24 +48,23 @@ public class TestCounterRequestMxBean {
 				counter);
 		final CounterRequestAggregationData counterRequestAggregation = counterRequestMXBeanImpl
 				.getCounterRequestAggregation();
-		assertNotNull("getGlobalRequest", counterRequestAggregation.getGlobalRequest());
-		assertNotNull("getWarningRequest", counterRequestAggregation.getWarningRequest());
-		assertNotNull("getSevereRequest", counterRequestAggregation.getSevereRequest());
-		assertNotNull("getWarningThreshold", counterRequestAggregation.getWarningThreshold());
-		assertNotNull("getSevereThreshold", counterRequestAggregation.getSevereThreshold());
-		assertNotNull("getRequests", counterRequestAggregation.getRequests());
+		assertNotNull(counterRequestAggregation.getGlobalRequest(), "getGlobalRequest");
+		assertNotNull(counterRequestAggregation.getWarningRequest(), "getWarningRequest");
+		assertNotNull(counterRequestAggregation.getSevereRequest(), "getSevereRequest");
+		assertTrue(counterRequestAggregation.getWarningThreshold() >= 0, "getWarningThreshold");
+		assertTrue(counterRequestAggregation.getSevereThreshold() >= 0, "getSevereThreshold");
+		assertNotNull(counterRequestAggregation.getRequests(), "getRequests");
 		for (final CounterRequestData counterRequestData : counterRequestAggregation.getRequests()
 				.values()) {
-			assertEquals("getName", "test 1", counterRequestData.getName());
-			assertEquals("getHits", 1, counterRequestData.getHits());
-			assertEquals("getMean", 10, counterRequestData.getMean());
-			assertEquals("getMaximum", 10, counterRequestData.getMaximum());
-			assertEquals("getStandardDeviation", 0, counterRequestData.getStandardDeviation());
-			assertEquals("getCpuTimeMean", 10, counterRequestData.getCpuTimeMean());
-			assertEquals("getAllocatedKBytesMean", 10, counterRequestData.getAllocatedKBytesMean());
-			assertEquals("getSystemErrorPercentage", 0,
-					counterRequestData.getSystemErrorPercentage(), 0);
-			assertEquals("getResponseSizeMean", 100, counterRequestData.getResponseSizeMean());
+			assertEquals("test 1", counterRequestData.getName(), "getName");
+			assertEquals(1, counterRequestData.getHits(), "getHits");
+			assertEquals(10, counterRequestData.getMean(), "getMean");
+			assertEquals(10, counterRequestData.getMaximum(), "getMaximum");
+			assertEquals(0, counterRequestData.getStandardDeviation(), "getStandardDeviation");
+			assertEquals(10, counterRequestData.getCpuTimeMean(), "getCpuTimeMean");
+			assertEquals(10, counterRequestData.getAllocatedKBytesMean(), "getAllocatedKBytesMean");
+			assertEquals(0, counterRequestData.getSystemErrorPercentage(), 0, "getSystemErrorPercentage");
+			assertEquals(100, counterRequestData.getResponseSizeMean(), "getResponseSizeMean");
 		}
 	}
 }

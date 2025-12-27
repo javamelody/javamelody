@@ -17,7 +17,7 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Hashtable;
 
@@ -26,9 +26,9 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.naming.spi.InitialContextFactory;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test unitaire de la classe MonitoringInitialContextFactory.
@@ -39,13 +39,13 @@ public class TestMonitoringInitialContextFactory implements InitialContextFactor
 
 	/** Initialisation.
 	 * @throws NamingException e */
-	@BeforeClass
+	@BeforeAll
 	public static void init() throws NamingException {
 		initialContext = new InitialContext();
 	}
 
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -74,7 +74,7 @@ public class TestMonitoringInitialContextFactory implements InitialContextFactor
 				MonitoringInitialContextFactory.stop();
 			}
 			// namingexception si la classe n'existe pas
-			assertNotNull("exception", result);
+			assertNotNull(result, "exception");
 		} finally {
 			Utils.setProperty(Context.INITIAL_CONTEXT_FACTORY, null);
 		}

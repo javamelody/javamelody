@@ -17,13 +17,13 @@
  */
 package net.bull.javamelody.internal.publish;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.Utils;
@@ -36,7 +36,7 @@ public class TestInfluxDB {
 	/**
 	 * Initialisation.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -46,10 +46,10 @@ public class TestInfluxDB {
 	@Test
 	public void test() throws IOException {
 		InfluxDB influxdb = InfluxDB.getInstance("/test", "hostname");
-		assertNull("getInstance", influxdb);
+		assertNull(influxdb, "getInstance");
 		setProperty(Parameter.INFLUXDB_URL, "http://localhost:8086/write?db=mydb");
 		influxdb = InfluxDB.getInstance("/test", "hostname");
-		assertNotNull("getInstance", influxdb);
+		assertNotNull(influxdb, "getInstance");
 		influxdb.addValue("metric", 1);
 		influxdb.addValue("metric", 2);
 		influxdb.addValue("metric", 3);

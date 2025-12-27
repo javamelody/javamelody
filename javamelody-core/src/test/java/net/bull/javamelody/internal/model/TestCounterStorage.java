@@ -17,9 +17,9 @@
  */
 package net.bull.javamelody.internal.model;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,10 +28,9 @@ import java.io.ObjectOutputStream;
 import java.util.Calendar;
 import java.util.zip.GZIPOutputStream;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.Utils;
@@ -43,25 +42,25 @@ import net.bull.javamelody.internal.common.Parameters;
  */
 public class TestCounterStorage {
 
-	@Rule
-	public TemporaryFolder corruptedTempFile = new TemporaryFolder();
+	@TempDir
+	public File tempDir;
 
 	/** Test. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
 
 	@Test
 	public void testCorruptedFile() throws IOException {
-		final File tempFile = corruptedTempFile.newFile("test.ser.gz");
+		final File tempFile = new File(tempDir, "test.ser.gz");
 		try (ObjectOutputStream outputStream = new ObjectOutputStream(
 				new GZIPOutputStream(new FileOutputStream(tempFile)))) {
 			outputStream.writeObject("java melody");
 		}
-		assertNull("String object can not be cast to the Counter, but the result should be null",
-				CounterStorage.readFromFile(tempFile));
-		assertFalse("corrupted file should be deleted", tempFile.exists());
+		assertNull(CounterStorage.readFromFile(tempFile),
+				"String object can not be cast to the Counter, but the result should be null");
+		assertFalse(tempFile.exists(), "corrupted file should be deleted");
 	}
 
 	/** Test.

@@ -17,13 +17,13 @@
  */
 package net.bull.javamelody.internal.model;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -33,8 +33,8 @@ import java.io.Serializable;
 import java.util.Locale;
 
 import org.ehcache.Status;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.common.InputOutput;
@@ -45,7 +45,7 @@ import net.bull.javamelody.internal.common.InputOutput;
  */
 public class TestTransportFormat {
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -66,10 +66,10 @@ public class TestTransportFormat {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		TransportFormat.SERIALIZED.writeSerializableTo(counter, output);
 		final String message = "flux vide";
-		assertTrue(message, output.size() > 0);
+		assertTrue(output.size() > 0, message);
 		output.reset();
 		TransportFormat.SERIALIZED.writeSerializableTo(null, output);
-		assertTrue(message, output.size() > 0);
+		assertTrue(output.size() > 0, message);
 	}
 
 	/** Test.
@@ -79,7 +79,7 @@ public class TestTransportFormat {
 		final Counter counter = createCounter();
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		TransportFormat.XML.writeSerializableTo(counter, output);
-		assertTrue("flux vide", output.size() > 0);
+		assertTrue(output.size() > 0, "flux vide");
 	}
 
 	/** Test.
@@ -89,7 +89,7 @@ public class TestTransportFormat {
 		final Counter counter = createCounter();
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		TransportFormat.JSON.writeSerializableTo(counter, output);
-		assertTrue("flux vide", output.size() > 0);
+		assertTrue(output.size() > 0, "flux vide");
 	}
 
 	/** Test.
@@ -101,19 +101,19 @@ public class TestTransportFormat {
 		final Counter after = (Counter) serialize(counter);
 		assertEquals("counter", counter.toString(), after.toString());
 
-		assertNull("null", serialize(null));
+		assertNull(serialize(null), "null");
 
 		final String[][] array = {};
-		assertArrayEquals("array", array, (String[][]) serialize(array));
+		assertArrayEquals(array, (String[][]) serialize(array), "array");
 		final boolean[] barray = {};
-		assertArrayEquals("boolean", barray, (boolean[]) serialize(barray));
+		assertArrayEquals(barray, (boolean[]) serialize(barray), "boolean");
 		final File file = new File("test");
-		assertEquals("file", file, serialize(file));
+		assertEquals(file, serialize(file), "file");
 		try {
 			// objects from not white-listed packages should not be deserialized
-			assertNull("should not return a result", serialize(Status.UNINITIALIZED));
+			assertNull(serialize(Status.UNINITIALIZED), "should not return a result");
 		} catch (final ClassNotFoundException e) {
-			assertNotNull("e", e);
+			assertNotNull(e, "e");
 		}
 	}
 
@@ -148,14 +148,14 @@ public class TestTransportFormat {
 			result = e;
 		}
 		// la désérialisation d'un flux json n'est pas possible
-		assertNotNull("readJson", result);
+		assertNotNull(result, "readJson");
 	}
 
 	/** Test. */
 	@Test
 	public void testGetCode() {
 		for (final TransportFormat tf : TransportFormat.values()) {
-			assertSame("same", tf, TransportFormat.valueOfIgnoreCase(tf.getCode()));
+			assertSame(tf, TransportFormat.valueOfIgnoreCase(tf.getCode()), "same");
 		}
 	}
 
@@ -163,7 +163,7 @@ public class TestTransportFormat {
 	@Test
 	public void testGetMimeType() {
 		for (final TransportFormat tf : TransportFormat.values()) {
-			assertNotNull("mimeType", tf.getMimeType());
+			assertNotNull(tf.getMimeType(), "mimeType");
 		}
 	}
 
@@ -178,21 +178,20 @@ public class TestTransportFormat {
 		final ByteArrayInputStream input = new ByteArrayInputStream(byteArray);
 		output.reset();
 		InputOutput.pump(input, output);
-		assertArrayEquals("array equals", byteArray, output.toByteArray());
+		assertArrayEquals(byteArray, output.toByteArray(), "array equals");
 	}
 
 	/** Test. */
 	@Test
 	public void testIsATransportFormat() {
 		final String message = "isATransportFormat";
-		assertFalse(message, TransportFormat.isATransportFormat(null));
+		assertFalse(TransportFormat.isATransportFormat(null), message);
 		for (final TransportFormat transportFormat : TransportFormat.values()) {
 			final String format = transportFormat.toString();
-			assertTrue(message, TransportFormat.isATransportFormat(format));
-			assertTrue(message,
-					TransportFormat.isATransportFormat(format.toLowerCase(Locale.getDefault())));
-			assertTrue(message, TransportFormat.isATransportFormat(format + ' '));
+			assertTrue(TransportFormat.isATransportFormat(format), message);
+			assertTrue(TransportFormat.isATransportFormat(format.toLowerCase(Locale.getDefault())), message);
+			assertTrue(TransportFormat.isATransportFormat(format + ' '), message);
 		}
-		assertFalse(message, TransportFormat.isATransportFormat("n'importe quoi"));
+		assertFalse(TransportFormat.isATransportFormat("n'importe quoi"), message);
 	}
 }

@@ -17,7 +17,7 @@
  */
 package net.bull.javamelody.internal.web.html;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.common.Parameters;
@@ -39,13 +39,13 @@ import net.bull.javamelody.internal.model.ThreadInformations;
  */
 public class TestHtmlThreadInformationsReport {
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
 
 	private static void assertNotEmptyAndClear(StringWriter writer) {
-		assertTrue("rapport vide", writer.getBuffer().length() > 0);
+		assertTrue(writer.getBuffer().length() > 0, "rapport vide");
 		writer.getBuffer().setLength(0);
 	}
 

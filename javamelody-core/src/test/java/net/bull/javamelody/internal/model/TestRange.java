@@ -17,19 +17,19 @@
  */
 package net.bull.javamelody.internal.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.common.I18N;
@@ -46,7 +46,7 @@ public class TestRange {
 	private Range customRange;
 
 	/** Test. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 		periodRange = Period.JOUR.getRange();
@@ -57,29 +57,29 @@ public class TestRange {
 	/** Test. */
 	@Test
 	public void testGetPeriod() {
-		assertNotNull("getPeriod", periodRange.getPeriod());
-		assertNull("getPeriod", customRange.getPeriod());
+		assertNotNull(periodRange.getPeriod(), "getPeriod");
+		assertNull(customRange.getPeriod(), "getPeriod");
 	}
 
 	/** Test. */
 	@Test
 	public void testGetStartDate() {
-		assertNull("getStartDate", periodRange.getStartDate());
-		assertNotNull("getStartDate", customRange.getStartDate());
+		assertNull(periodRange.getStartDate(), "getStartDate");
+		assertNotNull(customRange.getStartDate(), "getStartDate");
 	}
 
 	/** Test. */
 	@Test
 	public void testGetEndDate() {
-		assertNull("getEndDate", periodRange.getEndDate());
-		assertNotNull("getEndDate", customRange.getEndDate());
+		assertNull(periodRange.getEndDate(), "getEndDate");
+		assertNotNull(customRange.getEndDate(), "getEndDate");
 	}
 
 	/** Test. */
 	@Test
 	public void testGetValue() {
-		assertNotNull("getValue", periodRange.getValue());
-		assertNotNull("getValue", customRange.getValue());
+		assertNotNull(periodRange.getValue(), "getValue");
+		assertNotNull(customRange.getValue(), "getValue");
 	}
 
 	/** Test. */
@@ -88,34 +88,38 @@ public class TestRange {
 		I18N.bindLocale(Locale.FRENCH);
 		try {
 			final DateFormat dateFormat = I18N.createDateFormat();
-			assertEquals("parse1", periodRange.getPeriod(),
-					Range.parse(periodRange.getValue(), dateFormat).getPeriod());
-			assertTrue("parse2", isSameDay(customRange.getStartDate(),
-					Range.parse(customRange.getValue(), dateFormat).getStartDate()));
-			assertTrue("parse3", isSameDay(customRange.getEndDate(),
-					Range.parse(customRange.getValue(), dateFormat).getEndDate()));
+			assertEquals(periodRange.getPeriod(),
+					Range.parse(periodRange.getValue(), dateFormat).getPeriod(),
+					"parse1");
+			assertTrue(isSameDay(customRange.getStartDate(),
+					Range.parse(customRange.getValue(), dateFormat).getStartDate()),
+					"parse2");
+			assertTrue(isSameDay(customRange.getEndDate(),
+					Range.parse(customRange.getValue(), dateFormat).getEndDate()),
+					"parse3");
 
 			// on teste le résultat en cas d'erreur de format
-			assertNotNull("parse4", Range
-					.parse("xxxxxx" + Range.CUSTOM_PERIOD_SEPARATOR + "01/01/2010", dateFormat));
-			assertNotNull("parse5", Range
-					.parse("01/01/2010" + Range.CUSTOM_PERIOD_SEPARATOR + "xxxxxx", dateFormat));
-			assertNotNull("parse6",
-					Range.parse("01/01/2010" + Range.CUSTOM_PERIOD_SEPARATOR, dateFormat));
-			assertNotNull("parse6b", Range.parse("01/01/2011", dateFormat));
+			assertNotNull(Range
+					.parse("xxxxxx" + Range.CUSTOM_PERIOD_SEPARATOR + "01/01/2010", dateFormat),
+					"parse4");
+			assertNotNull(Range
+					.parse("01/01/2010" + Range.CUSTOM_PERIOD_SEPARATOR + "xxxxxx", dateFormat),
+					"parse5");
+			assertNotNull(Range.parse("01/01/2010" + Range.CUSTOM_PERIOD_SEPARATOR, dateFormat), "parse6");
+			assertNotNull(Range.parse("01/01/2011", dateFormat), "parse6b");
 			// on teste les bornes min et max
 			final Calendar calendar = Calendar.getInstance();
 			final int currentYear = calendar.get(Calendar.YEAR);
 			Range range = Range.parse("01/01/2000" + Range.CUSTOM_PERIOD_SEPARATOR + "01/01/2030",
 					dateFormat);
 			calendar.setTime(range.getStartDate());
-			assertTrue("parse7", calendar.get(Calendar.YEAR) >= currentYear - 2);
+			assertTrue(calendar.get(Calendar.YEAR) >= currentYear - 2, "parse7");
 			calendar.setTime(range.getEndDate());
-			assertTrue("parse7", calendar.get(Calendar.YEAR) <= currentYear);
+			assertTrue(calendar.get(Calendar.YEAR) <= currentYear, "parse7");
 			range = Range.parse("01/01/2030" + Range.CUSTOM_PERIOD_SEPARATOR + "01/01/2030",
 					dateFormat);
 			calendar.setTime(range.getStartDate());
-			assertTrue("parse8", calendar.get(Calendar.YEAR) <= currentYear);
+			assertTrue(calendar.get(Calendar.YEAR) <= currentYear, "parse8");
 		} finally {
 			I18N.unbindLocale();
 		}
@@ -131,26 +135,26 @@ public class TestRange {
 	/** Test. */
 	@Test
 	public void testGetLabel() {
-		assertNotNull("getLabel", periodRange.getLabel());
-		assertNotNull("getLabel", customRange.getLabel());
+		assertNotNull(periodRange.getLabel(), "getLabel");
+		assertNotNull(customRange.getLabel(), "getLabel");
 	}
 
 	/** Test. */
 	@Test
 	public void testGetDurationDays() {
-		assertEquals("getDurationDays", 1L, periodRange.getDurationDays());
-		assertEquals("getDurationDays", 1L, customRange.getDurationDays());
+		assertEquals(1L, periodRange.getDurationDays(), "getDurationDays");
+		assertEquals(1L, customRange.getDurationDays(), "getDurationDays");
 	}
 
 	/** Test. */
 	@Test
 	public void testToString() {
 		final String string = periodRange.toString();
-		assertNotNull("toString not null", string);
-		assertFalse("toString not empty", string.isEmpty());
+		assertNotNull(string, "toString not null");
+		assertFalse(string.isEmpty(), "toString not empty");
 		final String string2 = customRange.toString();
-		assertNotNull("toString not null", string2);
-		assertFalse("toString not empty", string2.isEmpty());
+		assertNotNull(string2, "toString not null");
+		assertFalse(string2.isEmpty(), "toString not empty");
 	}
 
 }

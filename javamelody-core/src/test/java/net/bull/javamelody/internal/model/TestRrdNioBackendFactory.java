@@ -17,9 +17,9 @@
  */
 package net.bull.javamelody.internal.model;
 
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test unitaire de la classe RrdNioBackendFactory.
@@ -31,6 +31,6 @@ public class TestRrdNioBackendFactory {
 	@Test
 	public void testSyncPeriod() {
 		RrdNioBackendFactory.setSyncPeriod(60);
-		assertSame("getSyncPeriod", 60, RrdNioBackendFactory.getSyncPeriod());
+		assertSame(60, RrdNioBackendFactory.getSyncPeriod(), "getSyncPeriod");
 	}
 }

@@ -17,13 +17,13 @@
  */
 package net.bull.javamelody.internal.model;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.util.Date;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.Utils;
 
@@ -35,7 +35,7 @@ public class TestPeriodCounterFactory {
 	private PeriodCounterFactory periodCounterFactory;
 
 	/** Test. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 		final Counter sqlCounter = new Counter("sql", "db.png");
@@ -48,15 +48,14 @@ public class TestPeriodCounterFactory {
 	 * @throws IOException e */
 	@Test
 	public void test() throws IOException {
-		assertNotNull("buildNewDayCounter", periodCounterFactory.buildNewDayCounter());
-		assertNotNull("createDayCounterAtDate",
-				periodCounterFactory.createDayCounterAtDate(new Date()));
+		assertNotNull(periodCounterFactory.buildNewDayCounter(), "buildNewDayCounter");
+		assertNotNull(periodCounterFactory.createDayCounterAtDate(new Date()), "createDayCounterAtDate");
 		final Range customRange = Range.createCustomRange(
 				new Date(System.currentTimeMillis() - 24L * 60 * 60 * 1000), new Date());
-		assertNotNull("getCustomCounter", periodCounterFactory.getCustomCounter(customRange));
-		assertNotNull("getDayCounter", periodCounterFactory.getDayCounter());
-		assertNotNull("getMonthCounter", periodCounterFactory.getMonthCounter());
-		assertNotNull("getWeekCounter", periodCounterFactory.getWeekCounter());
-		assertNotNull("getYearCounter", periodCounterFactory.getYearCounter());
+		assertNotNull(periodCounterFactory.getCustomCounter(customRange), "getCustomCounter");
+		assertNotNull(periodCounterFactory.getDayCounter(), "getDayCounter");
+		assertNotNull(periodCounterFactory.getMonthCounter(), "getMonthCounter");
+		assertNotNull(periodCounterFactory.getWeekCounter(), "getWeekCounter");
+		assertNotNull(periodCounterFactory.getYearCounter(), "getYearCounter");
 	}
 }

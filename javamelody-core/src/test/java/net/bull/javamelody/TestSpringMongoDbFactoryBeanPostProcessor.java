@@ -17,11 +17,11 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.Ordered;
@@ -38,7 +38,7 @@ public class TestSpringMongoDbFactoryBeanPostProcessor {
 	private static final String MONITORING_CONTEXT_FILENAME = "net/bull/javamelody/monitoring-spring.xml";
 
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -52,15 +52,14 @@ public class TestSpringMongoDbFactoryBeanPostProcessor {
 				MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME)) {
 			final MongoDatabaseFactory mongoDatabaseFactory = context
 					.getBean(MongoDatabaseFactory.class);
-			assertNotNull("toString", mongoDatabaseFactory.toString());
-			assertNotNull("getDb", mongoDatabaseFactory.getMongoDatabase());
+			assertNotNull(mongoDatabaseFactory.toString(), "toString");
+			assertNotNull(mongoDatabaseFactory.getMongoDatabase(), "getDb");
 
 			final SpringMongoDbFactoryBeanPostProcessor springMongoDbFactoryBeanPostProcessor = context
 					.getBean(SpringMongoDbFactoryBeanPostProcessor.class);
-			assertEquals("order", Ordered.LOWEST_PRECEDENCE,
-					springMongoDbFactoryBeanPostProcessor.getOrder());
+			assertEquals(Ordered.LOWEST_PRECEDENCE, springMongoDbFactoryBeanPostProcessor.getOrder(), "order");
 			springMongoDbFactoryBeanPostProcessor.setOrder(1);
-			assertEquals("order", 1, springMongoDbFactoryBeanPostProcessor.getOrder());
+			assertEquals(1, springMongoDbFactoryBeanPostProcessor.getOrder(), "order");
 		}
 	}
 }

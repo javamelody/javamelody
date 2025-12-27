@@ -17,14 +17,14 @@
  */
 package net.bull.javamelody.internal.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test unitaire de la classe HsErrPid.
@@ -44,16 +44,16 @@ public class TestHsErrPid {
 			file2.createNewFile();
 			file3.createNewFile();
 			final List<HsErrPid> hsErrPidList2 = HsErrPid.buildHsErrPidList();
-			assertEquals("buildHsErrPidList", hsErrPidList.size() + 2, hsErrPidList2.size());
+			assertEquals(hsErrPidList.size() + 2, hsErrPidList2.size(), "buildHsErrPidList");
 			for (final HsErrPid hsErrPid : hsErrPidList2) {
-				assertNotNull("getDate", hsErrPid.getDate());
-				assertNotNull("getFile", hsErrPid.getFile());
+				assertNotNull(hsErrPid.getDate(), "getDate");
+				assertNotNull(hsErrPid.getFile(), "getFile");
 			}
 			final JavaInformations javaInformations = new JavaInformations(null, true);
 			final JavaInformations javaInformations2 = new JavaInformations(null, false);
 			final List<HsErrPid> hsErrPidList3 = HsErrPid
 					.getHsErrPidList(List.of(javaInformations, javaInformations2));
-			assertEquals("buildHsErrPidList", hsErrPidList.size() + 2, hsErrPidList3.size());
+			assertEquals(hsErrPidList.size() + 2, hsErrPidList3.size(), "buildHsErrPidList");
 		} finally {
 			file.delete();
 			file2.delete();

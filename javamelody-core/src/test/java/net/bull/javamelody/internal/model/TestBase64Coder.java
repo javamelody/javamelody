@@ -2,14 +2,14 @@
 
 package net.bull.javamelody.internal.model;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Base64;
 import java.util.Random;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for Base64Coder.
@@ -62,8 +62,8 @@ public class TestBase64Coder {
 			assertEquals("test2", e2, e1);
 			final byte[] b1 = Base64Coder.decode(e1);
 			final byte[] b2 = Base64.getDecoder().decode(e2);
-			assertArrayEquals("test2", b0, b1);
-			assertArrayEquals("test2", b0, b2);
+			assertArrayEquals(b0, b1, "test2");
+			assertArrayEquals(b0, b2, "test2");
 		}
 	}
 
@@ -86,8 +86,8 @@ public class TestBase64Coder {
 			assertEquals("test3", e2, e1.trim());
 			final byte[] b1 = Base64Coder.decodeLines(e1);
 			final byte[] b2 = Base64.getMimeDecoder().decode(e2);
-			assertArrayEquals("test3", b0, b1);
-			assertArrayEquals("test3", b0, b2);
+			assertArrayEquals(b0, b1, "test3");
+			assertArrayEquals(b0, b2, "test3");
 		}
 	}
 

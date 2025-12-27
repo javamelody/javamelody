@@ -21,11 +21,11 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.mock.MockActionProxy;
@@ -38,7 +38,7 @@ import net.bull.javamelody.internal.model.Counter;
  */
 public class TestStrutsInterceptor {
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -46,7 +46,7 @@ public class TestStrutsInterceptor {
 	/** Test. */
 	@Test
 	public void testGetStrutsCounter() {
-		assertNotNull("getStrutsCounter", MonitoringProxy.getStrutsCounter());
+		assertNotNull(MonitoringProxy.getStrutsCounter(), "getStrutsCounter");
 	}
 
 	/** Test.
@@ -68,11 +68,11 @@ public class TestStrutsInterceptor {
 		strutsCounter.setDisplayed(false);
 		strutsInterceptor.intercept(invocation);
 		final String requestsCount = "requestsCount";
-		assertSame(requestsCount, 0, strutsCounter.getRequestsCount());
+		assertSame(0, strutsCounter.getRequestsCount(), requestsCount);
 
 		strutsCounter.setDisplayed(true);
 		strutsInterceptor.intercept(invocation);
-		assertSame(requestsCount, 1, strutsCounter.getRequestsCount());
+		assertSame(1, strutsCounter.getRequestsCount(), requestsCount);
 		verify(invocation);
 
 		final ActionInvocation invocation2 = createNiceMock(ActionInvocation.class);
@@ -85,7 +85,7 @@ public class TestStrutsInterceptor {
 
 		replay(invocation2);
 		strutsInterceptor.intercept(invocation2);
-		assertSame(requestsCount, 2, strutsCounter.getRequestsCount());
+		assertSame(2, strutsCounter.getRequestsCount(), requestsCount);
 		verify(invocation2);
 
 		final ActionInvocation invocation3 = createNiceMock(ActionInvocation.class);
@@ -101,9 +101,9 @@ public class TestStrutsInterceptor {
 		try {
 			strutsInterceptor.intercept(invocation3);
 		} catch (final UnknownError e) {
-			assertNotNull("ok", e);
+			assertNotNull(e, "ok");
 		}
-		assertSame(requestsCount, 3, strutsCounter.getRequestsCount());
+		assertSame(3, strutsCounter.getRequestsCount(), requestsCount);
 		verify(invocation3);
 	}
 }

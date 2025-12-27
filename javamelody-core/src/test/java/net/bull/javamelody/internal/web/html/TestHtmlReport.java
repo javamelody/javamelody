@@ -20,9 +20,9 @@ package net.bull.javamelody.internal.web.html; // NOPMD
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,8 +44,8 @@ import java.util.concurrent.Future;
 import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
@@ -99,7 +99,7 @@ public class TestHtmlReport {
 	private StringWriter writer;
 
 	/** Initialisation. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 		javaInformationsList = Collections.singletonList(new JavaInformations(null, true));
@@ -221,7 +221,7 @@ public class TestHtmlReport {
 		try {
 			htmlReport.toHtml("message 2", null);
 		} catch (final IllegalStateException e) {
-			assertNotNull("ok", e);
+			assertNotNull(e, "ok");
 		}
 		setProperty(Parameter.WARNING_THRESHOLD_MILLIS, null);
 
@@ -634,8 +634,9 @@ public class TestHtmlReport {
 	@Test
 	public void testHtmlCounterRequestContext() throws IOException {
 		// cas où counterReportsByCounterName est null
-		assertNotNull("HtmlCounterRequestContextReport", new HtmlCounterRequestContextReport(
-				Collections.emptyList(), null, Collections.emptyList(), true, 500, writer));
+		assertNotNull(new HtmlCounterRequestContextReport(
+				Collections.emptyList(), null, Collections.emptyList(), true, 500, writer),
+				"HtmlCounterRequestContextReport");
 
 		// aucune requête en cours
 		final HtmlCounterRequestContextReport report = new HtmlCounterRequestContextReport(
@@ -662,7 +663,7 @@ public class TestHtmlReport {
 	}
 
 	private static void assertNotEmptyAndClear(final StringWriter writer) {
-		assertTrue("rapport vide", writer.getBuffer().length() > 0);
+		assertTrue(writer.getBuffer().length() > 0, "rapport vide");
 		writer.getBuffer().setLength(0);
 	}
 
@@ -673,7 +674,7 @@ public class TestHtmlReport {
 		I18N.bindLocale(Locale.US);
 		Locale.setDefault(Locale.US);
 		try {
-			assertEquals("locale en", Locale.US, I18N.getCurrentLocale());
+			assertEquals(Locale.US, I18N.getCurrentLocale(), "locale en");
 
 			// counter avec 3 requêtes
 			counter.addRequest("test1", 0, 0, 0, false, 1000);

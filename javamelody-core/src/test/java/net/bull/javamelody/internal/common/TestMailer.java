@@ -17,7 +17,7 @@
  */
 package net.bull.javamelody.internal.common;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,8 +27,8 @@ import java.util.Properties;
 
 import javax.naming.NamingException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
@@ -42,7 +42,7 @@ public class TestMailer {
 	private Mailer mailer;
 
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 		mailer = new Mailer("jndi name");
@@ -55,7 +55,7 @@ public class TestMailer {
 		try {
 			send(null, false);
 		} catch (final NamingException e) {
-			assertNotNull("ok", e);
+			assertNotNull(e, "ok");
 		}
 		final Properties properties = new Properties();
 		mailer.setSession(Session.getInstance(properties));
@@ -78,7 +78,7 @@ public class TestMailer {
 		try {
 			mailer.send(toAddress, subject, message, attachments, highPriority);
 		} catch (final MessagingException e) {
-			assertNotNull("ok", e);
+			assertNotNull(e, "ok");
 		}
 	}
 }

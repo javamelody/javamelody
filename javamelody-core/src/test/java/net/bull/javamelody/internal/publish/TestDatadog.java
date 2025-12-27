@@ -17,13 +17,13 @@
  */
 package net.bull.javamelody.internal.publish;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.Utils;
@@ -36,7 +36,7 @@ public class TestDatadog {
 	/**
 	 * Initialisation.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -46,10 +46,10 @@ public class TestDatadog {
 	@Test
 	public void test() throws IOException {
 		Datadog datadog = Datadog.getInstance("/test", "hostname");
-		assertNull("getInstance", datadog);
+		assertNull(datadog, "getInstance");
 		setProperty(Parameter.DATADOG_API_KEY, "9775a026f1ca7d1c6c5af9d94d9595a4");
 		datadog = Datadog.getInstance("/test", "hostname");
-		assertNotNull("getInstance", datadog);
+		assertNotNull(datadog, "getInstance");
 		datadog.addValue("metric", 1);
 		datadog.addValue("metric", 2);
 		datadog.addValue("metric", 3);

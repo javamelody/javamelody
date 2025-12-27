@@ -29,9 +29,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.easymock.EasyMock;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -56,7 +56,7 @@ public class TestCustomResourceFilter {
 	/**
 	 * Initialisation.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		init(false);
 	}
@@ -90,7 +90,7 @@ public class TestCustomResourceFilter {
 	/**
 	 * Finalisation.
 	 */
-	@After
+	@AfterEach
 	public void tearDown() {
 		if (customResourceFilter != null) {
 			customResourceFilter.destroy();

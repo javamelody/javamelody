@@ -21,14 +21,14 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collections;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.http.HttpServletRequest;
 import net.bull.javamelody.Utils;
@@ -44,7 +44,7 @@ import net.bull.javamelody.internal.model.Period;
  */
 public class TestPdfCounterErrorReport {
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -80,7 +80,7 @@ public class TestPdfCounterErrorReport {
 	}
 
 	private void assertNotEmptyAndClear(ByteArrayOutputStream output) {
-		assertTrue("rapport vide", output.size() > 0);
+		assertTrue(output.size() > 0, "rapport vide");
 		output.reset();
 	}
 }

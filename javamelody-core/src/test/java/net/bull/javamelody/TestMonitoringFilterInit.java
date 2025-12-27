@@ -25,9 +25,9 @@ import static org.easymock.EasyMock.verify;
 import java.io.IOException;
 import java.lang.reflect.Field;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -58,7 +58,7 @@ public class TestMonitoringFilterInit {
 	/**
 	 * Initialisation.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		tearDown();
 		// rq: pas setUpFirst ici car setUp est rappelée dans les méthodes
@@ -86,7 +86,7 @@ public class TestMonitoringFilterInit {
 		monitoringFilter = new MonitoringFilter();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		if (monitoringFilter != null) {
 			monitoringFilter.destroy();

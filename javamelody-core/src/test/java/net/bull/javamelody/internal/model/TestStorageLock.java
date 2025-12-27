@@ -19,13 +19,13 @@ package net.bull.javamelody.internal.model;
 
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.replay;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.ServletContext;
 import net.bull.javamelody.Utils;
@@ -39,7 +39,7 @@ public class TestStorageLock {
 	/**
 	 * Initialisation.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -52,9 +52,9 @@ public class TestStorageLock {
 		replay(context);
 		Parameters.initialize(context);
 		final StorageLock storageLock = new StorageLock("testStorageLock");
-		assertTrue("isAcquired", storageLock.isAcquired());
+		assertTrue(storageLock.isAcquired(), "isAcquired");
 		storageLock.release();
-		assertFalse("isAcquired", storageLock.isAcquired());
+		assertFalse(storageLock.isAcquired(), "isAcquired");
 		storageLock.release();
 	}
 }

@@ -17,9 +17,10 @@
  */
 package net.bull.javamelody.internal.web.html;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test unitaire pour JavaHTMLizer.
@@ -33,6 +34,6 @@ public class TestJavaHTMLizer {
 	public void test() {
 		final String javaSource = "public class Test { static final String TEST = \"test\"; }";
 		final String html = JavaHTMLizer.htmlizeFull(javaSource);
-		assertTrue("htmlizeFull", html != null && !html.isEmpty());
+        assertFalse(html.isEmpty(), "htmlizeFull");
 	}
 }

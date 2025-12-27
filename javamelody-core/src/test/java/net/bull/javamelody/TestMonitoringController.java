@@ -21,12 +21,12 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,7 +46,7 @@ public class TestMonitoringController {
 	/**
 	 * Initialisation.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 		final ServletContext context = createNiceMock(ServletContext.class);
@@ -101,7 +101,7 @@ public class TestMonitoringController {
 		try {
 			MonitoringController.checkCsrfToken(httpRequest0);
 		} catch (final Exception e) {
-			assertNotNull("e", e);
+			assertNotNull(e, "e");
 		}
 		verify(httpRequest0);
 
@@ -128,7 +128,7 @@ public class TestMonitoringController {
 		try {
 			MonitoringController.checkCsrfToken(httpRequest2);
 		} catch (final Exception e) {
-			assertNotNull("e", e);
+			assertNotNull(e, "e");
 		}
 		verify(httpRequest2);
 		verify(httpSession2);

@@ -1,9 +1,9 @@
 package net.bull.javamelody.internal.model;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.Utils;
 
@@ -14,7 +14,7 @@ public class CounterErrorTest {
 	/**
 	 * Init.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -48,8 +48,7 @@ public class CounterErrorTest {
 		}
 		final CounterError counterError = new CounterError(message.toString(),
 				stackTrace.toString());
-		assertEquals("message length", messageMaxLength, counterError.getMessage().length());
-		assertEquals("stackTrace length", stackTraceMaxLength,
-				counterError.getStackTrace().length());
+		assertEquals(messageMaxLength, counterError.getMessage().length(), "message length");
+		assertEquals(stackTraceMaxLength, counterError.getStackTrace().length(), "stackTrace length");
 	}
 }

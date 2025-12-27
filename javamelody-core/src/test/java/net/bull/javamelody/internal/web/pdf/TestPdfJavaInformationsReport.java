@@ -17,7 +17,7 @@
  */
 package net.bull.javamelody.internal.web.pdf;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -26,8 +26,8 @@ import java.util.List;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.lowagie.text.Document;
 
@@ -46,7 +46,7 @@ public class TestPdfJavaInformationsReport {
 	private static final String TEST_APP = "test app";
 
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -124,7 +124,7 @@ public class TestPdfJavaInformationsReport {
 	}
 
 	private void assertNotEmptyAndClear(ByteArrayOutputStream output) {
-		assertTrue("rapport vide", output.size() > 0);
+		assertTrue(output.size() > 0, "rapport vide");
 		output.reset();
 	}
 }

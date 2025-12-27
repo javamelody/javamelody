@@ -17,9 +17,9 @@
  */
 package net.bull.javamelody.internal.web;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,8 +27,8 @@ import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Locale;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.Cookie;
@@ -42,7 +42,7 @@ import net.bull.javamelody.Utils;
  */
 public class TestCompressionServletResponseWrapper {
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -256,14 +256,13 @@ public class TestCompressionServletResponseWrapper {
 		final CompressionServletResponseWrapper wrapper = new CompressionServletResponseWrapper(
 				new HttpResponse(), 1024);
 		wrapper.setStatus(HttpServletResponse.SC_NOT_FOUND);
-		assertEquals("status", HttpServletResponse.SC_NOT_FOUND, wrapper.getCurrentStatus());
+		assertEquals(HttpServletResponse.SC_NOT_FOUND, wrapper.getCurrentStatus(), "status");
 		wrapper.sendError(HttpServletResponse.SC_BAD_GATEWAY);
-		assertEquals("status", HttpServletResponse.SC_BAD_GATEWAY, wrapper.getCurrentStatus());
+		assertEquals(HttpServletResponse.SC_BAD_GATEWAY, wrapper.getCurrentStatus(), "status");
 		wrapper.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "message");
-		assertEquals("status", HttpServletResponse.SC_SERVICE_UNAVAILABLE,
-				wrapper.getCurrentStatus());
-		assertNotNull("outputStream", wrapper.createOutputStream());
-		assertNotNull("writer", wrapper.getWriter());
+		assertEquals(HttpServletResponse.SC_SERVICE_UNAVAILABLE, wrapper.getCurrentStatus(), "status");
+		assertNotNull(wrapper.createOutputStream(), "outputStream");
+		assertNotNull(wrapper.getWriter(), "writer");
 		wrapper.flushStream();
 		wrapper.flushBuffer();
 		wrapper.close();
@@ -275,11 +274,11 @@ public class TestCompressionServletResponseWrapper {
 		} catch (final Exception e) {
 			ok = true;
 		}
-		assertTrue("exception", ok);
+		assertTrue(ok, "exception");
 
 		final CompressionServletResponseWrapper wrapper2 = new CompressionServletResponseWrapper(
 				new HttpResponse(), 1024);
-		assertNotNull("outputStream", wrapper2.getOutputStream());
+		assertNotNull(wrapper2.getOutputStream(), "outputStream");
 		wrapper2.flushBuffer();
 		wrapper2.close();
 		boolean ok2 = false;
@@ -288,7 +287,7 @@ public class TestCompressionServletResponseWrapper {
 		} catch (final Exception e) {
 			ok2 = true;
 		}
-		assertTrue("exception", ok2);
+		assertTrue(ok2, "exception");
 	}
 
 	/** Test.

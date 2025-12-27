@@ -21,14 +21,14 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.Locale;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -53,7 +53,7 @@ public class TestPluginMonitoringFilter {
 		// ras
 	}
 
-	@Before
+	@BeforeEach
 	public void init() throws ServletException {
 		pluginMonitoringFilter = new MyPluginMonitoringFilter();
 		final FilterConfig config = createNiceMock(FilterConfig.class);
@@ -71,7 +71,7 @@ public class TestPluginMonitoringFilter {
 		verify(context);
 	}
 
-	@After
+	@AfterEach
 	public void destroy() {
 		pluginMonitoringFilter.destroy();
 		pluginMonitoringFilter = null;
@@ -125,7 +125,7 @@ public class TestPluginMonitoringFilter {
 		replay(response);
 		replay(chain);
 		pluginMonitoringFilter.doFilter(request, response, chain);
-		assertEquals("sessionCount", sessionCount, SessionListener.getSessionCount());
+		assertEquals(sessionCount, SessionListener.getSessionCount(), "sessionCount");
 		verify(request);
 		verify(response);
 		verify(chain);
@@ -151,9 +151,9 @@ public class TestPluginMonitoringFilter {
 		replay(chain);
 		replay(session);
 		pluginMonitoringFilter.doFilter(request, response, chain);
-		assertEquals("sessionCount", sessionCount + 1, SessionListener.getSessionCount());
+		assertEquals(sessionCount + 1, SessionListener.getSessionCount(), "sessionCount");
 		pluginMonitoringFilter.doFilter(request, response, chain);
-		assertEquals("sessionCount", sessionCount + 1, SessionListener.getSessionCount());
+		assertEquals(sessionCount + 1, SessionListener.getSessionCount(), "sessionCount");
 		verify(request);
 		verify(response);
 		verify(chain);
@@ -166,7 +166,7 @@ public class TestPluginMonitoringFilter {
 
 		pluginMonitoringFilter.unregisterInvalidatedSessions();
 
-		assertEquals("sessionCount", sessionCount, SessionListener.getSessionCount());
+		assertEquals(sessionCount, SessionListener.getSessionCount(), "sessionCount");
 
 		final HttpServletRequest request2 = createNiceMock(HttpServletRequest.class);
 		final HttpServletResponse response2 = createNiceMock(HttpServletResponse.class);
@@ -187,11 +187,11 @@ public class TestPluginMonitoringFilter {
 		replay(chain2);
 		replay(session2);
 		pluginMonitoringFilter.doFilter(request2, response2, chain2);
-		assertEquals("sessionCount", sessionCount, SessionListener.getSessionCount());
+		assertEquals(sessionCount, SessionListener.getSessionCount(), "sessionCount");
 		pluginMonitoringFilter.doFilter(request2, response2, chain2);
-		assertEquals("sessionCount", sessionCount, SessionListener.getSessionCount());
+		assertEquals(sessionCount, SessionListener.getSessionCount(), "sessionCount");
 		pluginMonitoringFilter.unregisterInvalidatedSessions();
-		assertEquals("sessionCount", sessionCount, SessionListener.getSessionCount());
+		assertEquals(sessionCount, SessionListener.getSessionCount(), "sessionCount");
 		verify(request2);
 		verify(response2);
 		verify(chain2);

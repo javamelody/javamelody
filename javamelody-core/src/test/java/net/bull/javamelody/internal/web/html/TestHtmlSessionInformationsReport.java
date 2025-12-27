@@ -17,9 +17,9 @@
  */
 package net.bull.javamelody.internal.web.html;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -27,8 +27,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.SessionListener;
 import net.bull.javamelody.SessionTestImpl;
@@ -41,13 +41,13 @@ import net.bull.javamelody.internal.model.SessionInformations;
  */
 public class TestHtmlSessionInformationsReport {
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
 
 	private static void assertNotEmptyAndClear(StringWriter writer) {
-		assertTrue("rapport vide", writer.getBuffer().length() > 0);
+		assertTrue(writer.getBuffer().length() > 0, "rapport vide");
 		writer.getBuffer().setLength(0);
 	}
 
@@ -93,8 +93,7 @@ public class TestHtmlSessionInformationsReport {
 
 		// pays null
 		sessionPays.setCountry(null);
-		assertNull("countryDisplay null",
-				new SessionInformations(sessionPays, false).getCountryDisplay());
+		assertNull(new SessionInformations(sessionPays, false).getCountryDisplay(), "countryDisplay null");
 		new HtmlSessionInformationsReport(
 				Collections.singletonList(new SessionInformations(sessionPays, false)), writer)
 						.toHtml();
@@ -127,10 +126,8 @@ public class TestHtmlSessionInformationsReport {
 
 		// userAgent inconnu
 		sessionUserAgent.setUserAgent("n'importe quoi");
-		assertNull("userAgent n'importe quoi",
-				new SessionInformations(sessionUserAgent, false).getBrowser());
-		assertNull("userAgent n'importe quoi",
-				new SessionInformations(sessionUserAgent, false).getOs());
+		assertNull(new SessionInformations(sessionUserAgent, false).getBrowser(), "userAgent n'importe quoi");
+		assertNull(new SessionInformations(sessionUserAgent, false).getOs(), "userAgent n'importe quoi");
 		new HtmlSessionInformationsReport(
 				Collections.singletonList(new SessionInformations(sessionUserAgent, false)), writer)
 						.toHtml();
@@ -138,8 +135,8 @@ public class TestHtmlSessionInformationsReport {
 
 		// userAgent null
 		sessionUserAgent.setUserAgent(null);
-		assertNull("userAgent null", new SessionInformations(sessionUserAgent, false).getBrowser());
-		assertNull("userAgent null", new SessionInformations(sessionUserAgent, false).getOs());
+		assertNull(new SessionInformations(sessionUserAgent, false).getBrowser(), "userAgent null");
+		assertNull(new SessionInformations(sessionUserAgent, false).getOs(), "userAgent null");
 		new HtmlSessionInformationsReport(
 				Collections.singletonList(new SessionInformations(sessionUserAgent, false)), writer)
 						.toHtml();

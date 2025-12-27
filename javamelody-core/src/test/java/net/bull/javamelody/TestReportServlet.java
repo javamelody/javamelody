@@ -21,7 +21,7 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,8 +32,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
@@ -54,7 +54,7 @@ public class TestReportServlet {
 	/**
 	 * Initialisation.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 		try {
@@ -152,7 +152,7 @@ public class TestReportServlet {
 		verify(response);
 
 		if (checkResultContent) {
-			assertTrue("result", output.size() != 0 || stringWriter.getBuffer().length() != 0);
+			assertTrue(output.size() != 0 || stringWriter.getBuffer().length() != 0, "result");
 		}
 		filterContext.destroy();
 	}

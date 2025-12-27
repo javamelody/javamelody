@@ -21,16 +21,16 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.Field;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
@@ -66,7 +66,7 @@ public class TestSessionListener {
 	}
 
 	/** Test. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 		try {
@@ -141,10 +141,8 @@ public class TestSessionListener {
 		sessionListener.sessionCreated(sessionEvent);
 		final SessionInformations sessionInformations = SessionListener
 				.getSessionInformationsBySessionId(sessionEvent.getSession().getId());
-		assertEquals("getSessionInformationsBySessionId", sessionEvent.getSession().getId(),
-				sessionInformations.getId());
-		assertNull("getSessionInformationsBySessionId",
-				SessionListener.getSessionInformationsBySessionId("n'importe quoi"));
+		assertEquals(sessionEvent.getSession().getId(), sessionInformations.getId(), "getSessionInformationsBySessionId");
+		assertNull(SessionListener.getSessionInformationsBySessionId("n'importe quoi"), "getSessionInformationsBySessionId");
 	}
 
 	/** Test. */
@@ -285,7 +283,7 @@ public class TestSessionListener {
 	@Test
 	public void testToString() {
 		final String string = sessionListener.toString();
-		assertNotNull("toString not null", string);
-		assertFalse("toString not empty", string.isEmpty());
+		assertNotNull(string, "toString not null");
+		assertFalse(string.isEmpty(), "toString not empty");
 	}
 }

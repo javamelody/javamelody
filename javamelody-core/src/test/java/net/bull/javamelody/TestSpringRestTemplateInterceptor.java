@@ -17,11 +17,11 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.Ordered;
@@ -39,7 +39,7 @@ public class TestSpringRestTemplateInterceptor {
 	private static final String MONITORING_CONTEXT_FILENAME = "net/bull/javamelody/monitoring-spring.xml";
 
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -57,27 +57,28 @@ public class TestSpringRestTemplateInterceptor {
 			try {
 				restTemplate.getForObject(url, Object.class);
 			} catch (final RestClientException e) {
-				assertSame("requestsCount", 0, springCounter.getRequestsCount());
+				assertSame(0, springCounter.getRequestsCount(), "requestsCount");
 			}
 
 			springCounter.setDisplayed(true);
 			try {
 				restTemplate.getForObject(url, Object.class);
 			} catch (final RestClientException e) {
-				assertSame("requestsCount", 1, springCounter.getRequestsCount());
+				assertSame(1, springCounter.getRequestsCount(), "requestsCount");
 			}
 			try {
 				restTemplate.getForObject(url + "?var={0}", Object.class, "var value");
 			} catch (final RestClientException e) {
-				assertSame("requestsCount", 1, springCounter.getRequestsCount());
+				assertSame(1, springCounter.getRequestsCount(), "requestsCount");
 			}
 
 			final SpringRestTemplateBeanPostProcessor springRestTemplateBeanPostProcessor = context
 					.getBean(SpringRestTemplateBeanPostProcessor.class);
-			assertEquals("order", Ordered.LOWEST_PRECEDENCE,
-					springRestTemplateBeanPostProcessor.getOrder());
+			assertEquals(Ordered.LOWEST_PRECEDENCE,
+					springRestTemplateBeanPostProcessor.getOrder(),
+					"order");
 			springRestTemplateBeanPostProcessor.setOrder(1);
-			assertEquals("order", 1, springRestTemplateBeanPostProcessor.getOrder());
+			assertEquals(1, springRestTemplateBeanPostProcessor.getOrder(), "order");
 		}
 	}
 }

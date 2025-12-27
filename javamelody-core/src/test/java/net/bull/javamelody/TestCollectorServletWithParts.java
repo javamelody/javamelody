@@ -29,9 +29,9 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
@@ -61,12 +61,15 @@ public class TestCollectorServletWithParts {
 	 * @throws IOException e
 	 * @throws ServletException e
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() throws IOException, ServletException {
 		tearDown();
 		Utils.initialize();
 		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", TRUE);
 		Utils.setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
+
+		Utils.setProperty(Parameter.LOG, TRUE);
+
 		final ServletConfig config = createNiceMock(ServletConfig.class);
 		final ServletContext context = createNiceMock(ServletContext.class);
 		expect(config.getServletContext()).andReturn(context).anyTimes();
@@ -95,7 +98,7 @@ public class TestCollectorServletWithParts {
 	 * Terminaison.
 	 * @throws IOException e
 	 */
-	@After
+	@AfterEach
 	public void tearDown() throws IOException {
 		if (collectorServlet != null) {
 			collectorServlet.destroy();

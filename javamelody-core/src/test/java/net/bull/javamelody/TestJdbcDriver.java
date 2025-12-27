@@ -17,18 +17,18 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.internal.common.Parameters;
 
@@ -40,7 +40,7 @@ public class TestJdbcDriver {
 	private JdbcDriver driver;
 
 	/** Test. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 		driver = new JdbcDriver();
@@ -50,14 +50,14 @@ public class TestJdbcDriver {
 	@Test
 	public void testGetLastConnectUrl() {
 		Parameters.initJdbcDriverParameters(null, null);
-		assertNull("getLastConnectUrl", Parameters.getLastConnectUrl());
+		assertNull(Parameters.getLastConnectUrl(), "getLastConnectUrl");
 	}
 
 	/** Test. */
 	@Test
 	public void testGetLastConnectInfo() {
 		Parameters.initJdbcDriverParameters(null, null);
-		assertNull("getLastConnectInfo", Parameters.getLastConnectInfo());
+		assertNull(Parameters.getLastConnectInfo(), "getLastConnectInfo");
 	}
 
 	/** Test.
@@ -69,7 +69,7 @@ public class TestJdbcDriver {
 			driver.connect(null, info);
 		} catch (final SQLException e) {
 			// SQLException normale : The url cannot be null
-			assertNotNull("connect", e);
+			assertNotNull(e, "connect");
 		}
 		driver.connect("jdbc:h2:mem:?driver=org.h2.Driver", info);
 		info.put("driver", "org.h2.Driver");
@@ -79,7 +79,7 @@ public class TestJdbcDriver {
 			driver.connect(null, info);
 		} catch (final SQLException e) {
 			// SQLException normale : class not found
-			assertNotNull("connect", e);
+			assertNotNull(e, "connect");
 		}
 	}
 
@@ -87,7 +87,7 @@ public class TestJdbcDriver {
 	 * @throws SQLException e */
 	@Test
 	public void testAcceptsURL() throws SQLException {
-		assertTrue("acceptsURL", driver.acceptsURL(null));
+		assertTrue(driver.acceptsURL(null), "acceptsURL");
 	}
 
 	/** Test. */
@@ -110,27 +110,27 @@ public class TestJdbcDriver {
 	 * @throws SQLException e */
 	@Test
 	public void testGetPropertyInfo() throws SQLException {
-		assertNotNull("getPropertyInfo", driver.getPropertyInfo(null, null));
+		assertNotNull(driver.getPropertyInfo(null, null), "getPropertyInfo");
 	}
 
 	/** Test. */
 	@Test
 	public void testJdbcCompliant() {
-		assertTrue("jdbcCompliant", driver.jdbcCompliant());
+		assertTrue(driver.jdbcCompliant(), "jdbcCompliant");
 	}
 
 	/** Test. */
 	@Test
 	public void testToString() {
 		final String string = driver.toString();
-		assertNotNull("toString not null", string);
-		assertFalse("toString not empty", string.isEmpty());
+		assertNotNull(string, "toString not null");
+		assertFalse(string.isEmpty(), "toString not empty");
 	}
 
 	/** Test.
 	 * @throws SQLFeatureNotSupportedException e */
 	@Test
 	public void testGetParentLogger() throws SQLFeatureNotSupportedException {
-		assertNotNull("getParentLogger", driver.getParentLogger());
+		assertNotNull(driver.getParentLogger(), "getParentLogger");
 	}
 }

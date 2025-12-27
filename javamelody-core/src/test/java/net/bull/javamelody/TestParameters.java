@@ -17,19 +17,19 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Locale;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletContext;
@@ -47,7 +47,7 @@ public class TestParameters {
 	}
 
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -69,19 +69,19 @@ public class TestParameters {
 	/** Test. */
 	@Test
 	public void testGetHostName() {
-		assertNotNull("getHostName", Parameters.getHostName());
+		assertNotNull(Parameters.getHostName(), "getHostName");
 	}
 
 	/** Test. */
 	@Test
 	public void testGetHostAddress() {
-		assertNotNull("getHostAddress", Parameters.getHostAddress());
+		assertNotNull(Parameters.getHostAddress(), "getHostAddress");
 	}
 
 	/** Test. */
 	@Test
 	public void testGetResourcePath() {
-		assertNotNull("getResourcePath", Parameters.getResourcePath("resource"));
+		assertNotNull(Parameters.getResourcePath("resource"), "getResourcePath");
 	}
 
 	/** Test. */
@@ -112,14 +112,14 @@ public class TestParameters {
 	public void testGetStorageDirectory() {
 		final String message = "getStorageDirectory";
 		final String application = "test";
-		assertNotNull(message, Parameters.getStorageDirectory(application));
+		assertNotNull(Parameters.getStorageDirectory(application), message);
 		setProperty(Parameter.STORAGE_DIRECTORY, "");
-		assertNotNull(message, Parameters.getStorageDirectory(application));
+		assertNotNull(Parameters.getStorageDirectory(application), message);
 		setProperty(Parameter.STORAGE_DIRECTORY, "/");
-		assertNotNull(message, Parameters.getStorageDirectory(application));
+		assertNotNull(Parameters.getStorageDirectory(application), message);
 		if (System.getProperty("os.name").toLowerCase(Locale.getDefault()).contains("windows")) {
 			setProperty(Parameter.STORAGE_DIRECTORY, "c:/");
-			assertNotNull(message, Parameters.getStorageDirectory(application));
+			assertNotNull(Parameters.getStorageDirectory(application), message);
 		}
 		setProperty(Parameter.STORAGE_DIRECTORY, "javamelody");
 	}
@@ -129,24 +129,22 @@ public class TestParameters {
 	public void testGetCurrentApplication() {
 		Parameters.initialize((ServletContext) null);
 		// null car pas de servletContext
-		assertNull("getCurrentApplication", Parameters.getCurrentApplication());
+		assertNull(Parameters.getCurrentApplication(), "getCurrentApplication");
 		setProperty(Parameter.APPLICATION_NAME, "test application");
-		assertEquals("getCurrentApplication", "test application",
-				Parameters.getCurrentApplication());
+		assertEquals("test application", Parameters.getCurrentApplication(), "getCurrentApplication");
 	}
 
 	/** Test. */
 	@Test
 	public void testPeriodValueOfIgnoreCase() {
-		assertNotNull("Period.valueOfIgnoreCase", Period.valueOfIgnoreCase(Period.TOUT.toString()));
+		assertNotNull(Period.valueOfIgnoreCase(Period.TOUT.toString()), "Period.valueOfIgnoreCase");
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
 	public void testGetCollectorUrlsByApplication() throws IOException {
-		assertNotNull("getCollectorUrlsByApplications",
-				Parameters.getCollectorUrlsByApplications());
+		assertNotNull(Parameters.getCollectorUrlsByApplications(), "getCollectorUrlsByApplications");
 	}
 
 	/** Test.
@@ -159,11 +157,13 @@ public class TestParameters {
 		try {
 			Parameters.addCollectorApplication(application,
 					Parameters.parseUrls("http://localhost:8090/test"));
-			assertEquals("addCollectorApplication", size + 1,
-					Parameters.getCollectorUrlsByApplications().size());
+			assertEquals(size + 1,
+					Parameters.getCollectorUrlsByApplications().size(),
+					"addCollectorApplication");
 			Parameters.removeCollectorApplication(application);
-			assertEquals("removeCollectorApplication", size,
-					Parameters.getCollectorUrlsByApplications().size());
+			assertEquals(size,
+					Parameters.getCollectorUrlsByApplications().size(),
+					"removeCollectorApplication");
 			// pour que le test ait une application à lire la prochaine fois
 			Parameters.addCollectorApplication(application,
 					Parameters.parseUrls("http://localhost:8090/test"));
@@ -177,20 +177,20 @@ public class TestParameters {
 	@Test
 	public void testParseUrl() throws MalformedURLException {
 		setProperty(Parameter.TRANSPORT_FORMAT, TransportFormat.XML.getCode());
-		assertNotNull("parseUrl", Parameters.parseUrls("http://localhost,http://localhost"));
-		assertNotNull("parseUrl", Parameters.parseUrls("http://localhost/"));
+		assertNotNull(Parameters.parseUrls("http://localhost,http://localhost"), "parseUrl");
+		assertNotNull(Parameters.parseUrls("http://localhost/"), "parseUrl");
 		setProperty(Parameter.TRANSPORT_FORMAT, TransportFormat.SERIALIZED.getCode());
-		assertNotNull("parseUrl", Parameters.parseUrls("http://localhost,http://localhost"));
+		assertNotNull(Parameters.parseUrls("http://localhost,http://localhost"), "parseUrl");
 	}
 
 	/** Test. */
 	@Test
 	public void testIsCounterHidden() {
 		setProperty(Parameter.DISPLAYED_COUNTERS, null);
-		assertFalse("isCounterHidden", Parameters.isCounterHidden("http"));
+		assertFalse(Parameters.isCounterHidden("http"), "isCounterHidden");
 		setProperty(Parameter.DISPLAYED_COUNTERS, "http,sql");
-		assertFalse("isCounterHidden", Parameters.isCounterHidden("http"));
+		assertFalse(Parameters.isCounterHidden("http"), "isCounterHidden");
 		setProperty(Parameter.DISPLAYED_COUNTERS, "sql");
-		assertTrue("isCounterHidden", Parameters.isCounterHidden("http"));
+		assertTrue(Parameters.isCounterHidden("http"), "isCounterHidden");
 	}
 }

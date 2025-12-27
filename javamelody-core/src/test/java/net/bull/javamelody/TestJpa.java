@@ -17,19 +17,19 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.openjpa.persistence.PersistenceUnitInfoImpl;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -56,8 +56,8 @@ public class TestJpa {
 	/**
 	 * (Ré)initialisation.
 	 */
-	@Before
-	@After
+	@BeforeEach
+	@AfterEach
 	public void reset() {
 		JpaWrapper.getJpaCounter().clear();
 	}
@@ -66,7 +66,7 @@ public class TestJpa {
 	 * Test EntityManger.find.
 	 */
 	@Test
-	@Ignore
+	@Disabled
 	public void simpleFind() {
 		try {
 			Class.forName("org.apache.openjpa.persistence.PersistenceProviderImpl");
@@ -77,11 +77,11 @@ public class TestJpa {
 			return;
 		}
 		final EntityManagerFactory emf = Persistence.createEntityManagerFactory("test-jse");
-		assertNotNull("createEntityManagerFactory", emf);
+		assertNotNull(emf, "createEntityManagerFactory");
 
 		try {
 			final EntityManager em = emf.createEntityManager();
-			assertNotNull("createEntityManager", em);
+			assertNotNull(em, "createEntityManager");
 			try {
 				em.find(Person.class, 0L);
 				assertCounter("find(Person)");
@@ -97,7 +97,7 @@ public class TestJpa {
 	 * Tests createNamedQuery, createNativeQuery et createQery.
 	 */
 	@Test
-	@Ignore
+	@Disabled
 	public void createAllQuery() {
 		try {
 			Class.forName("org.apache.openjpa.persistence.PersistenceProviderImpl");
@@ -181,8 +181,8 @@ public class TestJpa {
 
 	private static void assertCounter(String method) {
 		final Counter counter = JpaWrapper.getJpaCounter();
-		assertEquals("getRequestsCount", 1, counter.getRequestsCount());
-		assertEquals("requestName", method, counter.getRequests().get(0).getName());
+		assertEquals(1, counter.getRequestsCount(), "getRequestsCount");
+		assertEquals(method, counter.getRequests().get(0).getName(), "requestName");
 		counter.clear();
 	}
 
@@ -191,12 +191,12 @@ public class TestJpa {
 	 */
 	@Test
 	// OpenJPA is not yet compatible with JakartaEE9
-	@Ignore
+	@Disabled
 	public void testJpaPersistence() {
 		final PersistenceProvider jpaPersistence = getJpaPersistence();
 
 		final ProviderUtil providerUtil = jpaPersistence.getProviderUtil();
-		assertNotNull("getProviderUtil", providerUtil);
+		assertNotNull(providerUtil, "getProviderUtil");
 		// providerUtil == JpaPersistence.DUMMY_PROVIDER_UTIL
 		providerUtil.isLoadedWithoutReference(null, null);
 		providerUtil.isLoadedWithReference(null, null);
@@ -215,7 +215,7 @@ public class TestJpa {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testCreateContainerEntityManagerFactory() {
 		final PersistenceUnitInfoImpl persistenceUnitInfoImpl = new PersistenceUnitInfoImpl();
 		persistenceUnitInfoImpl
@@ -223,14 +223,14 @@ public class TestJpa {
 		final EntityManagerFactory entityManagerFactory = getJpaPersistence()
 				.createContainerEntityManagerFactory((PersistenceUnitInfo) persistenceUnitInfoImpl,
 						Collections.emptyMap());
-		assertTrue("proxy", JdbcWrapper.isProxyAlready(entityManagerFactory));
+		assertTrue(JdbcWrapper.isProxyAlready(entityManagerFactory), "proxy");
 		JpaWrapper.getJpaCounter().setDisplayed(false);
 		JpaWrapper.createEntityManagerFactoryProxy(entityManagerFactory);
 		JpaWrapper.getJpaCounter().setDisplayed(true);
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testCreateEntityManager() {
 		final EntityManagerFactory emf = Persistence.createEntityManagerFactory("test-jse");
 		emf.createEntityManager();
@@ -241,7 +241,7 @@ public class TestJpa {
 
 	@Test
 	// OpenJPA is not yet compatible with JakartaEE9
-	@Ignore
+	@Disabled
 	public void testGenerateSchema() {
 		try {
 			final PersistenceUnitInfoImpl persistenceUnitInfoImpl = new PersistenceUnitInfoImpl();
@@ -250,12 +250,12 @@ public class TestJpa {
 			getJpaPersistence().generateSchema((PersistenceUnitInfo) persistenceUnitInfoImpl,
 					Collections.emptyMap());
 		} catch (final Exception e) {
-			assertNotNull("e", e);
+			assertNotNull(e, "e");
 		}
 		try {
 			getJpaPersistence().generateSchema("test-jse", Collections.emptyMap());
 		} catch (final Exception e) {
-			assertNotNull("e", e);
+			assertNotNull(e, "e");
 		}
 	}
 }

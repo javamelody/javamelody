@@ -17,12 +17,12 @@
  */
 package net.bull.javamelody.internal.web.pdf;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.Utils;
 
@@ -33,7 +33,7 @@ import net.bull.javamelody.Utils;
 public class TestPdfBar {
 
 	/** Before. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -42,11 +42,11 @@ public class TestPdfBar {
 	 * @throws IOException e */
 	@Test
 	public void testToPdf() throws IOException {
-		assertNotNull("toBar", Bar.toBar(0));
-		assertNotNull("toBar", Bar.toBar(1));
-		assertNotNull("toBar", Bar.toBar(10));
-		assertNotNull("toBar", Bar.toBar(15));
-		assertNotNull("toBarWithAlert", Bar.toBarWithAlert(10));
-		assertNotNull("toBarWithAlert", Bar.toBarWithAlert(100));
+		assertNotNull(Bar.toBar(0), "toBar");
+		assertNotNull(Bar.toBar(1), "toBar");
+		assertNotNull(Bar.toBar(10), "toBar");
+		assertNotNull(Bar.toBar(15), "toBar");
+		assertNotNull(Bar.toBarWithAlert(10), "toBarWithAlert");
+		assertNotNull(Bar.toBarWithAlert(100), "toBarWithAlert");
 	}
 }

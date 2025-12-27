@@ -17,13 +17,13 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.apache.logging.log4j.LogManager;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 import net.bull.javamelody.internal.model.Counter;
@@ -38,7 +38,7 @@ public class TestLog {
 	private LoggingHandler loggingHandler;
 
 	/** Initialisation. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 		logbackAppender = new LogbackAppender();
@@ -49,13 +49,11 @@ public class TestLog {
 	/** Test. */
 	@Test
 	public void testGetSingleton() {
-		assertNotNull("getSingleton not null", LogbackAppender.getSingleton());
-		assertNotNull("getSingleton not null", Log4J2Appender.getSingleton());
-		assertSame("getSingleton same", Log4J2Appender.getSingleton(),
-				Log4J2Appender.getSingleton());
-		assertNotNull("getSingleton not null", LoggingHandler.getSingleton());
-		assertSame("getSingleton same", LoggingHandler.getSingleton(),
-				LoggingHandler.getSingleton());
+		assertNotNull(LogbackAppender.getSingleton(),"getSingleton not null");
+		assertNotNull(Log4J2Appender.getSingleton(), "getSingleton not null");
+		assertSame(Log4J2Appender.getSingleton(), Log4J2Appender.getSingleton(), "getSingleton same");
+		assertNotNull(LoggingHandler.getSingleton(), "getSingleton not null");
+		assertSame(LoggingHandler.getSingleton(), LoggingHandler.getSingleton(), "getSingleton same");
 	}
 
 	/** Test. */
@@ -76,7 +74,7 @@ public class TestLog {
 	@Test
 	public void testFlush() {
 		loggingHandler.flush();
-		assertNotNull("flush", loggingHandler);
+		assertNotNull(loggingHandler, "flush");
 	}
 
 	/** Test. */
@@ -84,7 +82,7 @@ public class TestLog {
 	public void testClose() {
 		logbackAppender.stop();
 		loggingHandler.close();
-		assertNotNull("close", loggingHandler);
+		assertNotNull(loggingHandler, "close");
 	}
 
 	/** Test. */
@@ -110,7 +108,8 @@ public class TestLog {
 					.info("test 3");
 			final int requestsCountAfter = logCounter.getRequestsCount();
 			// cela peut ne pas être égal si un autre thread a loggué des warnings en même temps
-			if (requestsCountAfter < requestsCountBefore + 4) {
+			// 3 et non 4 car pas de logback
+			if (requestsCountAfter < requestsCountBefore + 3) {
 				fail("testAppend failed, requests : " + logCounter.getRequests());
 			}
 		} finally {

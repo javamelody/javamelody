@@ -17,15 +17,15 @@
  */
 package net.bull.javamelody.internal.model;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.common.Parameters;
@@ -39,7 +39,7 @@ public class TestRemoteCollector {
 
 	/** Check.
 	 * @throws IOException e */
-	@Before
+	@BeforeEach
 	public void setUp() throws IOException {
 		Utils.initialize();
 		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
@@ -82,8 +82,8 @@ public class TestRemoteCollector {
 		remoteCollector.executeActionAndCollectData(Action.CLEAR_COUNTER, "all", null, null, null,
 				null);
 		remoteCollector.collectDataIncludingCurrentRequests();
-		assertNotNull("getCurrentRequests", remoteCollector.getCurrentRequests());
-		assertNotNull("collectWebappVersions", remoteCollector.collectWebappVersions());
-		assertNotNull("collectWebappDependencies", remoteCollector.collectWebappDependencies());
+		assertNotNull(remoteCollector.getCurrentRequests(), "getCurrentRequests");
+		assertNotNull(remoteCollector.collectWebappVersions(), "collectWebappVersions");
+		assertNotNull(remoteCollector.collectWebappDependencies(), "collectWebappDependencies");
 	}
 }

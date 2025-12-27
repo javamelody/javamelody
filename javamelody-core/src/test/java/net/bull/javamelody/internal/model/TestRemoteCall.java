@@ -21,14 +21,14 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.net.URL;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.ServletContext;
 import net.bull.javamelody.Utils;
@@ -40,7 +40,7 @@ import net.bull.javamelody.internal.common.Parameters;
  */
 public class TestRemoteCall {
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -66,6 +66,6 @@ public class TestRemoteCall {
 		remoteCall.executeActionAndCollectData(Action.GC, null, null, null, null, null);
 		assertEquals("getURL", new RemoteCall(new URL(url)).getURL().toString(), url);
 		verify(context);
-		assertNotNull("", new RemoteCall("http://dummy?p=1"));
+		assertNotNull(new RemoteCall("http://dummy?p=1"), "");
 	}
 }

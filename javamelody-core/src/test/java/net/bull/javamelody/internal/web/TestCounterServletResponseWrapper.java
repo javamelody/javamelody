@@ -17,12 +17,12 @@
  */
 package net.bull.javamelody.internal.web;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.web.TestCompressionServletResponseWrapper.HttpResponse;
@@ -33,7 +33,7 @@ import net.bull.javamelody.internal.web.TestCompressionServletResponseWrapper.Ht
  */
 public class TestCounterServletResponseWrapper {
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -50,12 +50,12 @@ public class TestCounterServletResponseWrapper {
 
 		wrapper.createOutputStream();
 		wrapper.getOutputStream().write(new byte[8]);
-		assertEquals("dataLength", 8, wrapper.getDataLength());
+		assertEquals(8, wrapper.getDataLength(), "dataLength");
 		wrapper.reset();
-		assertEquals("dataLength with reset", 0, wrapper.getDataLength());
+		assertEquals(0, wrapper.getDataLength(), "dataLength with reset");
 		wrapper.getOutputStream().write(new byte[8]);
 		wrapper.resetBuffer();
-		assertEquals("dataLength with resetBuffer", 0, wrapper.getDataLength());
+		assertEquals(0, wrapper.getDataLength(), "dataLength with resetBuffer");
 	}
 
 	/** Test.
@@ -66,7 +66,7 @@ public class TestCounterServletResponseWrapper {
 		wrapper.write(1);
 		wrapper.write(new byte[8]);
 		wrapper.write(new byte[8], 1, 7);
-		assertEquals("dataLength", 16, wrapper.getDataLength());
+		assertEquals(16, wrapper.getDataLength(), "dataLength");
 		wrapper.isReady();
 		wrapper.setWriteListener(null);
 		wrapper.flush();

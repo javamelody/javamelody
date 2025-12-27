@@ -17,11 +17,6 @@
  */
 package net.bull.javamelody.internal.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -31,9 +26,11 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.internal.model.SamplingProfiler.SampledMethod;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test unitaire de la classe SamplingProfiler.
@@ -125,10 +122,10 @@ public class TestSamplingProfiler {
 	/**
 	 * Test.
 	 */
-	@SuppressWarnings("unused")
-	@Test(expected = Exception.class)
+    @SuppressWarnings("unused")
+	@Test
 	public void testConstructor2() {
-		new SamplingProfiler(List.of(" "), null);
+        assertThrows(Exception.class, () ->		new SamplingProfiler(List.of(" "), null));
 	}
 
 	/**
@@ -149,26 +146,26 @@ public class TestSamplingProfiler {
 	public void testSampledMethod() throws IOException, ClassNotFoundException {
 		final SampledMethod sampledMethod = new SampledMethod("class1", "method1");
 		final SampledMethod sampledMethod1 = new SampledMethod("class1", "method1");
-		assertEquals("getClassName", "class1", sampledMethod.getClassName());
-		assertEquals("getMethodName", "method1", sampledMethod.getMethodName());
-		assertEquals("getCount", 0, sampledMethod.getCount());
-		assertEquals("equals", sampledMethod, sampledMethod);
-		assertEquals("equals", sampledMethod, sampledMethod1);
-		assertNotEquals("equals", sampledMethod, new SampledMethod("class1", "method2"));
-		assertNotEquals("equals", sampledMethod, new SampledMethod("class2", "method2"));
-		assertNotEquals("equals", sampledMethod, new Object());
+		assertEquals("class1", sampledMethod.getClassName(), "getClassName");
+		assertEquals("method1", sampledMethod.getMethodName(), "getMethodName");
+		assertEquals(0, sampledMethod.getCount(), "getCount");
+		assertEquals(sampledMethod, sampledMethod, "equals");
+		assertEquals(sampledMethod, sampledMethod1, "equals");
+		assertNotEquals(new SampledMethod("class1", "method2"), sampledMethod, "equals");
+		assertNotEquals(new SampledMethod("class2", "method2"), sampledMethod, "equals");
+		assertNotEquals(sampledMethod, new Object(), "equals");
 		final Object object = null;
-		assertNotEquals("equals", object, sampledMethod);
-		assertEquals("hashCode", sampledMethod.hashCode(), sampledMethod1.hashCode());
-		assertEquals("toString", sampledMethod.toString(), sampledMethod1.toString());
-		assertEquals("compareTo", 0, sampledMethod.compareTo(sampledMethod1));
+		assertNotEquals(object, sampledMethod, "equals");
+		assertEquals(sampledMethod.hashCode(), sampledMethod1.hashCode(), "hashCode");
+		assertEquals(sampledMethod.toString(), sampledMethod1.toString(), "toString");
+		assertEquals(0, sampledMethod.compareTo(sampledMethod1), "compareTo");
 		sampledMethod.incrementCount();
-		assertEquals("getCount", 1, sampledMethod.getCount());
+		assertEquals(1, sampledMethod.getCount(), "getCount");
 		sampledMethod.setCount(2);
-		assertEquals("getCount", 2, sampledMethod.getCount());
-		assertEquals("compareTo", -1, sampledMethod.compareTo(sampledMethod1));
+		assertEquals(2, sampledMethod.getCount(), "getCount");
+		assertEquals(-1, sampledMethod.compareTo(sampledMethod1), "compareTo");
 		sampledMethod1.setCount(3);
-		assertEquals("compareTo", +1, sampledMethod.compareTo(sampledMethod1));
+		assertEquals(+1, sampledMethod.compareTo(sampledMethod1), "compareTo");
 
 		// test readResolve
 		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -178,16 +175,16 @@ public class TestSamplingProfiler {
 		final ObjectInputStream objectInputStream = new ObjectInputStream(
 				new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
 		final Object sampledMethodNew = objectInputStream.readObject();
-		assertEquals("readResolve", sampledMethod, sampledMethodNew);
-		assertEquals("readResolve", sampledMethod.hashCode(), sampledMethodNew.hashCode());
+		assertEquals(sampledMethod, sampledMethodNew, "readResolve");
+		assertEquals(sampledMethod.hashCode(), sampledMethodNew.hashCode(), "readResolve");
 	}
 
 	private static void assertEmptyHotspots(SamplingProfiler samplingProfiler) {
-		assertTrue("empty hotspots", samplingProfiler.getHotspots(NB_ROWS).isEmpty());
+		assertTrue(samplingProfiler.getHotspots(NB_ROWS).isEmpty(), "empty hotspots");
 	}
 
 	private static void assertNotEmptyHotspots(final SamplingProfiler samplingProfiler) {
-		assertFalse("not empty hotspots", samplingProfiler.getHotspots(NB_ROWS).isEmpty());
+		assertFalse(samplingProfiler.getHotspots(NB_ROWS).isEmpty(), "not empty hotspots");
 	}
 
 	private static void doSomeWorkAndTakeSample(SamplingProfiler samplingProfiler) {

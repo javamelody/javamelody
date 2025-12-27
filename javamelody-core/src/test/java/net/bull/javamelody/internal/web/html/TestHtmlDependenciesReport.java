@@ -21,8 +21,8 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,8 +34,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.easymock.IAnswer;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.ServletContext;
 import net.bull.javamelody.Utils;
@@ -48,13 +48,13 @@ import net.bull.javamelody.internal.model.MavenArtifact;
  */
 public class TestHtmlDependenciesReport {
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
 
 	private static void assertNotEmptyAndClear(StringWriter writer) {
-		assertTrue("rapport vide", writer.getBuffer().length() > 0);
+		assertTrue(writer.getBuffer().length() > 0, "rapport vide");
 		writer.getBuffer().setLength(0);
 	}
 
@@ -90,7 +90,7 @@ public class TestHtmlDependenciesReport {
 		replay(context);
 		Parameters.initialize(context);
 		final Map<String, MavenArtifact> webappDependencies = MavenArtifact.getWebappDependencies();
-		assertFalse("getWebappDependencies", webappDependencies.isEmpty());
+		assertFalse(webappDependencies.isEmpty(), "getWebappDependencies");
 		verify(context);
 
 		final StringWriter writer = new StringWriter();

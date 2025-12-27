@@ -21,14 +21,14 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.apache.logging.log4j.LogManager;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -39,7 +39,7 @@ import com.mongodb.client.MongoDatabase;
  */
 public class TestMongoWrapper {
 	/** Test. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -67,13 +67,12 @@ public class TestMongoWrapper {
 		replay(collection);
 		replay(codecRegistry);
 		final MongoDatabase databaseProxy = MongoWrapper.createDatabaseProxy(database);
-		assertNotNull("createDatabaseProxy", databaseProxy);
-		assertNotNull("databaseProxy", databaseProxy.withCodecRegistry(codecRegistry));
-		assertNotNull("getCollection", databaseProxy.getCollection("collection"));
-		assertEquals("getName", "db", databaseProxy.getName());
+		assertNotNull(databaseProxy, "createDatabaseProxy");
+		assertNotNull(databaseProxy.withCodecRegistry(codecRegistry), "databaseProxy");
+		assertNotNull(databaseProxy.getCollection("collection"), "getCollection");
+		assertEquals("db", databaseProxy.getName(), "getName");
 
-		assertNotNull("collectionProxy",
-				databaseProxy.getCollection("collection").withCodecRegistry(codecRegistry));
+		assertNotNull(databaseProxy.getCollection("collection").withCodecRegistry(codecRegistry), "collectionProxy");
 		databaseProxy.getCollection("collection").getCodecRegistry();
 		databaseProxy.getCollection("collection").find();
 		verify(database);

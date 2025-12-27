@@ -17,9 +17,9 @@
  */
 package net.bull.javamelody.internal.web.pdf; // NOPMD
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -36,9 +36,9 @@ import java.util.Timer;
 import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
@@ -81,14 +81,14 @@ public class TestPdfReport {
 
 	/** Before.
 	 * @throws IOException e */
-	@Before
+	@BeforeEach
 	public void setUp() throws IOException {
 		Utils.initialize();
 		JRobin.initBackendFactory(new Timer(getClass().getSimpleName(), true));
 	}
 
 	/** After. */
-	@After
+	@AfterEach
 	public void tearDown() {
 		JRobin.stop();
 	}
@@ -319,7 +319,7 @@ public class TestPdfReport {
 	}
 
 	private void assertNotEmptyAndClear(ByteArrayOutputStream output) {
-		assertTrue("rapport vide", output.size() > 0);
+		assertTrue(output.size() > 0, "rapport vide");
 		output.reset();
 	}
 
@@ -382,7 +382,7 @@ public class TestPdfReport {
 		report.setTimeOfSnapshot(System.currentTimeMillis());
 		report.writeContextDetails();
 		// on ne peut fermer le document car on n'a rien écrit normalement
-		assertNotNull("PdfCounterRequestContextReport", report);
+		assertNotNull(report, "PdfCounterRequestContextReport");
 	}
 
 	/** Test.
@@ -443,7 +443,7 @@ public class TestPdfReport {
 	/** Test. */
 	@Test
 	public void testGetFileName() {
-		assertNotNull("filename", PdfReport.getFileName("test"));
+		assertNotNull(PdfReport.getFileName("test"), "filename");
 	}
 
 	@Test
@@ -473,7 +473,7 @@ public class TestPdfReport {
 			final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(TEST_APP, null,
 					output);
 			final Document document = pdfDocumentFactory.createDocument();
-			assertEquals("pageSize", document.getPageSize(), PageSize.LETTER);
+			assertEquals(PageSize.LETTER, document.getPageSize(), "pageSize");
 		} finally {
 			I18N.unbindLocale();
 		}

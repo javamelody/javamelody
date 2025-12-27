@@ -17,8 +17,8 @@
  */
 package net.bull.javamelody.internal.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,9 +27,9 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.Utils;
@@ -44,14 +44,14 @@ public class TestJRobin {
 
 	/** Before.
 	 * @throws IOException e */
-	@Before
+	@BeforeEach
 	public void setUp() throws IOException {
 		Utils.initialize();
 		JRobin.initBackendFactory(new Timer(getClass().getSimpleName(), true));
 	}
 
 	/** After. */
-	@After
+	@AfterEach
 	public void tearDown() {
 		JRobin.stop();
 	}
@@ -103,15 +103,15 @@ public class TestJRobin {
 		final File rrdFile = new File(dir, jrobinName + ".rrd");
 
 		// JRobin.createInstance devrait initialiser les fichiers non existants
-		assertTrue("delete", !rrdFile.exists() || rrdFile.delete());
+		assertTrue(!rrdFile.exists() || rrdFile.delete(), "delete");
 		JRobin.createInstance(application, jrobinName, "request");
 
 		// JRobin.createInstance devrait réinitialiser les fichiers de longueur 0
 		new FileOutputStream(rrdFile).close();
-		assertEquals("check file length", 0, rrdFile.length());
+		assertEquals(0, rrdFile.length(), "check file length");
 		JRobin.createInstance(application, jrobinName, "request");
 
-		assertTrue("delete", !rrdFile.exists() || rrdFile.delete());
+		assertTrue(!rrdFile.exists() || rrdFile.delete(), "delete");
 		try (FileOutputStream out = new FileOutputStream(rrdFile)) {
 			// il faut un minimum de quantité de données pour avoir RrdException "Invalid file header"
 			for (int i = 0; i < 100; i++) {
@@ -124,8 +124,9 @@ public class TestJRobin {
 		try {
 			jrobin.addValue(1);
 		} catch (final IOException e) {
-			assertTrue("cause", e.getCause() != null && e.getCause().getMessage() != null
-					&& e.getCause().getMessage().contains("Invalid file header"));
+			assertTrue(e.getCause() != null && e.getCause().getMessage() != null
+					&& e.getCause().getMessage().contains("Invalid file header"),
+					"cause");
 		}
 		// après ce resetFile, on devrait pouvoir appeler addValue
 		jrobin.addValue(1);

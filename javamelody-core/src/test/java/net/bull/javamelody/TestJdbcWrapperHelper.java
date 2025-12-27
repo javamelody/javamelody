@@ -17,12 +17,12 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import javax.naming.NamingException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test unitaire de la classe JdbcWrapperHelper.
@@ -30,7 +30,7 @@ import org.junit.Test;
  */
 public class TestJdbcWrapperHelper {
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -56,7 +56,7 @@ public class TestJdbcWrapperHelper {
 		try {
 			JdbcWrapperHelper.getJndiDataSources();
 		} catch (final NamingException e) {
-			assertNotNull("ok", e);
+			assertNotNull(e, "ok");
 		}
 	}
 
@@ -64,7 +64,7 @@ public class TestJdbcWrapperHelper {
 		try {
 			JdbcWrapperHelper.getJndiAndSpringDataSources();
 		} catch (final NamingException e) {
-			assertNotNull("ok", e);
+			assertNotNull(e, "ok");
 		}
 	}
 
@@ -73,8 +73,7 @@ public class TestJdbcWrapperHelper {
 	@Test
 	public void testGetFieldValue() throws IllegalAccessException {
 		// sqlCounter est un champ privé qui existe comme un autre
-		assertNotNull("getFieldValue",
-				JdbcWrapperHelper.getFieldValue(JdbcWrapper.SINGLETON, "sqlCounter"));
+		assertNotNull(JdbcWrapperHelper.getFieldValue(JdbcWrapper.SINGLETON, "sqlCounter"), "getFieldValue");
 	}
 
 	/** Test.

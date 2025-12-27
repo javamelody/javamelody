@@ -17,10 +17,6 @@
  */
 package net.bull.javamelody.internal.model;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -28,15 +24,17 @@ import java.util.Properties;
 
 import javax.naming.NamingException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.JdbcDriver;
 import net.bull.javamelody.TestJdbcWrapper;
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.DatabaseInformations.Database;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test unitaire de la classe DatabaseInformations.
@@ -61,14 +59,14 @@ public class TestDatabaseInformations {
 	}
 
 	/** setup. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 		connection = initH2();
 	}
 
 	/** tearDown. */
-	@After
+	@AfterEach
 	public void tearDown() {
 		if (connection != null) {
 			try {
@@ -86,13 +84,12 @@ public class TestDatabaseInformations {
 	public void testDatabaseInformations() throws SQLException, NamingException {
 		final int requestIndex = 0;
 		final DatabaseInformations databaseInformations = new DatabaseInformations(requestIndex);
-		assertSame("getSelectedRequestIndex", requestIndex,
-				databaseInformations.getSelectedRequestIndex());
-		assertNotNull("getSelectedRequestName", databaseInformations.getSelectedRequestName());
-		assertNotNull("getNbColumns", databaseInformations.getNbColumns());
-		assertNotNull("getResult", databaseInformations.getResult());
-		assertNotNull("getRequestNames", databaseInformations.getRequestNames());
-		assertNotNull("toString", databaseInformations.toString());
+		assertSame(requestIndex, databaseInformations.getSelectedRequestIndex(), "getSelectedRequestIndex");
+		assertNotNull(databaseInformations.getSelectedRequestName(), "getSelectedRequestName");
+		assertNotNull(databaseInformations.getNbColumns(), "getNbColumns");
+		assertNotNull(databaseInformations.getResult(), "getResult");
+		assertNotNull(databaseInformations.getRequestNames(), "getRequestNames");
+		assertNotNull(databaseInformations.toString(), "toString");
 	}
 
 	/** Test. */
@@ -100,9 +97,9 @@ public class TestDatabaseInformations {
 	public void testDatabase() {
 		for (final Database database : Database.values()) {
 			final List<String> requestNames = database.getRequestNames();
-			assertTrue("getRequestNames", requestNames != null && !requestNames.isEmpty());
+            assertFalse(requestNames.isEmpty(), "getRequestNames");
 			for (final String requestName : requestNames) {
-				assertNotNull("getRequestByName", database.getRequestByName(requestName));
+				assertNotNull(database.getRequestByName(requestName), "getRequestByName");
 			}
 		}
 	}

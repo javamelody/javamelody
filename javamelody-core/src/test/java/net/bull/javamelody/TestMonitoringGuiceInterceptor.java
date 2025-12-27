@@ -17,11 +17,11 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -44,7 +44,7 @@ public class TestMonitoringGuiceInterceptor {
 	private static final String REQUESTS_COUNT = "requestsCount";
 
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -52,13 +52,13 @@ public class TestMonitoringGuiceInterceptor {
 	/** Test. */
 	@Test
 	public void testNewInstance() {
-		assertNotNull("new MonitoringGuiceInterceptor", new MonitoringGuiceInterceptor());
+		assertNotNull(new MonitoringGuiceInterceptor(), "new MonitoringGuiceInterceptor");
 	}
 
 	/** Test. */
 	@Test
 	public void testGetGuiceCounter() {
-		assertNotNull("getGuiceCounter", MonitoringProxy.getGuiceCounter());
+		assertNotNull(MonitoringProxy.getGuiceCounter(), "getGuiceCounter");
 	}
 
 	/** Test. */
@@ -88,31 +88,31 @@ public class TestMonitoringGuiceInterceptor {
 		final SpringTestFacade springTestFacade = injector.getInstance(SpringTestFacade.class);
 
 		guiceCounter.setDisplayed(false);
-		assertNotNull("now()", springTestFacade.now());
-		assertSame(REQUESTS_COUNT, 0, guiceCounter.getRequestsCount());
+		assertNotNull(springTestFacade.now(), "now()");
+		assertSame(0, guiceCounter.getRequestsCount(), REQUESTS_COUNT);
 
 		guiceCounter.setDisplayed(true);
-		assertNotNull("now()", springTestFacade.now());
-		assertSame(REQUESTS_COUNT, 1, guiceCounter.getRequestsCount());
+		assertNotNull(springTestFacade.now(), "now()");
+		assertSame(1, guiceCounter.getRequestsCount(), REQUESTS_COUNT);
 
 		try {
 			springTestFacade.throwError();
 		} catch (final Error e) {
-			assertSame(REQUESTS_COUNT, 2, guiceCounter.getRequestsCount());
+			assertSame(2, guiceCounter.getRequestsCount(), REQUESTS_COUNT);
 		}
 
 		final AnnotatedTest annotatedTestClass = injector.getInstance(AnnotatedTestClass.class);
-		assertNotNull("annotatedTestClass", annotatedTestClass.myMethod());
-		assertSame(REQUESTS_COUNT, 3, guiceCounter.getRequestsCount());
+		assertNotNull(annotatedTestClass.myMethod(), "annotatedTestClass");
+		assertSame(3, guiceCounter.getRequestsCount(), REQUESTS_COUNT);
 
 		final AnnotatedTest annotatedTestOtherClass = injector
 				.getInstance(annotatedTestOtherClassKey);
-		assertNotNull("annotatedTestOtherClass", annotatedTestOtherClass.myMethod());
-		assertSame(REQUESTS_COUNT, 4, guiceCounter.getRequestsCount());
+		assertNotNull(annotatedTestOtherClass.myMethod(), "annotatedTestOtherClass");
+		assertSame(4, guiceCounter.getRequestsCount(), REQUESTS_COUNT);
 
 		final AnnotatedTest annotatedTestMethod = injector.getInstance(annotatedTestMethodKey);
-		assertNotNull("annotatedTestMethod", annotatedTestMethod.myMethod());
-		assertNotNull("annotatedTestMethod", annotatedTestMethod.myOtherMethod());
-		assertSame(REQUESTS_COUNT, 6, guiceCounter.getRequestsCount());
+		assertNotNull(annotatedTestMethod.myMethod(), "annotatedTestMethod");
+		assertNotNull(annotatedTestMethod.myOtherMethod(), "annotatedTestMethod");
+		assertSame(6, guiceCounter.getRequestsCount(), REQUESTS_COUNT);
 	}
 }

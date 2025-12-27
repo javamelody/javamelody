@@ -17,8 +17,8 @@
  */
 package net.bull.javamelody.internal.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +29,9 @@ import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.common.I18N;
@@ -50,7 +50,7 @@ public class TestMBeans {
 
 	/** Before.
 	 * @throws JMException e */
-	@Before
+	@BeforeEach
 	public void setUp() throws JMException {
 		Utils.initialize();
 		mbeans = new MBeans();
@@ -68,7 +68,7 @@ public class TestMBeans {
 
 	/** After.
 	 * @throws JMException e */
-	@After
+	@AfterEach
 	public void tearDown() throws JMException {
 		for (final ObjectName registeredMBean : mbeansList) {
 			mBeanServer.unregisterMBean(registeredMBean);
@@ -78,29 +78,27 @@ public class TestMBeans {
 	/** Test. */
 	@Test
 	public void testGetTomcatThreadPools() {
-		assertNotNull("getTomcatThreadPools", MBeansAccessor.getTomcatThreadPools());
+		assertNotNull(MBeansAccessor.getTomcatThreadPools(), "getTomcatThreadPools");
 	}
 
 	/** Test. */
 	@Test
 	public void testGetTomcatGlobalRequestProcessors() {
-		assertNotNull("getTomcatGlobalRequestProcessors",
-				MBeansAccessor.getTomcatGlobalRequestProcessors());
+		assertNotNull(MBeansAccessor.getTomcatGlobalRequestProcessors(), "getTomcatGlobalRequestProcessors");
 	}
 
 	@Test
 	public void testGetThreadAllocatedBytes() {
-		assertEquals("getThreadAllocatedBytes",
-				Math.round(ThreadInformations.getCurrentThreadAllocatedBytes() / 10000d),
-				Math.round((MBeansAccessor.getThreadAllocatedBytes(Thread.currentThread().getId())
-						- 432L) / 10000d));
+		assertEquals(Math.round(ThreadInformations.getCurrentThreadAllocatedBytes() / 10000d),
+				Math.round((MBeansAccessor.getThreadAllocatedBytes(Thread.currentThread().getId()) - 432L) / 10000d),
+				"getThreadAllocatedBytes");
 	}
 
 	/** Test.
 	 * @throws JMException e */
 	@Test
 	public void testGetAttribute() throws JMException {
-		assertNotNull("getAttribute", mbeans.getAttribute(mbeansList.get(0), "currentThreadsBusy"));
+		assertNotNull(mbeans.getAttribute(mbeansList.get(0), "currentThreadsBusy"), "getAttribute");
 	}
 
 	/** Test.
@@ -108,10 +106,10 @@ public class TestMBeans {
 	@Test
 	public void testGetAllMBeanNodes() throws JMException {
 		final List<MBeanNode> allMBeanNodes = MBeans.getAllMBeanNodes();
-		assertNotNull("getAllMBeanNodes", allMBeanNodes);
+		assertNotNull(allMBeanNodes, "getAllMBeanNodes");
 		for (final MBeanNode mbeanNode : allMBeanNodes) {
-			assertNotNull("mbeanNode", mbeanNode);
-			assertNotNull("toString", mbeanNode.toString());
+			assertNotNull(mbeanNode, "mbeanNode");
+			assertNotNull(mbeanNode.toString(), "toString");
 		}
 	}
 
@@ -119,12 +117,12 @@ public class TestMBeans {
 	public void testToString() {
 		final MBeanNode mBeanNode = new MBeanNode("name", "description",
 				List.of(new MBeanAttribute("name", "description", "formattedValue")));
-		assertNotNull("mbeanNode", mBeanNode);
-		assertNotNull("toString", mBeanNode.toString());
-		assertNotNull("getAttributes", mBeanNode.getAttributes());
+		assertNotNull(mBeanNode, "mbeanNode");
+		assertNotNull(mBeanNode.toString(), "toString");
+		assertNotNull(mBeanNode.getAttributes(), "getAttributes");
 		for (final MBeanAttribute attribute : mBeanNode.getAttributes()) {
-			assertNotNull("attribute", attribute);
-			assertNotNull("toString", attribute.toString());
+			assertNotNull(attribute, "attribute");
+			assertNotNull(attribute.toString(), "toString");
 		}
 	}
 
@@ -142,22 +140,22 @@ public class TestMBeans {
 		try {
 			MBeans.getConvertedAttributes("Catalina:type=instanceNotFound.maxThreads");
 		} catch (final IllegalArgumentException e) {
-			assertNotNull("e", e);
+			assertNotNull(e, "e");
 		}
 		try {
 			MBeans.getConvertedAttributes("n'importe quoi.maxThreads");
 		} catch (final IllegalArgumentException e) {
-			assertNotNull("e", e);
+			assertNotNull(e, "e");
 		}
 		try {
 			MBeans.getConvertedAttributes(firstMBean + ".Password");
 		} catch (final IllegalArgumentException e) {
-			assertNotNull("e", e);
+			assertNotNull(e, "e");
 		}
 		try {
 			MBeans.getConvertedAttributes("noAttribute");
 		} catch (final IllegalArgumentException e) {
-			assertNotNull("e", e);
+			assertNotNull(e, "e");
 		}
 	}
 

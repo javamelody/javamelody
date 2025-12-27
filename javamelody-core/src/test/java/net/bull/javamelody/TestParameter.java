@@ -17,12 +17,12 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test unitaire de la classe Parameter.
@@ -30,7 +30,7 @@ import org.junit.Test;
  */
 public class TestParameter {
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -38,20 +38,19 @@ public class TestParameter {
 	/** Test. */
 	@Test
 	public void testGetParameterValue() {
-		assertNull("getValue", Parameter.DATASOURCES.getValue());
+		assertNull(Parameter.DATASOURCES.getValue(), "getValue");
 	}
 
 	/** Test. */
 	@Test
 	public void testSetParameterValue() {
 		Parameter.DATASOURCES.setValue("jdbc/DataSource");
-		assertEquals("getValue", "jdbc/DataSource", Parameter.DATASOURCES.getValue());
+		assertEquals(Parameter.DATASOURCES.getValue(), "jdbc/DataSource", "getValue");
 	}
 
 	/** Test. */
 	@Test
 	public void testParameterValueOfIgnoreCase() {
-		assertNotNull("Parameter.valueOfIgnoreCase",
-				Parameter.valueOfIgnoreCase(Parameter.DISABLED.toString()));
+		assertNotNull(Parameter.valueOfIgnoreCase(Parameter.DISABLED.toString()), "Parameter.valueOfIgnoreCase");
 	}
 }

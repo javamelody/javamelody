@@ -21,13 +21,12 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.WriteListener;
@@ -67,8 +66,8 @@ public class TestRumInjector {
 	 */
 	@Test
 	public void testIsRumResource() {
-		assertTrue("isRumResource", RumInjector.isRumResource("boomerang.min.js"));
-		assertFalse("isRumResource", RumInjector.isRumResource("notboomerang"));
+		assertTrue(RumInjector.isRumResource("boomerang.min.js"), "isRumResource");
+		assertFalse(RumInjector.isRumResource("notboomerang"), "isRumResource");
 	}
 
 	/**
@@ -84,16 +83,14 @@ public class TestRumInjector {
 		expect(httpRequest.getHeader("accept")).andReturn(null);
 		final HttpServletResponse result = createRumResponseWrapper(httpRequest, httpResponse,
 				requestName);
-		assertFalse("createRumResponseWrapper",
-				result instanceof HtmlInjectorServletResponseWrapper);
+		assertFalse(result instanceof HtmlInjectorServletResponseWrapper, "createRumResponseWrapper");
 
 		final HttpServletRequest httpRequest2 = createNiceMock(HttpServletRequest.class);
 		final HttpServletResponse httpResponse2 = createNiceMock(HttpServletResponse.class);
 		expect(httpRequest2.getHeader("accept")).andReturn("text/xml");
 		final HttpServletResponse result2 = createRumResponseWrapper(httpRequest2, httpResponse2,
 				requestName);
-		assertFalse("createRumResponseWrapper",
-				result2 instanceof HtmlInjectorServletResponseWrapper);
+		assertFalse(result2 instanceof HtmlInjectorServletResponseWrapper, "createRumResponseWrapper");
 
 		final HttpServletRequest httpRequest3 = createNiceMock(HttpServletRequest.class);
 		final HttpServletResponse httpResponse3 = createNiceMock(HttpServletResponse.class);
@@ -101,8 +98,7 @@ public class TestRumInjector {
 		expect(httpRequest3.getAttribute("javamelody.injectorWrapped")).andReturn(Boolean.TRUE);
 		final HttpServletResponse result3 = createRumResponseWrapper(httpRequest3, httpResponse3,
 				requestName);
-		assertFalse("createRumResponseWrapper",
-				result3 instanceof HtmlInjectorServletResponseWrapper);
+		assertFalse(result3 instanceof HtmlInjectorServletResponseWrapper, "createRumResponseWrapper");
 
 		final HttpServletRequest httpRequest4 = createNiceMock(HttpServletRequest.class);
 		final HttpServletResponse httpResponse4 = createNiceMock(HttpServletResponse.class);
@@ -110,10 +106,8 @@ public class TestRumInjector {
 		expect(httpResponse4.getContentType()).andReturn("text/xml").anyTimes();
 		final HttpServletResponse result4 = createRumResponseWrapper(httpRequest4, httpResponse4,
 				requestName);
-		assertTrue("createRumResponseWrapper",
-				result4 instanceof HtmlInjectorServletResponseWrapper);
-		assertFalse("createRumResponseWrapper",
-				result4.getOutputStream() instanceof HtmlInjectorResponseStream);
+        assertInstanceOf(HtmlInjectorServletResponseWrapper.class, result4, "createRumResponseWrapper");
+		assertFalse(result4.getOutputStream() instanceof HtmlInjectorResponseStream, "createRumResponseWrapper");
 
 		final HttpServletRequest httpRequest5 = createNiceMock(HttpServletRequest.class);
 		final HttpServletResponse httpResponse5 = createNiceMock(HttpServletResponse.class);
@@ -121,10 +115,8 @@ public class TestRumInjector {
 		expect(httpResponse5.getContentType()).andReturn(null).anyTimes();
 		final HttpServletResponse result5 = createRumResponseWrapper(httpRequest5, httpResponse5,
 				requestName);
-		assertTrue("createRumResponseWrapper",
-				result5 instanceof HtmlInjectorServletResponseWrapper);
-		assertTrue("createRumResponseWrapper",
-				result5.getOutputStream() instanceof HtmlInjectorResponseStream);
+        assertInstanceOf(HtmlInjectorServletResponseWrapper.class, result5, "createRumResponseWrapper");
+        assertInstanceOf(HtmlInjectorResponseStream.class, result5.getOutputStream(), "createRumResponseWrapper");
 
 		final HttpServletRequest httpRequest6 = createNiceMock(HttpServletRequest.class);
 		final HttpServletResponse httpResponse6 = createNiceMock(HttpServletResponse.class);
@@ -139,10 +131,8 @@ public class TestRumInjector {
 		outputStream.write(htmlContent.getBytes(StandardCharsets.UTF_8));
 		result6.setContentType("text/html");
 		outputStream.write("<!-- end test -->".getBytes(StandardCharsets.UTF_8));
-		assertTrue("createRumResponseWrapper",
-				result6 instanceof HtmlInjectorServletResponseWrapper);
-		assertTrue("createRumResponseWrapper",
-				result6.getOutputStream() instanceof HtmlInjectorResponseStream);
+        assertInstanceOf(HtmlInjectorServletResponseWrapper.class, result6, "createRumResponseWrapper");
+        assertInstanceOf(HtmlInjectorResponseStream.class, result6.getOutputStream(), "createRumResponseWrapper");
 
 		final HttpServletRequest httpRequest7 = createNiceMock(HttpServletRequest.class);
 		final HttpServletResponse httpResponse7 = createNiceMock(HttpServletResponse.class);
@@ -152,10 +142,8 @@ public class TestRumInjector {
 				"//test/test GET");
 		result7.getOutputStream().write(htmlContent.getBytes(StandardCharsets.UTF_8));
 		result7.setContentType("text/html");
-		assertTrue("createRumResponseWrapper",
-				result7 instanceof HtmlInjectorServletResponseWrapper);
-		assertTrue("createRumResponseWrapper",
-				result7.getOutputStream() instanceof HtmlInjectorResponseStream);
+        assertInstanceOf(HtmlInjectorServletResponseWrapper.class, result7, "createRumResponseWrapper");
+        assertInstanceOf(HtmlInjectorResponseStream.class, result7.getOutputStream(), "createRumResponseWrapper");
 
 		final HttpServletRequest httpRequest8 = createNiceMock(HttpServletRequest.class);
 		final HttpServletResponse httpResponse8 = createNiceMock(HttpServletResponse.class);
@@ -168,10 +156,8 @@ public class TestRumInjector {
 		result8.getOutputStream()
 				.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><web-app></<web-app>"
 						.getBytes(StandardCharsets.UTF_8));
-		assertTrue("createRumResponseWrapper",
-				result8 instanceof HtmlInjectorServletResponseWrapper);
-		assertTrue("createRumResponseWrapper",
-				result8.getOutputStream() instanceof HtmlInjectorResponseStream);
+        assertInstanceOf(HtmlInjectorServletResponseWrapper.class, result8, "createRumResponseWrapper");
+        assertInstanceOf(HtmlInjectorResponseStream.class, result8.getOutputStream(), "createRumResponseWrapper");
 	}
 
 	private HttpServletResponse createRumResponseWrapper(final HttpServletRequest httpRequest,

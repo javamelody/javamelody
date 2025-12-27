@@ -17,11 +17,11 @@
  */
 package net.bull.javamelody.internal.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,9 +40,9 @@ import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -69,7 +69,7 @@ public class TestCollector {
 
 	/** Before.
 	 * @throws IOException e */
-	@Before
+	@BeforeEach
 	public void setUp() throws IOException {
 		Utils.initialize();
 		JRobin.initBackendFactory(new Timer(getClass().getSimpleName(), true));
@@ -86,7 +86,7 @@ public class TestCollector {
 	}
 
 	/** After. */
-	@After
+	@AfterEach
 	public void tearDown() {
 		JRobin.stop();
 	}
@@ -99,7 +99,7 @@ public class TestCollector {
 	/** Test. */
 	@Test
 	public void testNewCollector() {
-		assertNotNull("collector", createCollectorWithOneCounter());
+		assertNotNull(createCollectorWithOneCounter(), "collector");
 	}
 
 	/** Test.
@@ -215,25 +215,25 @@ public class TestCollector {
 		final Range range = Period.JOUR.getRange();
 		for (final JRobin jrobin : collector.getCounterJRobins()) {
 			final JRobin robin = collector.getJRobin(jrobin.getName());
-			assertNotNull("getJRobin non null", robin);
+			assertNotNull(robin, "getJRobin non null");
 			jrobin.graph(range, 80, 80);
 			robin.deleteFile();
 		}
 		for (final JRobin jrobin : collector.getOtherJRobins()) {
 			final JRobin robin = collector.getJRobin(jrobin.getName());
-			assertNotNull("getJRobin non null", robin);
+			assertNotNull(robin, "getJRobin non null");
 			robin.deleteFile();
 		}
 		for (final CounterRequest request : counter.getRequests()) {
 			final JRobin robin = collector.getJRobin(request.getId());
 			if ("test5".equals(request.getName())) {
-				assertNotNull("getJRobin non null", robin);
+				assertNotNull(robin, "getJRobin non null");
 				robin.deleteFile();
 			} else {
-				assertNull("getJRobin null", robin);
+				assertNull(robin, "getJRobin null");
 			}
 		}
-		assertNull("getJRobin null", collector.getJRobin("n'importe quoi"));
+		assertNull(collector.getJRobin("n'importe quoi"), "getJRobin null");
 	}
 
 	/** Test.
@@ -312,9 +312,9 @@ public class TestCollector {
 		final Counter counter = createCounter();
 		final Collector collector = new Collector("test collector2",
 				Collections.singletonList(counter));
-		assertNotNull("getCounterByName", collector.getCounterByName(counter.getName()));
+		assertNotNull(collector.getCounterByName(counter.getName()), "getCounterByName");
 
-		assertNull("getCounterByName", collector.getCounterByName("unknown"));
+		assertNull(collector.getCounterByName("unknown"), "getCounterByName");
 	}
 
 	/** Test. */
@@ -325,9 +325,9 @@ public class TestCollector {
 				Collections.singletonList(counter));
 		counter.addRequest("test request", 0, 0, 0, false, 1000);
 		final CounterRequest request = counter.getRequests().get(0);
-		assertEquals("getCounterByRequestId", counter, collector.getCounterByRequestId(request));
-		assertNull("getCounterByRequestId",
-				collector.getCounterByRequestId(new CounterRequest("test", "unknown")));
+		assertEquals(counter, collector.getCounterByRequestId(request), "getCounterByRequestId");
+		assertNull(collector.getCounterByRequestId(new CounterRequest("test", "unknown")),
+				"getCounterByRequestId");
 	}
 
 	/** Test.
@@ -348,14 +348,15 @@ public class TestCollector {
 		collector.collectWithoutErrors(javaInformationsList);
 		collector.collectWithoutErrors(javaInformationsList);
 
-		assertEquals("jour", 1, getSizeOfCountersToBeDisplayed(collector, Period.JOUR));
-		assertEquals("semaine", 1, getSizeOfCountersToBeDisplayed(collector, Period.SEMAINE));
-		assertEquals("mois", 1, getSizeOfCountersToBeDisplayed(collector, Period.MOIS));
-		assertEquals("année", 1, getSizeOfCountersToBeDisplayed(collector, Period.ANNEE));
-		assertEquals("tout", 1, getSizeOfCountersToBeDisplayed(collector, Period.TOUT));
-		assertEquals("custom", 1, collector
+		assertEquals(1, getSizeOfCountersToBeDisplayed(collector, Period.JOUR), "jour");
+		assertEquals(1, getSizeOfCountersToBeDisplayed(collector, Period.SEMAINE), "semaine");
+		assertEquals(1, getSizeOfCountersToBeDisplayed(collector, Period.MOIS), "mois");
+		assertEquals(1, getSizeOfCountersToBeDisplayed(collector, Period.ANNEE), "année");
+		assertEquals(1, getSizeOfCountersToBeDisplayed(collector, Period.TOUT), "tout");
+		assertEquals(1, collector
 				.getRangeCountersToBeDisplayed(Range.createCustomRange(new Date(), new Date()))
-				.size());
+				.size(),
+				"custom");
 	}
 
 	/** Test.
@@ -370,7 +371,7 @@ public class TestCollector {
 		try {
 			collector.getRangeCounter(Period.TOUT.getRange(), "unknown");
 		} catch (final IllegalArgumentException e) {
-			assertNotNull("getRangeCounter", e);
+			assertNotNull(e, "getRangeCounter");
 		}
 	}
 
@@ -418,13 +419,13 @@ public class TestCollector {
 		javaInformations.isCacheEnabled();
 		javaInformations.doesWebXmlExists();
 		javaInformations.doesPomXmlExists();
-		assertNotNull("JavaInformations", javaInformations);
+		assertNotNull(javaInformations, "JavaInformations");
 	}
 
 	/** Test. */
 	@Test
 	public void testThreadInformations() {
-		assertTrue("getCurrentThreadCpuTime", ThreadInformations.getCurrentThreadCpuTime() > 0);
+		assertTrue(ThreadInformations.getCurrentThreadCpuTime() > 0, "getCurrentThreadCpuTime");
 	}
 
 	/** Test. */
@@ -433,14 +434,14 @@ public class TestCollector {
 		final SamplingProfiler samplingProfiler = new SamplingProfiler();
 		final List<Counter> counters = Collections.emptyList();
 		final Collector collector = new Collector("test", counters, samplingProfiler);
-		assertNotNull("getSamplingProfiler", collector.getSamplingProfiler());
-		assertNotNull("getHotspots", collector.getHotspots());
+		assertNotNull(collector.getSamplingProfiler(), "getSamplingProfiler");
+		assertNotNull(collector.getHotspots(), "getHotspots");
 		final Collector collector2 = new Collector("test", counters);
-		assertNull("getSamplingProfiler", collector2.getSamplingProfiler());
+		assertNull(collector2.getSamplingProfiler(), "getSamplingProfiler");
 		try {
-			assertNull("getHotspots", collector2.getHotspots());
+			assertNull(collector2.getHotspots(), "getHotspots");
 		} catch (final IllegalStateException e) {
-			assertNotNull("e", e);
+			assertNotNull(e, "e");
 		}
 	}
 
@@ -476,8 +477,7 @@ public class TestCollector {
 			collectorServer.collectHeapHistogram(application);
 			collectorServer.collectHotspots(application);
 			collectorServer.getCollectorByApplication(application);
-			assertNull("getCollectorByApplication",
-					collectorServer.getCollectorByApplication("dummy"));
+			assertNull(collectorServer.getCollectorByApplication("dummy"), "getCollectorByApplication");
 			collectorServer.getJavaInformationsByApplication(application);
 			collectorServer.isApplicationDataAvailable(application);
 			collectorServer.getFirstApplication();
@@ -494,7 +494,7 @@ public class TestCollector {
 			setProperty(Parameter.RESOLUTION_SECONDS, "-1");
 			new CollectorServer().stop();
 		} catch (final IllegalStateException e) {
-			assertNotNull("ok", e);
+			assertNotNull(e, "ok");
 		} finally {
 			setProperty(Parameter.RESOLUTION_SECONDS, null);
 		}

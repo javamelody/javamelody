@@ -17,14 +17,14 @@
  */
 package net.bull.javamelody.internal.model;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.common.Parameters;
@@ -37,7 +37,7 @@ public class TestWebappVersions {
 	private static final String VERSIONS_FILENAME = "versions.properties";
 
 	/** Test. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -51,15 +51,15 @@ public class TestWebappVersions {
 		final File versionsFile = new File(storageDirectory, VERSIONS_FILENAME);
 		versionsFile.delete();
 		WebappVersions webappVersions = new WebappVersions(application);
-		assertEquals("0", 0, webappVersions.getDatesByVersions().size());
+		assertEquals(0, webappVersions.getDatesByVersions().size(), "0");
 		final Random random = new Random();
 		final String version = String.valueOf(random.nextInt());
 		webappVersions.addVersionIfNeeded(version);
 		webappVersions = new WebappVersions(application);
-		assertEquals("1", 1, webappVersions.getDatesByVersions().size());
+		assertEquals(1, webappVersions.getDatesByVersions().size(), "1");
 		webappVersions.addVersionIfNeeded(version);
-		assertEquals("1", 1, webappVersions.getDatesByVersions().size());
+		assertEquals(1, webappVersions.getDatesByVersions().size(), "1");
 		webappVersions.addVersionIfNeeded(version + "b");
-		assertEquals("2", 2, webappVersions.getDatesByVersions().size());
+		assertEquals(2, webappVersions.getDatesByVersions().size(), "2");
 	}
 }

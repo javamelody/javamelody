@@ -17,15 +17,15 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.interceptor.InvocationContext;
 import net.bull.javamelody.internal.model.Counter;
@@ -36,7 +36,7 @@ import net.bull.javamelody.internal.model.Counter;
  */
 public class TestMonitoringInterceptor {
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 	}
@@ -97,12 +97,6 @@ public class TestMonitoringInterceptor {
 		}
 	}
 
-	/** Test. */
-	@Test
-	public void testNewInstance() {
-		assertNotNull("new MonitoringInterceptor", new MonitoringInterceptor());
-	}
-
 	/** Test.
 	 * @throws Exception e */
 	@Test
@@ -113,17 +107,17 @@ public class TestMonitoringInterceptor {
 
 		ejbCounter.setDisplayed(false);
 		interceptor.intercept(new InvokeContext(false));
-		assertSame("requestsCount", 0, ejbCounter.getRequestsCount());
+		assertSame(0, ejbCounter.getRequestsCount(), "requestsCount");
 
 		ejbCounter.setDisplayed(true);
 		interceptor.intercept(new InvokeContext(false));
-		assertSame("requestsCount", 1, ejbCounter.getRequestsCount());
+		assertSame(1, ejbCounter.getRequestsCount(), "requestsCount");
 
 		ejbCounter.clear();
 		try {
 			interceptor.intercept(new InvokeContext(true));
 		} catch (final Error e) {
-			assertSame("requestsCount", 1, ejbCounter.getRequestsCount());
+			assertSame(1, ejbCounter.getRequestsCount(), "requestsCount");
 		}
 	}
 
@@ -137,7 +131,7 @@ public class TestMonitoringInterceptor {
 
 		ejbCounter.setDisplayed(true);
 		interceptor.intercept(new InvokeContext(false));
-		assertSame("requestsCount", 1, ejbCounter.getRequestsCount());
+		assertSame(1, ejbCounter.getRequestsCount(), "requestsCount");
 	}
 
 	/** Test.
@@ -150,7 +144,7 @@ public class TestMonitoringInterceptor {
 
 		ejbCounter.setDisplayed(true);
 		interceptor.intercept(new InvokeContext(false));
-		assertSame("requestsCount", 1, ejbCounter.getRequestsCount());
+		assertSame(1, ejbCounter.getRequestsCount(), "requestsCount");
 	}
 
 	/** Test.
@@ -163,12 +157,12 @@ public class TestMonitoringInterceptor {
 
 		ejbCounter.setDisplayed(true);
 		interceptor.intercept(new InvokeContext(false));
-		assertSame("requestsCount", 1, ejbCounter.getRequestsCount());
+		assertSame(1, ejbCounter.getRequestsCount(), "requestsCount");
 	}
 
 	/** Test. */
 	@Test
 	public void testGetEjbCounter() {
-		assertNotNull("getEjbCounter", MonitoringProxy.getEjbCounter());
+		assertNotNull(MonitoringProxy.getEjbCounter(), "getEjbCounter");
 	}
 }

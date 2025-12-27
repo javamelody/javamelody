@@ -17,9 +17,9 @@
  */
 package net.bull.javamelody.internal.web.html;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -30,8 +30,8 @@ import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.model.JavaInformations;
@@ -48,7 +48,7 @@ public class TestHtmlJavaInformationsReport {
 	private StringWriter writer;
 
 	/** Initialisation. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 		// pour testTomcatInformations (si la classe TomcatInformations est déjà chargée,
@@ -60,17 +60,17 @@ public class TestHtmlJavaInformationsReport {
 	/** Test. */
 	@Test
 	public void testGetApplicationServerIconName() {
-		assertNotNull("getApplicationServerIconName",
-				HtmlJavaInformationsReport.getApplicationServerIconName("Tomcat"));
-		assertNull("getApplicationServerIconName",
-				HtmlJavaInformationsReport.getApplicationServerIconName("unknown"));
+		assertNotNull(HtmlJavaInformationsReport.getApplicationServerIconName("Tomcat"),
+				"getApplicationServerIconName");
+		assertNull(HtmlJavaInformationsReport.getApplicationServerIconName("unknown"),
+				"getApplicationServerIconName");
 	}
 
 	/** Test. */
 	@Test
 	public void testGetOSIconName() {
-		assertNotNull("getOSIconName", HtmlJavaInformationsReport.getOSIconName("Linux"));
-		assertNull("getOSIconName", HtmlJavaInformationsReport.getOSIconName("unknown"));
+		assertNotNull(HtmlJavaInformationsReport.getOSIconName("Linux"), "getOSIconName");
+		assertNull(HtmlJavaInformationsReport.getOSIconName("unknown"), "getOSIconName");
 	}
 
 	/** Test.
@@ -137,17 +137,17 @@ public class TestHtmlJavaInformationsReport {
 	/** Test. */
 	@Test
 	public void testToBar() {
-		assertNotNull("toBar", HtmlJavaInformationsReport.toBar(0));
-		assertNotNull("toBar", HtmlJavaInformationsReport.toBar(1));
-		assertNotNull("toBar", HtmlJavaInformationsReport.toBar(10));
-		assertNotNull("toBar", HtmlJavaInformationsReport.toBar(15));
-		assertNotNull("toBarWithAlert", HtmlJavaInformationsReport.toBarWithAlert(10, "detail"));
-		assertNotNull("toBarWithAlert", HtmlJavaInformationsReport.toBarWithAlert(100, "detail"));
-		assertNotNull("toBarWithAlert", HtmlJavaInformationsReport.toBarWithAlert(100, null));
+		assertNotNull(HtmlJavaInformationsReport.toBar(0), "toBar");
+		assertNotNull(HtmlJavaInformationsReport.toBar(1), "toBar");
+		assertNotNull(HtmlJavaInformationsReport.toBar(10), "toBar");
+		assertNotNull(HtmlJavaInformationsReport.toBar(15), "toBar");
+		assertNotNull(HtmlJavaInformationsReport.toBarWithAlert(10, "detail"), "toBarWithAlert");
+		assertNotNull(HtmlJavaInformationsReport.toBarWithAlert(100, "detail"), "toBarWithAlert");
+		assertNotNull(HtmlJavaInformationsReport.toBarWithAlert(100, null), "toBarWithAlert");
 	}
 
 	private static void assertNotEmptyAndClear(final StringWriter writer) {
-		assertTrue("rapport vide", writer.getBuffer().length() > 0);
+		assertTrue(writer.getBuffer().length() > 0, "rapport vide");
 		writer.getBuffer().setLength(0);
 	}
 }

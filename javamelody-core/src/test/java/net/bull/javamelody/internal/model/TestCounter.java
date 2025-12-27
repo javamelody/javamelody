@@ -21,13 +21,13 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,9 +36,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.http.HttpServletRequest;
 import net.bull.javamelody.Utils;
@@ -51,7 +51,7 @@ public class TestCounter {
 	private Counter counter;
 
 	/** Initialisation. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 		counter = new Counter("test", null);
@@ -59,7 +59,7 @@ public class TestCounter {
 	}
 
 	/** Finalisation. */
-	@After
+	@AfterEach
 	public void tearDown() {
 		counter.unbindContext();
 	}
@@ -188,7 +188,7 @@ public class TestCounter {
 		final int count = counter.getRequestsCount();
 		counter.addRequest("remove request", 100, 50, 50, false, 1000);
 		counter.removeRequest("remove request");
-		assertEquals("requests count", count, counter.getRequestsCount());
+		assertEquals(count, counter.getRequestsCount(),"requests count");
 	}
 
 	/** Test. */
@@ -216,19 +216,19 @@ public class TestCounter {
 		}
 		counter.setMaxRequestsCount(1);
 		counter.addRequestsAndErrors(counter2);
-		assertEquals("count", 1, counter.getRequestsCount());
+		assertEquals(1, counter.getRequestsCount(), "count");
 		for (int i = 0; i < 20; i++) {
 			counter2.addRequest("request 4", 100, 50, 50, false, 100);
 		}
 		counter.addRequestsAndErrors(counter2);
-		assertEquals("count", 2, counter.getRequestsCount());
+		assertEquals(2, counter.getRequestsCount(), "count");
 	}
 
 	/** Test. */
 	@Test
 	public void testAddErrors() {
 		final CounterError beforeError = new CounterError("before", null);
-		assertNotNull("CounterError.toString()", beforeError.toString());
+		assertNotNull(beforeError.toString(), "CounterError.toString()");
 		try {
 			Thread.sleep(50);
 		} catch (final InterruptedException e) {
@@ -243,7 +243,7 @@ public class TestCounter {
 		expect(httpRequest.getRemoteUser()).andReturn("me");
 		replay(httpRequest);
 		CounterError.bindRequest(httpRequest);
-		assertNotNull("new CounterError", new CounterError("with request", null));
+		assertNotNull(new CounterError("with request", null), "new CounterError");
 		CounterError.unbindRequest();
 		verify(httpRequest);
 
@@ -254,7 +254,7 @@ public class TestCounter {
 		errorCounter.addErrors(errors);
 		errors.add(0, beforeError);
 		errorCounter.addErrors(errors);
-		assertEquals("addErrors", errorsCount + 5, errorCounter.getErrorsCount());
+		assertEquals(errorsCount + 5, errorCounter.getErrorsCount(), "addErrors");
 		while (errorCounter.getErrorsCount() < Counter.MAX_ERRORS_COUNT) {
 			errorCounter.addErrors(errors);
 		}
@@ -264,8 +264,8 @@ public class TestCounter {
 	/** Test. */
 	@Test
 	public void testGetErrors() {
-		assertTrue("getErrors", counter.getErrors().isEmpty());
-		assertNotNull("getErrors", new Counter(Counter.ERROR_COUNTER_NAME, null).getErrors());
+		assertTrue(counter.getErrors().isEmpty(), "getErrors");
+		assertNotNull(new Counter(Counter.ERROR_COUNTER_NAME, null).getErrors(), "getErrors");
 	}
 
 	/** Test. */
@@ -273,7 +273,7 @@ public class TestCounter {
 	public void testClear() {
 		counter.addRequest("test clear", 100, 50, 50, false, 1000);
 		counter.clear();
-		assertEquals("requests count", 0, counter.getRequestsCount());
+		assertEquals(0, counter.getRequestsCount(), "requests count");
 	}
 
 	/** Test. */
@@ -296,7 +296,7 @@ public class TestCounter {
 		counter.addRequest("test c", 1000, 500, 500, false, 1000); // égal
 		counter.addRequest("test d", 100, 50, 50, false, 1000); // inférieur
 		final List<CounterRequest> requests = counter.getOrderedRequests();
-		assertEquals("requests size", 4, requests.size());
+		assertEquals(4, requests.size(), "requests size");
 	}
 
 	/** Test. */
@@ -311,7 +311,7 @@ public class TestCounter {
 		counter.addRequest("test 4", 100, 50, 50, false, 1000); // inférieur
 		counter.addRequest("test 4", 100, 50, 50, false, 1000);
 		final List<CounterRequest> requests = counter.getOrderedByHitsRequests();
-		assertEquals("requests size", 4, requests.size());
+		assertEquals(4, requests.size(), "requests size");
 	}
 
 	/** Test. */
@@ -326,12 +326,12 @@ public class TestCounter {
 		counter.addRequest(requestName, 100, 100, 100, false, 1000);
 
 		final List<CounterRequestContext> rootContexts = counter.getOrderedRootCurrentContexts();
-		assertEquals("contexts size", nbRootContexts + 1, rootContexts.size());
+		assertEquals(nbRootContexts + 1, rootContexts.size(), "contexts size");
 		assertEquals("context name", requestName, rootContexts.get(0).getRequestName());
 
 		final String string = rootContexts.get(0).toString();
-		assertNotNull("toString not null", string);
-		assertFalse("toString not empty", string.isEmpty());
+		assertNotNull(string, "toString not null");
+		assertFalse(string.isEmpty(), "toString not empty");
 	}
 
 	public static void bindRootContexts(String firstRequestName, Counter myCounter,
@@ -365,15 +365,15 @@ public class TestCounter {
 		final CounterRequest counterRequest = createCounterRequest();
 		counter.addHits(counterRequest);
 		final List<CounterRequest> requests = counter.getRequests();
-		assertEquals("requests size", 1, requests.size());
-		assertEquals("request", counterRequest.toString(), requests.get(0).toString());
+		assertEquals(1, requests.size(), "requests size");
+		assertEquals(counterRequest.toString(), requests.get(0).toString(), "request");
 	}
 
 	/** Test. */
 	@Test
 	public void testGetRequestsCount() {
 		counter.addRequest("test requests count", 100, 50, 50, false, 1000);
-		assertEquals("requests count", counter.getRequests().size(), counter.getRequestsCount());
+		assertEquals(counter.getRequests().size(), counter.getRequestsCount(), "requests count");
 	}
 
 	/** Test. */
@@ -389,63 +389,63 @@ public class TestCounter {
 	@Test
 	public void testRequestTransformPattern() {
 		final Pattern value = Pattern.compile("a*");
-		assertNotSame("request transform pattern", value, counter.getRequestTransformPattern());
+		assertNotSame(value, counter.getRequestTransformPattern(), "request transform pattern");
 		counter.setRequestTransformPattern(value);
-		assertSame("request transform pattern", value, counter.getRequestTransformPattern());
+		assertSame(value, counter.getRequestTransformPattern(), "request transform pattern");
 	}
 
 	/** Test. */
 	@Test
 	public void testStartDate() {
 		final Date value = new Date(System.currentTimeMillis() + 1000);
-		assertNotSame("start date", value, counter.getStartDate());
+		assertNotSame(value, counter.getStartDate(), "start date");
 		counter.setStartDate(value);
-		assertSame("start date", value, counter.getStartDate());
+		assertSame(value, counter.getStartDate(), "start date");
 	}
 
 	/** Test. */
 	@Test
 	public void testDisplayed() {
 		final boolean value = false;
-		assertNotSame("displayed", value, counter.isDisplayed());
+		assertNotSame(value, counter.isDisplayed(), "displayed");
 		counter.setDisplayed(value);
-		assertSame("displayed", value, counter.isDisplayed());
+		assertSame(value, counter.isDisplayed(), "displayed");
 	}
 
 	/** Test. */
 	@Test
 	public void testErrorCounter() {
 		final String message = "errorCounter";
-		assertFalse(message, new Counter("http", null).isErrorCounter());
-		assertTrue(message, new Counter("error", null).isErrorCounter());
-		assertTrue(message, new Counter("log", null).isErrorCounter());
-		assertTrue(message, new Counter("job", null).isErrorCounter());
+		assertFalse(new Counter("http", null).isErrorCounter(), message);
+		assertTrue(new Counter("error", null).isErrorCounter(), message);
+		assertTrue(new Counter("log", null).isErrorCounter(), message);
+		assertTrue(new Counter("job", null).isErrorCounter(), message);
 	}
 
 	/** Test. */
 	@Test
 	public void testJobCounter() {
-		assertFalse("jobCounter", new Counter("spring", null).isJobCounter());
-		assertTrue("jobCounter", new Counter("job", null).isJobCounter());
+		assertFalse(new Counter("spring", null).isJobCounter(), "jobCounter");
+		assertTrue(new Counter("job", null).isJobCounter(), "jobCounter");
 	}
 
 	/** Test. */
 	@Test
 	public void testJspOrStrutsCounter() {
-		assertFalse("jspOrStrutsCounter", new Counter("http", null).isJspOrStrutsCounter());
-		assertTrue("jspOrStrutsCounter", new Counter("jsp", null).isJspOrStrutsCounter());
-		assertTrue("jspOrStrutsCounter", new Counter("struts", null).isJspOrStrutsCounter());
+		assertFalse(new Counter("http", null).isJspOrStrutsCounter(), "jspOrStrutsCounter");
+		assertTrue(new Counter("jsp", null).isJspOrStrutsCounter(), "jspOrStrutsCounter");
+		assertTrue(new Counter("struts", null).isJspOrStrutsCounter(), "jspOrStrutsCounter");
 	}
 
 	/** Test. */
 	@Test
 	public void testBusinessFacadeCounter() {
 		final String message = "businessFacadeCounter";
-		assertFalse(message, new Counter("log", null).isBusinessFacadeCounter());
-		assertTrue(message, new Counter("services", null).isBusinessFacadeCounter());
-		assertTrue(message, new Counter("ejb", null).isBusinessFacadeCounter());
-		assertTrue(message, new Counter("spring", null).isBusinessFacadeCounter());
-		assertTrue(message, new Counter("guice", null).isBusinessFacadeCounter());
+		assertFalse(new Counter("log", null).isBusinessFacadeCounter(), message);
+		assertTrue(new Counter("services", null).isBusinessFacadeCounter(), message);
+		assertTrue(new Counter("ejb", null).isBusinessFacadeCounter(), message);
+		assertTrue(new Counter("spring", null).isBusinessFacadeCounter(), message);
+		assertTrue(new Counter("guice", null).isBusinessFacadeCounter(), message);
 	}
 
 	/** Test.
@@ -462,11 +462,10 @@ public class TestCounter {
 		counter.writeToFile();
 		// readFromFile ajoute les requêtes lues aux requêtes actuelles
 		counter.readFromFile();
-		assertEquals("request hits", counterRequest.getHits() * 2,
-				counter.getRequests().get(0).getHits());
+		assertEquals(counterRequest.getHits() * 2, counter.getRequests().get(0).getHits(), "request hits");
 		counter.clear();
 		counter.readFromFile();
-		assertEquals("request", counterRequest.toString(), counter.getRequests().get(0).toString());
+		assertEquals(counterRequest.toString(), counter.getRequests().get(0).toString(), "request");
 	}
 
 	/** Test.
@@ -491,11 +490,11 @@ public class TestCounter {
 	public void testToString() {
 		counter.addRequest("test toString", 100, 50, 50, false, 1000);
 		final String string = counter.toString();
-		assertNotNull("toString not null", string);
-		assertFalse("toString not empty", string.isEmpty());
+		assertNotNull(string, "toString not null");
+		assertFalse(string.isEmpty(), "toString not empty");
 		final String string2 = new Counter(Counter.ERROR_COUNTER_NAME, null).toString();
-		assertNotNull("toString not null", string2);
-		assertFalse("toString not empty", string2.isEmpty());
+		assertNotNull(string2, "toString not null");
+		assertFalse(string2.isEmpty(), "toString not empty");
 		if (createCounterRequest().toString().isEmpty()) {
 			fail("toString vide");
 		}

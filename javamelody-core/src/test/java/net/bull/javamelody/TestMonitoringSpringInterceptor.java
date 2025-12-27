@@ -17,17 +17,17 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.util.Date;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.Ordered;
@@ -51,14 +51,14 @@ public class TestMonitoringSpringInterceptor {
 	private ConfigurableApplicationContext context;
 
 	/** Check. */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Utils.initialize();
 		this.context = new ClassPathXmlApplicationContext(MONITORING_CONTEXT_FILENAME,
 				MONITORING_CONTEXT_FILENAME2, TEST_CONTEXT_FILENAME);
 	}
 
-	@After
+	@AfterEach
 	public void destroy() {
 		this.context.close();
 	}
@@ -315,23 +315,23 @@ public class TestMonitoringSpringInterceptor {
 	/** Test. */
 	@Test
 	public void testNewInstance() {
-		assertNotNull("new MonitoringSpringInterceptor", new MonitoringSpringInterceptor());
+		assertNotNull(new MonitoringSpringInterceptor(), "new MonitoringSpringInterceptor");
 	}
 
 	/** Test. */
 	@Test
 	public void testGetSpringCounter() {
-		assertNotNull("getSpringCounter", MonitoringProxy.getSpringCounter());
+		assertNotNull(MonitoringProxy.getSpringCounter(), "getSpringCounter");
 	}
 
 	/** Test. */
 	@Test
 	public void testMonitoredWithAnnotationPointcut() {
 		final MonitoredWithAnnotationPointcut pointcut = new MonitoredWithAnnotationPointcut();
-		assertNotNull("new MonitoredWithAnnotationPointcut", pointcut);
-		assertNotNull("classFilter", pointcut.getClassFilter());
-		assertNotNull("methodMatcher", pointcut.getMethodMatcher());
-		assertFalse("methodMatcher.isRuntime", pointcut.getMethodMatcher().isRuntime());
+		assertNotNull(pointcut, "new MonitoredWithAnnotationPointcut");
+		assertNotNull(pointcut.getClassFilter(), "classFilter");
+		assertNotNull(pointcut.getMethodMatcher(), "methodMatcher");
+		assertFalse(pointcut.getMethodMatcher().isRuntime(), "methodMatcher.isRuntime");
 	}
 
 	/** Test.
@@ -339,12 +339,12 @@ public class TestMonitoringSpringInterceptor {
 	@Test
 	public void testMonitoredWithInterfacePointcut() throws ClassNotFoundException {
 		final MonitoredWithInterfacePointcut pointcut = new MonitoredWithInterfacePointcut();
-		assertNotNull("new MonitoredWithInterfacePointcut", pointcut);
-		assertNotNull("classFilter", pointcut.getClassFilter());
-		assertNotNull("methodMatcher", pointcut.getMethodMatcher());
-		assertNull("interfaceName", pointcut.getInterfaceName());
+		assertNotNull(pointcut, "new MonitoredWithInterfacePointcut");
+		assertNotNull(pointcut.getClassFilter(), "classFilter");
+		assertNotNull(pointcut.getMethodMatcher(), "methodMatcher");
+		assertNull(pointcut.getInterfaceName(), "interfaceName");
 		pointcut.setInterfaceName(SpringTestFacade.class.getName());
-		assertNotNull("interfaceName", pointcut.getInterfaceName());
+		assertNotNull(pointcut.getInterfaceName(), "interfaceName");
 	}
 
 	/** Test. */
@@ -356,60 +356,60 @@ public class TestMonitoringSpringInterceptor {
 				.getBean("springTestFacade");
 
 		springCounter.setDisplayed(false);
-		assertNotNull("now()", springTestFacade.now());
-		assertSame(REQUESTS_COUNT, 0, springCounter.getRequestsCount());
+		assertNotNull(springTestFacade.now(), "now()");
+		assertSame(0, springCounter.getRequestsCount(), REQUESTS_COUNT);
 
 		springCounter.setDisplayed(true);
-		assertNotNull("now()", springTestFacade.now());
-		assertSame(REQUESTS_COUNT, 1, springCounter.getRequestsCount());
+		assertNotNull(springTestFacade.now(), "now()");
+		assertSame(1, springCounter.getRequestsCount(), REQUESTS_COUNT);
 
 		try {
 			springTestFacade.throwError();
 		} catch (final Error e) {
-			assertSame(REQUESTS_COUNT, 2, springCounter.getRequestsCount());
+			assertSame(2, springCounter.getRequestsCount(), REQUESTS_COUNT);
 		}
 
 		final AnnotatedTest annotatedTestClassSpring = (AnnotatedTest) context
 				.getBean("annotatedTestClassSpring");
-		assertNotNull("annotatedTestClassSpring", annotatedTestClassSpring.myMethod());
-		assertSame(REQUESTS_COUNT, 3, springCounter.getRequestsCount());
+		assertNotNull(annotatedTestClassSpring.myMethod(), "annotatedTestClassSpring");
+		assertSame(3, springCounter.getRequestsCount(), REQUESTS_COUNT);
 
 		final AnnotatedTest2 annotatedTestClassSpring2 = (AnnotatedTest2) context
 				.getBean("annotatedTestClassSpring2");
-		assertNotNull("annotatedTestClassSpring2", annotatedTestClassSpring2.myMethod());
-		assertSame(REQUESTS_COUNT, 4, springCounter.getRequestsCount());
+		assertNotNull(annotatedTestClassSpring2.myMethod(), "annotatedTestClassSpring2");
+		assertSame(4, springCounter.getRequestsCount(), REQUESTS_COUNT);
 
 		final AnnotatedTest annotatedTestOtherClassSpring = (AnnotatedTest) context
 				.getBean("annotatedTestOtherClassSpring");
-		assertNotNull("annotatedTestOtherClassSpring", annotatedTestOtherClassSpring.myMethod());
-		assertSame(REQUESTS_COUNT, 5, springCounter.getRequestsCount());
+		assertNotNull(annotatedTestOtherClassSpring.myMethod(), "annotatedTestOtherClassSpring");
+		assertSame(5, springCounter.getRequestsCount(), REQUESTS_COUNT);
 
 		final AnnotatedTest annotatedTestMethodSpring = (AnnotatedTest) context
 				.getBean("annotatedTestMethodSpring");
-		assertNotNull("annotatedTestMethodSpring", annotatedTestMethodSpring.myMethod());
-		assertNotNull("annotatedTestMethodSpring", annotatedTestMethodSpring.myOtherMethod());
-		assertSame(REQUESTS_COUNT, 7, springCounter.getRequestsCount());
+		assertNotNull(annotatedTestMethodSpring.myMethod(), "annotatedTestMethodSpring");
+		assertNotNull(annotatedTestMethodSpring.myOtherMethod(), "annotatedTestMethodSpring");
+		assertSame(7, springCounter.getRequestsCount(), REQUESTS_COUNT);
 
 		final ITest annotatedTestController = (ITest) context.getBean("annotatedTestController");
-		assertNotNull("annotatedTestController", annotatedTestController.myMethod());
-		assertNotNull("annotatedTestController", annotatedTestController.myOtherMethod());
-		assertSame(REQUESTS_COUNT, 9, springCounter.getRequestsCount());
+		assertNotNull(annotatedTestController.myMethod(), "annotatedTestController");
+		assertNotNull(annotatedTestController.myOtherMethod(), "annotatedTestController");
+		assertSame(9, springCounter.getRequestsCount(), REQUESTS_COUNT);
 
 		final ITest annotatedTestService = (ITest) context.getBean("annotatedTestService");
-		assertNotNull("annotatedTestService", annotatedTestService.myMethod());
-		assertNotNull("annotatedTestService", annotatedTestService.myOtherMethod());
-		assertSame(REQUESTS_COUNT, 11, springCounter.getRequestsCount());
+		assertNotNull(annotatedTestService.myMethod(), "annotatedTestService");
+		assertNotNull(annotatedTestService.myOtherMethod(), "annotatedTestService");
+		assertSame(11, springCounter.getRequestsCount(), REQUESTS_COUNT);
 
 		final ITest annotatedTestAsync = (ITest) context.getBean("annotatedTestAsync");
-		assertNotNull("annotatedTestAsync", annotatedTestAsync.myMethod());
-		assertNotNull("annotatedTestAsync", annotatedTestAsync.myOtherMethod());
-		assertSame(REQUESTS_COUNT, 13, springCounter.getRequestsCount());
+		assertNotNull(annotatedTestAsync.myMethod(), "annotatedTestAsync");
+		assertNotNull(annotatedTestAsync.myOtherMethod(), "annotatedTestAsync");
+		assertSame(13, springCounter.getRequestsCount(), REQUESTS_COUNT);
 
 		final ScheduledTest annotatedTestScheduled = (ScheduledTest) context
 				.getBean("annotatedTestScheduled");
-		assertNotNull("annotatedTestScheduled", annotatedTestScheduled.myMethod());
-		assertNotNull("annotatedTestScheduled", annotatedTestScheduled.myOtherMethod());
-		assertSame(REQUESTS_COUNT, 14, springCounter.getRequestsCount());
+		assertNotNull(annotatedTestScheduled.myMethod(), "annotatedTestScheduled");
+		assertNotNull(annotatedTestScheduled.myOtherMethod(), "annotatedTestScheduled");
+		assertSame(14, springCounter.getRequestsCount(), REQUESTS_COUNT);
 	}
 
 	/** Test. */
@@ -421,13 +421,12 @@ public class TestMonitoringSpringInterceptor {
 
 		final SpringDataSourceBeanPostProcessor springDataSourceBeanPostProcessor = (SpringDataSourceBeanPostProcessor) context
 				.getBean("springDataSourceBeanPostProcessor");
-		assertEquals("getOrder", Ordered.LOWEST_PRECEDENCE,
-				springDataSourceBeanPostProcessor.getOrder());
+		assertEquals(Ordered.LOWEST_PRECEDENCE, springDataSourceBeanPostProcessor.getOrder(), "getOrder");
 		springDataSourceBeanPostProcessor.setOrder(1);
-		assertEquals("getOrder", 1, springDataSourceBeanPostProcessor.getOrder());
+		assertEquals(1, springDataSourceBeanPostProcessor.getOrder(), "getOrder");
 
 		Utils.setProperty(Parameter.NO_DATABASE, "true");
-		assertNotNull("no database context", context);
+		assertNotNull(context, "no database context");
 	}
 
 	/** Test. */
@@ -440,7 +439,7 @@ public class TestMonitoringSpringInterceptor {
 		try {
 			new SpringDataSourceFactoryBean().createInstance();
 		} catch (final IllegalStateException e) {
-			assertNotNull("ok", e);
+			assertNotNull(e, "ok");
 		}
 	}
 }
