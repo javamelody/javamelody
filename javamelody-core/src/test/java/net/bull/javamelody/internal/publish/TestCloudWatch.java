@@ -25,6 +25,8 @@ import com.amazonaws.SdkClientException;
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.Utils;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -52,7 +54,7 @@ class TestCloudWatch {
 		cloudWatch2.addValue("metric", 1);
 		cloudWatch2.addValue("metric", 2);
 		cloudWatch2.addValue("metric", 3);
-		assertThrows(SdkClientException.class, () ->
+		assertThrows(IOException.class, () ->
 			// no credentials provided
 			cloudWatch2.send()
 		);

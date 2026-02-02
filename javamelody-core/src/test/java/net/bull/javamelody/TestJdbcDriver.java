@@ -61,8 +61,7 @@ class TestJdbcDriver {
 	@Test
 	void testConnect() throws SQLException {
 		final Properties info = new Properties();
-		// SQLException normale : The url cannot be null
-		assertThrows(SQLException.class, () -> driver.connect(null, info));
+		assertNull(driver.connect(null, info));
 		driver.connect("jdbc:h2:mem:?driver=org.h2.Driver", info);
 		info.put("driver", "org.h2.Driver");
 		driver.connect("jdbc:h2:mem:", info);

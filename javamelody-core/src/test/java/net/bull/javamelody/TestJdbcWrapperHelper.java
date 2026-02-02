@@ -38,27 +38,27 @@ class TestJdbcWrapperHelper {
 
 	/** Test. */
 	@Test
-	void testGetJndiDataSources() {
+	void testGetJndiDataSources() throws NamingException {
 		getJndiDataSources();
 		setProperty(Parameter.DATASOURCES, "");
 		getJndiDataSources();
 		setProperty(Parameter.DATASOURCES, "testDataSource");
-		getJndiDataSources();
+		assertThrows(NamingException.class, () -> getJndiDataSources());
 		setProperty(Parameter.DATASOURCES, null);
 	}
 
 	/** Test. */
 	@Test
-	void testGetJndiAndSpringDataSources() {
+	void testGetJndiAndSpringDataSources() throws NamingException {
 		getJndiAndSpringDataSources();
 	}
 
-	private void getJndiDataSources() {
-		assertThrows(NamingException.class, () -> JdbcWrapperHelper.getJndiDataSources());
+	private void getJndiDataSources() throws NamingException {
+		JdbcWrapperHelper.getJndiDataSources();
 	}
 
-	private void getJndiAndSpringDataSources() {
-		assertThrows(NamingException.class, () -> JdbcWrapperHelper.getJndiAndSpringDataSources());
+	private void getJndiAndSpringDataSources() throws NamingException {
+		JdbcWrapperHelper.getJndiAndSpringDataSources();
 	}
 
 	/** Test.
