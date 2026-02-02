@@ -17,9 +17,6 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -29,6 +26,8 @@ import org.junit.jupiter.api.Test;
 
 import jakarta.interceptor.InvocationContext;
 import net.bull.javamelody.internal.model.Counter;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test unitaire de la classe MonitoringInterceptor.
@@ -114,11 +113,10 @@ class TestMonitoringInterceptor {
 		assertSame(1, ejbCounter.getRequestsCount(), "requestsCount");
 
 		ejbCounter.clear();
-		try {
-			interceptor.intercept(new InvokeContext(true));
-		} catch (final Error e) {
-			assertSame(1, ejbCounter.getRequestsCount(), "requestsCount");
-		}
+		assertThrows(Error.class, () ->
+			interceptor.intercept(new InvokeContext(true))
+		);
+		assertSame(1, ejbCounter.getRequestsCount(), "requestsCount");
 	}
 
 	/** Test.

@@ -17,13 +17,6 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Locale;
@@ -36,6 +29,8 @@ import jakarta.servlet.ServletContext;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Period;
 import net.bull.javamelody.internal.model.TransportFormat;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test unitaire de la classe Parameters.
@@ -94,16 +89,8 @@ class TestParameters {
 		if (Parameters.getResolutionSeconds() <= 0) {
 			fail("getResolutionSeconds");
 		}
-		Exception ex = null;
 		setProperty(Parameter.RESOLUTION_SECONDS, "-1");
-		try {
-			Parameters.getResolutionSeconds();
-		} catch (final Exception e) {
-			ex = e;
-		}
-		if (ex == null) {
-			fail("getResolutionSeconds");
-		}
+		assertThrows(Exception.class, () -> Parameters.getResolutionSeconds());
 		setProperty(Parameter.RESOLUTION_SECONDS, "60");
 	}
 

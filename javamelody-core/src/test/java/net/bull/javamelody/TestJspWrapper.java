@@ -22,8 +22,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 
@@ -96,18 +95,14 @@ class TestJspWrapper {
 		wrappedRequestDispatcher.include(wrappedRequest, response);
 		final RequestDispatcher wrappedRequestDispatcher2 = wrappedRequest
 				.getRequestDispatcher(url2);
-		try {
-			wrappedRequestDispatcher2.forward(request, response);
-		} catch (final UnknownError e) {
-			assertNotNull(e, "ok");
-		}
+		assertThrows(UnknownError.class, () ->
+			wrappedRequestDispatcher2.forward(request, response)
+		);
 		final RequestDispatcher wrappedRequestDispatcher3 = wrappedRequest
 				.getRequestDispatcher(url3);
-		try {
-			wrappedRequestDispatcher3.forward(request, response);
-		} catch (final IllegalStateException e) {
-			assertNotNull(e, "ok");
-		}
+		assertThrows(IllegalStateException.class, () ->
+			wrappedRequestDispatcher3.forward(request, response)
+		);
 		final RequestDispatcher wrappedRequestDispatcher4 = wrappedRequest
 				.getRequestDispatcher(url4);
 		assertNull(wrappedRequestDispatcher4, "getRequestDispatcher(null)");

@@ -17,12 +17,6 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
@@ -31,6 +25,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.internal.common.Parameters;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test unitaire de la classe JdbcDriver.
@@ -65,22 +61,14 @@ class TestJdbcDriver {
 	@Test
 	void testConnect() throws SQLException {
 		final Properties info = new Properties();
-		try {
-			driver.connect(null, info);
-		} catch (final SQLException e) {
-			// SQLException normale : The url cannot be null
-			assertNotNull(e, "connect");
-		}
+		// SQLException normale : The url cannot be null
+		assertThrows(SQLException.class, () -> driver.connect(null, info));
 		driver.connect("jdbc:h2:mem:?driver=org.h2.Driver", info);
 		info.put("driver", "org.h2.Driver");
 		driver.connect("jdbc:h2:mem:", info);
 		info.put("driver", "nimporte.quoi");
-		try {
-			driver.connect(null, info);
-		} catch (final SQLException e) {
-			// SQLException normale : class not found
-			assertNotNull(e, "connect");
-		}
+		// SQLException normale : class not found
+		assertThrows(SQLException.class, () -> driver.connect(null, info));
 	}
 
 	/** Test.

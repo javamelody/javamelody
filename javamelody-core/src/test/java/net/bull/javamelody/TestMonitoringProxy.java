@@ -17,14 +17,12 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.internal.model.Counter;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test unitaire de la classe MonitoringProxy.
@@ -61,16 +59,10 @@ class TestMonitoringProxy {
 		assertNotNull(springTestFacade.now(), "now()");
 		assertSame(1, servicesCounter.getRequestsCount(), requestsCount);
 
-		try {
-			springTestFacade.throwError();
-		} catch (final Error e) {
-			assertSame(2, servicesCounter.getRequestsCount(), requestsCount);
-		}
-		try {
-			springTestFacade.throwException();
-		} catch (final Exception e) {
-			assertSame(3, servicesCounter.getRequestsCount(), requestsCount);
-		}
+		assertThrows(Error.class, () -> springTestFacade.throwError());
+		assertSame(2, servicesCounter.getRequestsCount(), requestsCount);
+		assertThrows(Exception.class, () -> springTestFacade.throwException());
+		assertSame(3, servicesCounter.getRequestsCount(), requestsCount);
 
 		final SpringTestFacade springTestFacade2 = MonitoringProxy
 				.createProxy(new SpringTestFacadeImpl(), "my facade name");

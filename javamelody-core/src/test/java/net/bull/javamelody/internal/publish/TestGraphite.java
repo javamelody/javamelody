@@ -17,10 +17,6 @@
  */
 package net.bull.javamelody.internal.publish;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +24,8 @@ import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.Utils;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test unitaire de la classe Graphite.
@@ -46,28 +44,19 @@ class TestGraphite {
 	 * @throws IOException e */
 	@Test
 	void test() throws IOException {
-		Graphite graphite = Graphite.getInstance("/test", "hostname");
-		assertNull(graphite, "getInstance");
+		final Graphite graphite0 = Graphite.getInstance("/test", "hostname");
+		assertNull(graphite0, "getInstance");
 		setProperty(Parameter.GRAPHITE_ADDRESS, "localhost:2003");
-		graphite = Graphite.getInstance("/test", "hostname");
+		final Graphite graphite = Graphite.getInstance("/test", "hostname");
 		assertNotNull(graphite, "getInstance");
 		graphite.addValue("metric", 1);
 		graphite.addValue("metric", 2);
 		graphite.addValue("metric", 3);
-		boolean exception = false;
-		try {
-			graphite.send();
-		} catch (final IOException e) {
-			exception = true;
-		}
-		assertTrue(exception, "no graphite server");
+		assertThrows(IOException.class, () -> graphite.send());
 		setProperty(Parameter.GRAPHITE_ADDRESS, "localhost");
-		try {
-			Graphite.getInstance("/test", "hostname").send();
-		} catch (final IOException e) {
-			exception = true;
-		}
-		assertTrue(exception, "no graphite server");
+		assertThrows(IOException.class, () ->
+			Graphite.getInstance("/test", "hostname").send()
+		);
 		setProperty(Parameter.GRAPHITE_ADDRESS, null);
 		graphite.stop();
 	}

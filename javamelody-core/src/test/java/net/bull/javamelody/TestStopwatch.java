@@ -17,12 +17,9 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test unitaire pour Stopwatch.
@@ -42,10 +39,6 @@ class TestStopwatch {
 		Thread.sleep(10);
 		assertEquals(duration, stopwatch.getDuration(), "getDuration");
 		assertEquals(requestsCount + 1, MonitoringProxy.getServicesCounter().getRequestsCount(), "requestsCount");
-		try {
-			stopwatch.close();
-		} catch (final IllegalStateException e) {
-			assertNotNull(e, "e");
-		}
+		assertThrows(IllegalStateException.class, () -> stopwatch.close());
 	}
 }

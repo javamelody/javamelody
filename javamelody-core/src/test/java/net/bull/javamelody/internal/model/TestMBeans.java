@@ -17,9 +17,6 @@
  */
 package net.bull.javamelody.internal.model;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -38,6 +35,8 @@ import net.bull.javamelody.internal.common.I18N;
 import net.bull.javamelody.internal.model.MBeanNode.MBeanAttribute;
 import net.bull.javamelody.internal.model.TestTomcatInformations.GlobalRequestProcessor;
 import net.bull.javamelody.internal.model.TestTomcatInformations.ThreadPool;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test unitaire de la classe MBeans.
@@ -137,26 +136,18 @@ class TestMBeans {
 		assertNotNull(message, MBeans.getConvertedAttributes(firstMBean + ".intArrayAsInJRockit"));
 		assertNotNull(message,
 				MBeans.getConvertedAttributes(firstMBean + ".doubleArrayAsInJRockit"));
-		try {
-			MBeans.getConvertedAttributes("Catalina:type=instanceNotFound.maxThreads");
-		} catch (final IllegalArgumentException e) {
-			assertNotNull(e, "e");
-		}
-		try {
-			MBeans.getConvertedAttributes("n'importe quoi.maxThreads");
-		} catch (final IllegalArgumentException e) {
-			assertNotNull(e, "e");
-		}
-		try {
-			MBeans.getConvertedAttributes(firstMBean + ".Password");
-		} catch (final IllegalArgumentException e) {
-			assertNotNull(e, "e");
-		}
-		try {
-			MBeans.getConvertedAttributes("noAttribute");
-		} catch (final IllegalArgumentException e) {
-			assertNotNull(e, "e");
-		}
+		assertThrows(IllegalArgumentException.class, () ->
+			MBeans.getConvertedAttributes("Catalina:type=instanceNotFound.maxThreads")
+		);
+		assertThrows(IllegalArgumentException.class, () ->
+			MBeans.getConvertedAttributes("n'importe quoi.maxThreads")
+		);
+		assertThrows(IllegalArgumentException.class, () ->
+			MBeans.getConvertedAttributes(firstMBean + ".Password")
+		);
+		assertThrows(IllegalArgumentException.class, () ->
+			MBeans.getConvertedAttributes("noAttribute")
+		);
 	}
 
 	private String find(String name1, String name2, String name3, String attributeName)

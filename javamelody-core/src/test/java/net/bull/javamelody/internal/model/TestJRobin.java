@@ -17,9 +17,6 @@
  */
 package net.bull.javamelody.internal.model;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,6 +31,8 @@ import org.junit.jupiter.api.Test;
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.common.Parameters;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test unitaire de la classe JRobin.
@@ -121,13 +120,12 @@ class TestJRobin {
 		final JRobin jrobin = JRobin.createInstance(application, jrobinName, "request");
 		// addValue devrait appeler resetFile car RrdException "Invalid file header"
 		// puis devrait relancer une IOException
-		try {
-			jrobin.addValue(1);
-		} catch (final IOException e) {
-			assertTrue(e.getCause() != null && e.getCause().getMessage() != null
-					&& e.getCause().getMessage().contains("Invalid file header"),
-					"cause");
-		}
+		final IOException e = assertThrows(IOException.class, () ->
+			jrobin.addValue(1)
+		);
+		assertTrue(e.getCause() != null && e.getCause().getMessage() != null
+				&& e.getCause().getMessage().contains("Invalid file header"),
+				"cause");
 		// après ce resetFile, on devrait pouvoir appeler addValue
 		jrobin.addValue(1);
 	}

@@ -21,8 +21,7 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -78,17 +77,13 @@ class TestMailReport {
 				.singletonList(new JavaInformations(null, true));
 		setProperty(Parameter.ADMIN_EMAILS, "evernat@free.fr");
 		setProperty(Parameter.MAIL_SESSION, "mail/Session");
-		try {
-			new MailReport().sendReportMail(collector, false, javaInformationslist, Period.SEMAINE);
-		} catch (final NoInitialContextException e) {
-			assertNotNull(e, "ok");
-		}
+		assertThrows(NoInitialContextException.class, () ->
+			new MailReport().sendReportMail(collector, false, javaInformationslist, Period.SEMAINE)
+		);
 		setProperty(Parameter.MAIL_SUBJECT_PREFIX, "[javamelody] ");
-		try {
-			new MailReport().sendReportMail(collector, false, javaInformationslist, Period.SEMAINE);
-		} catch (final NoInitialContextException e) {
-			assertNotNull(e, "ok");
-		}
+		assertThrows(NoInitialContextException.class, () ->
+			new MailReport().sendReportMail(collector, false, javaInformationslist, Period.SEMAINE)
+		);
 
 		// sendReportMailForLocalServer
 		final String path = "path";
@@ -98,11 +93,9 @@ class TestMailReport {
 		expect(context.getContextPath()).andReturn(path).anyTimes();
 		replay(context);
 		Parameters.initialize(context);
-		try {
-			new MailReport().sendReportMailForLocalServer(collector, Period.SEMAINE);
-		} catch (final NoInitialContextException e) {
-			assertNotNull(e, "ok");
-		}
+		assertThrows(NoInitialContextException.class, () ->
+			new MailReport().sendReportMailForLocalServer(collector, Period.SEMAINE)
+		);
 		verify(context);
 	}
 
@@ -123,12 +116,9 @@ class TestMailReport {
 					Period.valueOfByMailCode(period.getMailCode()),
 					"valueOfByMailCode");
 		}
-		try {
-			Period.valueOfByMailCode("unknown");
-		} catch (final IllegalArgumentException e) {
-			assertNotNull(e, "ok");
-		}
-
+		assertThrows(IllegalArgumentException.class, () ->
+			Period.valueOfByMailCode("unknown")
+		);
 		assertEquals(Collections.singletonList(Period.SEMAINE),
 				MailReport.getMailPeriods(),
 				"getMailPeriods");

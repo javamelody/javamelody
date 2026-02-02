@@ -21,8 +21,7 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -227,13 +226,11 @@ class TestMonitoringFilter {// NOPMD
 			request = createNiceMock(HttpServletRequest.class);
 			doFilter(request);
 			setProperty(Parameter.DISPLAYED_COUNTERS, "unknown");
-			try {
+			assertThrows(IllegalArgumentException.class, () -> {
 				setUp();
-				request = createNiceMock(HttpServletRequest.class);
-				doFilter(request);
-			} catch (final IllegalArgumentException e) {
-				assertNotNull(e, "ok");
-			}
+				final HttpServletRequest request2 = createNiceMock(HttpServletRequest.class);
+				doFilter(request2);
+			});
 		} finally {
 			setProperty(Parameter.DISPLAYED_COUNTERS, null);
 		}
@@ -460,11 +457,9 @@ class TestMonitoringFilter {// NOPMD
 		replay(response);
 		replay(chain);
 		if (exceptionInDoFilter != null) {
-			try {
-				monitoringFilter.doFilter(request, response, chain);
-			} catch (final Throwable t) { // NOPMD
-				assertNotNull(t, "ok");
-			}
+			assertThrows(Throwable.class, () ->
+				monitoringFilter.doFilter(request, response, chain)
+			);
 		} else {
 			monitoringFilter.doFilter(request, response, chain);
 		}
@@ -1205,18 +1200,14 @@ class TestMonitoringFilter {// NOPMD
 				new URL("http://localhost:8080"), new URL("http://localhost:8081"));
 		MonitoringFilter.registerApplicationNodeInCollectServer("test",
 				new URL("http://localhost:8080"), new URL("http://localhost:8081"));
-		try {
+		assertThrows(IllegalArgumentException.class, () ->
 			MonitoringFilter.registerApplicationNodeInCollectServer(null, null,
-					new URL("http://localhost:8081"));
-		} catch (final IllegalArgumentException e) {
-			assertNotNull(e, "e");
-		}
-		try {
+				new URL("http://localhost:8081"))
+		);
+		assertThrows(IllegalArgumentException.class, () ->
 			MonitoringFilter.registerApplicationNodeInCollectServer(null,
-					new URL("http://localhost:8080"), null);
-		} catch (final IllegalArgumentException e) {
-			assertNotNull(e, "e");
-		}
+					new URL("http://localhost:8080"), null)
+		);
 	}
 
 	@Test

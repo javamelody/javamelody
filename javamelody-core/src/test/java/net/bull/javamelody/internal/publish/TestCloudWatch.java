@@ -17,12 +17,6 @@
  */
 package net.bull.javamelody.internal.publish;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,6 +24,8 @@ import com.amazonaws.SdkClientException;
 
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.Utils;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test unitaire de la classe CloudWatch.
@@ -47,30 +43,22 @@ class TestCloudWatch {
 	/** Test. */
 	@Test
 	void test() {
-		CloudWatch cloudWatch = CloudWatch.getInstance("/test", "hostname");
+		final CloudWatch cloudWatch = CloudWatch.getInstance("/test", "hostname");
 		assertNull(cloudWatch, "getInstance");
 		setProperty(Parameter.CLOUDWATCH_NAMESPACE, "MyCompany/MyAppDomain");
 		System.setProperty("aws.region", "us-west-1");
-		try {
-			cloudWatch = CloudWatch.getInstance("/test", "hostname");
-		} catch (final NoClassDefFoundError e) {
-			// for ant tests
-			return;
-		}
-		assertNotNull(cloudWatch, "getInstance");
-		cloudWatch.addValue("metric", 1);
-		cloudWatch.addValue("metric", 2);
-		cloudWatch.addValue("metric", 3);
-		boolean exception = false;
-		try {
-			cloudWatch.send();
-		} catch (final SdkClientException | IOException e) {
-			exception = true;
-		}
-		assertTrue(exception, "no credentials provided");
+		final CloudWatch cloudWatch2 = CloudWatch.getInstance("/test", "hostname");
+		assertNotNull(cloudWatch2, "getInstance");
+		cloudWatch2.addValue("metric", 1);
+		cloudWatch2.addValue("metric", 2);
+		cloudWatch2.addValue("metric", 3);
+		assertThrows(SdkClientException.class, () ->
+			// no credentials provided
+			cloudWatch2.send()
+		);
 		setProperty(Parameter.CLOUDWATCH_NAMESPACE, null);
 		System.getProperties().remove("aws.region");
-		cloudWatch.stop();
+		cloudWatch2.stop();
 	}
 
 	private static void setProperty(Parameter parameter, String value) {

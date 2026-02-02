@@ -21,11 +21,7 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -232,43 +228,32 @@ class TestAction {
 		expect(context.getContextPath()).andReturn("/test").anyTimes();
 		replay(context);
 		Parameters.initialize(context);
-		try {
-			Action.MAIL_TEST.execute(collector, null, null, null, null, null, null, null);
-		} catch (final IllegalStateException e) {
-			// ok, il manque un paramètre
-			assertNotNull(e, e.toString());
-		}
+		assertThrows(IllegalStateException.class, () ->
+			// IllegalStateException ok, il manque un paramètre
+			Action.MAIL_TEST.execute(collector, null, null, null, null, null, null, null)
+		);
 		Utils.setProperty(Parameter.MAIL_SESSION, "mail/Session");
-		try {
-			Action.MAIL_TEST.execute(collector, null, null, null, null, null, null, null);
-		} catch (final IllegalStateException e) {
-			// ok, il manque encore un paramètre
-			assertNotNull(e, e.toString());
-		}
+		assertThrows(IllegalStateException.class, () ->
+			// IllegalStateException ok, il manque encore un paramètre
+			Action.MAIL_TEST.execute(collector, null, null, null, null, null, null, null)
+		);
 		Utils.setProperty(Parameter.ADMIN_EMAILS, "admin@blah blah.fr");
-		try {
-			Action.MAIL_TEST.execute(collector, null, null, null, null, null, null, null);
-		} catch (final Exception e) {
-			// ok, de toute façon il n'y a pas de Session dans JNDI
-			assertNotNull(e, e.toString());
-		}
+		assertThrows(Exception.class, () ->
+			Action.MAIL_TEST.execute(collector, null, null, null, null, null, null, null)
+		);
 		verify(context);
 	}
 
 	private void jobs(Collector collector, String counterName, String sessionId, String threadId,
 			String jobId, String cacheId) throws IOException, SchedulerException {
-		try {
+		assertThrows(IllegalArgumentException.class, () ->
 			assertNotNull(Action.PAUSE_JOB.execute(collector, null, null,
-					counterName, sessionId, threadId, jobId, cacheId), "message PAUSE_JOB 1");
-		} catch (final IllegalArgumentException e) {
-			assertNotNull(e, e.toString());
-		}
-		try {
+					counterName, sessionId, threadId, jobId, cacheId), "message PAUSE_JOB 1")
+		);
+		assertThrows(IllegalArgumentException.class, () ->
 			assertNotNull(Action.RESUME_JOB.execute(collector, null, null,
-					counterName, sessionId, threadId, jobId, cacheId), "message RESUME_JOB 1");
-		} catch (final IllegalArgumentException e) {
-			assertNotNull(e, e.toString());
-		}
+					counterName, sessionId, threadId, jobId, cacheId), "message RESUME_JOB 1")
+		);
 		assertNotNull(Action.PAUSE_JOB.execute(collector, null, null,
 				counterName, sessionId, threadId, ALL, cacheId), "message PAUSE_JOB 2");
 		assertNotNull(Action.RESUME_JOB.execute(collector, null, null,
@@ -330,12 +315,10 @@ class TestAction {
 
 	private void killThread(Collector collector, String counterName, String sessionId,
 			String threadId, String jobId, String cacheId) throws IOException {
-		try {
+		assertThrows(IllegalArgumentException.class, () ->
 			assertNull(Action.KILL_THREAD.execute(collector, null, null,
-					counterName, sessionId, threadId, jobId, cacheId), "message KILL_THREAD 1");
-		} catch (final IllegalArgumentException e) {
-			assertNotNull(e, e.toString());
-		}
+					counterName, sessionId, threadId, jobId, cacheId), "message KILL_THREAD 1")
+		);
 		assertNull(Action.KILL_THREAD.execute(collector, null, null,
 				counterName, sessionId, "nopid_noip_id", jobId, cacheId), "message KILL_THREAD 2");
 		assertNull(Action.KILL_THREAD.execute(collector, null, null,
@@ -387,13 +370,11 @@ class TestAction {
 
 	private void sendThreadInterrupt(Collector collector, String counterName, String sessionId,
 			String threadId, String jobId, String cacheId) throws IOException {
-		try {
+		assertThrows(IllegalArgumentException.class, () ->
 			assertNull(Action.SEND_THREAD_INTERRUPT.execute(
 					collector, null, null, counterName, sessionId, threadId, jobId, cacheId),
-					"message SEND_THREAD_INTERRUPT 1");
-		} catch (final IllegalArgumentException e) {
-			assertNotNull(e, e.toString());
-		}
+					"message SEND_THREAD_INTERRUPT 1")
+		);
 		assertNull(Action.SEND_THREAD_INTERRUPT.execute(
 				collector, null, null, counterName, sessionId, "nopid_noip_id", jobId, cacheId),
 				"message SEND_THREAD_INTERRUPT 2");
@@ -456,7 +437,6 @@ class TestAction {
 			fail("checkSystemActionsEnabled");
 		}
 		Utils.setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "false");
-		systemActionsEnabled = true;
 		try {
 			Action.checkSystemActionsEnabled();
 		} catch (final Exception e) {

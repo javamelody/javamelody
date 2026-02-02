@@ -20,9 +20,7 @@ package net.bull.javamelody.internal.web.html; // NOPMD
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -218,11 +216,9 @@ public class TestHtmlReport {
 		setProperty(Parameter.NO_DATABASE, Boolean.FALSE.toString());
 
 		setProperty(Parameter.WARNING_THRESHOLD_MILLIS, "-1");
-		try {
-			htmlReport.toHtml("message 2", null);
-		} catch (final IllegalStateException e) {
-			assertNotNull(e, "ok");
-		}
+		assertThrows(IllegalStateException.class, () ->
+			htmlReport.toHtml("message 2", null)
+		);
 		setProperty(Parameter.WARNING_THRESHOLD_MILLIS, null);
 
 		// cas counterReportsByCounterName.size() == 1

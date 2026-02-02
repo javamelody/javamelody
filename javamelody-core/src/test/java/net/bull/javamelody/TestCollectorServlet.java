@@ -21,7 +21,7 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -232,12 +232,7 @@ class TestCollectorServlet {
 	/** Test. */
 	@Test
 	void testMainWinstone() {
-		try {
-			Main.main(new String[] { "--help" });
-		} catch (final Exception e) {
-			// cela s'arrête sur le jar winstone qui n'est pas disponible en tests unitaires
-			assertNotNull(e, "ok");
-		}
+		assertThrows(Exception.class, () -> Main.main(new String[] { "--help" }));
 	}
 
 	@Test

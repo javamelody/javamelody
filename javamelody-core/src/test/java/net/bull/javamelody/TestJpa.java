@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.openjpa.persistence.PersistenceUnitInfoImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,15 +66,8 @@ class TestJpa {
 	 */
 	@Test
 	@Disabled
-	void simpleFind() {
-		try {
-			Class.forName("org.apache.openjpa.persistence.PersistenceProviderImpl");
-		} catch (final ClassNotFoundException e) {
-			LogManager.getRootLogger().info(e.toString());
-			// si openjpa n'est pas disponible dans le classpath (test depuis Ant),
-			// on ne peut pas exécuter ce test
-			return;
-		}
+	void simpleFind() throws ClassNotFoundException {
+		Class.forName("org.apache.openjpa.persistence.PersistenceProviderImpl");
 		final EntityManagerFactory emf = Persistence.createEntityManagerFactory("test-jse");
 		assertNotNull(emf, "createEntityManagerFactory");
 
@@ -98,15 +90,8 @@ class TestJpa {
 	 */
 	@Test
 	@Disabled
-	void createAllQuery() {
-		try {
-			Class.forName("org.apache.openjpa.persistence.PersistenceProviderImpl");
-		} catch (final ClassNotFoundException e) {
-			LogManager.getRootLogger().info(e.toString());
-			// si openjpa n'est pas disponible dans le classpath (test depuis Ant),
-			// on ne peut pas exécuter ce test
-			return;
-		}
+	void createAllQuery() throws ClassNotFoundException {
+		Class.forName("org.apache.openjpa.persistence.PersistenceProviderImpl");
 		final EntityManagerFactory emf = Persistence.createEntityManagerFactory("test-jse");
 
 		try {

@@ -24,7 +24,6 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.apache.logging.log4j.LogManager;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,14 +46,6 @@ class TestMongoWrapper {
 	/** Test. */
 	@Test
 	void testCreateDatabaseProxy() {
-		try {
-			Class.forName("com.mongodb.ReadPreference");
-		} catch (final ClassNotFoundException e) {
-			LogManager.getRootLogger().info(e.toString());
-			// si mongodb-driver-core n'est pas disponible dans le classpath (test depuis Ant),
-			// on ne peut pas exécuter ce test
-			return;
-		}
 		final MongoDatabase database = createNiceMock(MongoDatabase.class);
 		final MongoCollection<Document> collection = createNiceMock(MongoCollection.class);
 		final CodecRegistry codecRegistry = createNiceMock(CodecRegistry.class);

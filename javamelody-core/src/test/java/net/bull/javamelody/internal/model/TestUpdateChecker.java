@@ -22,6 +22,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -78,12 +79,10 @@ class TestUpdateChecker {
 		final String serverUrl = "http://dummy";
 		final UpdateChecker updateCheckerCollectorServer = UpdateChecker.createForTest(null,
 				UpdateChecker.COLLECTOR_SERVER_APPLICATION_TYPE, serverUrl);
-		try {
-			updateCheckerCollectorServer.checkForUpdate();
-		} catch (final UnknownHostException e) {
-			// UnknownHostException is ok for url http://dummy
-			assertNotNull(updateCheckerCollectorServer, "updateCheckerCollectorServer");
-		}
+		// UnknownHostException is ok for url http://dummy
+		assertThrows(UnknownHostException.class, () ->
+			updateCheckerCollectorServer.checkForUpdate()
+		);
 		Utils.setProperty(Parameter.NO_DATABASE, "true");
 		Utils.setProperty(Parameter.LOG, "true");
 		if (CacheManager.getInstance().getCache("test") == null) {
@@ -91,12 +90,10 @@ class TestUpdateChecker {
 		}
 		final UpdateChecker updateChecker = UpdateChecker.createForTest(collector, "Classic",
 				serverUrl);
-		try {
-			updateChecker.checkForUpdate();
-		} catch (final UnknownHostException e) {
-			// UnknownHostException is ok for url http://dummy
-			assertNotNull(updateChecker, "updateChecker");
-		}
+		// UnknownHostException is ok for url http://dummy
+		assertThrows(UnknownHostException.class, () ->
+			updateChecker.checkForUpdate()
+		);
 		CacheManager.getInstance().removeCache("test");
 	}
 }

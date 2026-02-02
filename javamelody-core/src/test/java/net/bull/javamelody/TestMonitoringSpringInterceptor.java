@@ -17,12 +17,6 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-
 import java.util.Date;
 
 import org.junit.jupiter.api.AfterEach;
@@ -37,6 +31,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
 import net.bull.javamelody.internal.model.Counter;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test unitaire de la classe MonitoringSpringInterceptor.
@@ -363,11 +359,8 @@ class TestMonitoringSpringInterceptor {
 		assertNotNull(springTestFacade.now(), "now()");
 		assertSame(1, springCounter.getRequestsCount(), REQUESTS_COUNT);
 
-		try {
-			springTestFacade.throwError();
-		} catch (final Error e) {
-			assertSame(2, springCounter.getRequestsCount(), REQUESTS_COUNT);
-		}
+		assertThrows(Error.class, () ->	springTestFacade.throwError());
+		assertSame(2, springCounter.getRequestsCount(), REQUESTS_COUNT);
 
 		final AnnotatedTest annotatedTestClassSpring = (AnnotatedTest) context
 				.getBean("annotatedTestClassSpring");
@@ -436,10 +429,6 @@ class TestMonitoringSpringInterceptor {
 		context.getType("wrappedDataSource");
 		context.getBean("wrappedDataSource");
 
-		try {
-			new SpringDataSourceFactoryBean().createInstance();
-		} catch (final IllegalStateException e) {
-			assertNotNull(e, "ok");
-		}
+		assertThrows(IllegalStateException.class, () ->	new SpringDataSourceFactoryBean().createInstance());
 	}
 }

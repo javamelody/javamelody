@@ -17,14 +17,6 @@
  */
 package net.bull.javamelody.internal.model;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -38,6 +30,8 @@ import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.common.InputOutput;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test unitaire de la classe TransportFormat.
@@ -109,12 +103,10 @@ class TestTransportFormat {
 		assertArrayEquals(barray, (boolean[]) serialize(barray), "boolean");
 		final File file = new File("test");
 		assertEquals(file, serialize(file), "file");
-		try {
+		assertThrows(ClassNotFoundException.class, () ->
 			// objects from not white-listed packages should not be deserialized
-			assertNull(serialize(Status.UNINITIALIZED), "should not return a result");
-		} catch (final ClassNotFoundException e) {
-			assertNotNull(e, "e");
-		}
+			assertNull(serialize(Status.UNINITIALIZED), "should not return a result")
+		);
 	}
 
 	private static Serializable serialize(Serializable serializable)
@@ -141,14 +133,10 @@ class TestTransportFormat {
 	/** Test. */
 	@Test
 	void testReadJson() {
-		Exception result = null;
-		try {
-			TransportFormat.JSON.readSerializableFrom(new ByteArrayInputStream(new byte[0]));
-		} catch (final Exception e) {
-			result = e;
-		}
 		// la désérialisation d'un flux json n'est pas possible
-		assertNotNull(result, "readJson");
+		assertThrows(Exception.class, () ->
+			TransportFormat.JSON.readSerializableFrom(new ByteArrayInputStream(new byte[0]))
+		);
 	}
 
 	/** Test. */

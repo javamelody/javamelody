@@ -21,7 +21,7 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
@@ -98,11 +98,9 @@ class TestMonitoringController {
 	void testCheckCsrfToken() {
 		final HttpServletRequest httpRequest0 = createNiceMock(HttpServletRequest.class);
 		replay(httpRequest0);
-		try {
-			MonitoringController.checkCsrfToken(httpRequest0);
-		} catch (final Exception e) {
-			assertNotNull(e, "e");
-		}
+		assertThrows(Exception.class, () ->
+			MonitoringController.checkCsrfToken(httpRequest0)
+		);
 		verify(httpRequest0);
 
 		final HttpServletRequest httpRequest1 = createNiceMock(HttpServletRequest.class);
@@ -125,11 +123,9 @@ class TestMonitoringController {
 				.andReturn("unknown");
 		replay(httpRequest2);
 		replay(httpSession2);
-		try {
-			MonitoringController.checkCsrfToken(httpRequest2);
-		} catch (final Exception e) {
-			assertNotNull(e, "e");
-		}
+		assertThrows(Exception.class, () ->
+			MonitoringController.checkCsrfToken(httpRequest2)
+		);
 		verify(httpRequest2);
 		verify(httpSession2);
 	}

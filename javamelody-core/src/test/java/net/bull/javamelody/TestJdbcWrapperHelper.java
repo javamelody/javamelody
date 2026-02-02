@@ -18,6 +18,7 @@
 package net.bull.javamelody;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import javax.naming.NamingException;
 
@@ -53,19 +54,11 @@ class TestJdbcWrapperHelper {
 	}
 
 	private void getJndiDataSources() {
-		try {
-			JdbcWrapperHelper.getJndiDataSources();
-		} catch (final NamingException e) {
-			assertNotNull(e, "ok");
-		}
+		assertThrows(NamingException.class, () -> JdbcWrapperHelper.getJndiDataSources());
 	}
 
 	private void getJndiAndSpringDataSources() {
-		try {
-			JdbcWrapperHelper.getJndiAndSpringDataSources();
-		} catch (final NamingException e) {
-			assertNotNull(e, "ok");
-		}
+		assertThrows(NamingException.class, () -> JdbcWrapperHelper.getJndiAndSpringDataSources());
 	}
 
 	/** Test.

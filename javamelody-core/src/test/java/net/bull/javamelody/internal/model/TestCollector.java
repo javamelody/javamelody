@@ -17,12 +17,6 @@
  */
 package net.bull.javamelody.internal.model;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -57,6 +51,8 @@ import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.TestTomcatInformations.GlobalRequestProcessor;
 import net.bull.javamelody.internal.model.TestTomcatInformations.ThreadPool;
 import net.sf.ehcache.CacheManager;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test unitaire de la classe Collector.
@@ -367,11 +363,9 @@ class TestCollector {
 		final Collector collector = new Collector(TEST, List.of(counter, counter2));
 		collector.getRangeCounter(Period.JOUR.getRange(), counter2.getName());
 		collector.getRangeCounter(Period.TOUT.getRange(), counter2.getName());
-		try {
-			collector.getRangeCounter(Period.TOUT.getRange(), "unknown");
-		} catch (final IllegalArgumentException e) {
-			assertNotNull(e, "getRangeCounter");
-		}
+		assertThrows(IllegalArgumentException.class, () ->
+			collector.getRangeCounter(Period.TOUT.getRange(), "unknown")
+		);
 	}
 
 	private int getSizeOfCountersToBeDisplayed(Collector collector, Period period)
@@ -437,11 +431,9 @@ class TestCollector {
 		assertNotNull(collector.getHotspots(), "getHotspots");
 		final Collector collector2 = new Collector("test", counters);
 		assertNull(collector2.getSamplingProfiler(), "getSamplingProfiler");
-		try {
-			assertNull(collector2.getHotspots(), "getHotspots");
-		} catch (final IllegalStateException e) {
-			assertNotNull(e, "e");
-		}
+		assertThrows(IllegalStateException.class, () ->
+			assertNull(collector2.getHotspots(), "getHotspots")
+		);
 	}
 
 	/** Test.
@@ -489,11 +481,12 @@ class TestCollector {
 		}
 
 		try {
-			// test d'une erreur dans l'instanciation du CollectorServer : timer.cancel() doit être appelé
-			setProperty(Parameter.RESOLUTION_SECONDS, "-1");
-			new CollectorServer().stop();
-		} catch (final IllegalStateException e) {
-			assertNotNull(e, "ok");
+			assertThrows(IllegalStateException.class, () -> {
+					// test d'une erreur dans l'instanciation du CollectorServer : timer.cancel() doit être appelé
+					setProperty(Parameter.RESOLUTION_SECONDS, "-1");
+					new CollectorServer().stop();
+				}
+			);
 		} finally {
 			setProperty(Parameter.RESOLUTION_SECONDS, null);
 		}

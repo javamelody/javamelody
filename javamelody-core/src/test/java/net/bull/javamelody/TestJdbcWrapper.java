@@ -21,10 +21,7 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
@@ -291,11 +288,7 @@ public class TestJdbcWrapper {
 				statement.execute("select 4");
 				jdbcWrapper.getSqlCounter().setDisplayed(true);
 				statement.execute("explain select 3");
-				try {
-					statement.execute("invalid sql");
-				} catch (final SQLException e) {
-					assertNotNull(e, "ok");
-				}
+				assertThrows(SQLException.class, () -> statement.execute("invalid sql"));
 			}
 		} finally {
 			connection.close();

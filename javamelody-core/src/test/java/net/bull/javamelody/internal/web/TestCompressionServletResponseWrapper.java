@@ -17,10 +17,6 @@
  */
 package net.bull.javamelody.internal.web;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -34,6 +30,8 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import net.bull.javamelody.Utils;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test unitaire des classes CompressionServletResponseWrapper, CompressionResponseStream
@@ -268,26 +266,14 @@ class TestCompressionServletResponseWrapper {
 		wrapper.close();
 		wrapper.setContentLength(0);
 		wrapper.finishResponse();
-		boolean ok = false;
-		try {
-			wrapper.getOutputStream();
-		} catch (final Exception e) {
-			ok = true;
-		}
-		assertTrue(ok, "exception");
+		assertThrows(Exception.class, () ->	wrapper.getOutputStream());
 
 		final CompressionServletResponseWrapper wrapper2 = new CompressionServletResponseWrapper(
 				new HttpResponse(), 1024);
 		assertNotNull(wrapper2.getOutputStream(), "outputStream");
 		wrapper2.flushBuffer();
 		wrapper2.close();
-		boolean ok2 = false;
-		try {
-			wrapper2.getWriter();
-		} catch (final Exception e) {
-			ok2 = true;
-		}
-		assertTrue(ok2, "exception");
+		assertThrows(Exception.class, () ->	wrapper2.getWriter());
 	}
 
 	/** Test.

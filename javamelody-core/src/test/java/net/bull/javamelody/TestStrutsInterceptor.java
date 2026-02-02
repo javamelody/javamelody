@@ -21,8 +21,7 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -98,11 +97,7 @@ class TestStrutsInterceptor {
 		expect(invocation3.invoke()).andThrow(new UnknownError("test d'erreur")).anyTimes();
 
 		replay(invocation3);
-		try {
-			strutsInterceptor.intercept(invocation3);
-		} catch (final UnknownError e) {
-			assertNotNull(e, "ok");
-		}
+		assertThrows(UnknownError.class, () -> strutsInterceptor.intercept(invocation3));
 		assertSame(3, strutsCounter.getRequestsCount(), requestsCount);
 		verify(invocation3);
 	}

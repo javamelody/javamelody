@@ -18,6 +18,7 @@
 package net.bull.javamelody.internal.common;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,11 +53,7 @@ class TestMailer {
 	 * @throws Exception e */
 	@Test
 	void testMailerSend() throws Exception {
-		try {
-			send(null, false);
-		} catch (final NamingException e) {
-			assertNotNull(e, "ok");
-		}
+		assertThrows(NamingException.class, () -> send(null, false));
 		final Properties properties = new Properties();
 		mailer.setSession(Session.getInstance(properties));
 		send(null, false);

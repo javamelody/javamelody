@@ -17,9 +17,6 @@
  */
 package net.bull.javamelody;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,6 +32,8 @@ import net.bull.javamelody.TestMonitoringSpringInterceptor.AnnotatedTestClass;
 import net.bull.javamelody.TestMonitoringSpringInterceptor.AnnotatedTestMethod;
 import net.bull.javamelody.TestMonitoringSpringInterceptor.AnnotatedTestOtherClass;
 import net.bull.javamelody.internal.model.Counter;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test unitaire de la classe MonitoringGuiceInterceptor.
@@ -95,11 +94,8 @@ class TestMonitoringGuiceInterceptor {
 		assertNotNull(springTestFacade.now(), "now()");
 		assertSame(1, guiceCounter.getRequestsCount(), REQUESTS_COUNT);
 
-		try {
-			springTestFacade.throwError();
-		} catch (final Error e) {
-			assertSame(2, guiceCounter.getRequestsCount(), REQUESTS_COUNT);
-		}
+		assertThrows(Error.class, () -> springTestFacade.throwError());
+		assertSame(2, guiceCounter.getRequestsCount(), REQUESTS_COUNT);
 
 		final AnnotatedTest annotatedTestClass = injector.getInstance(AnnotatedTestClass.class);
 		assertNotNull(annotatedTestClass.myMethod(), "annotatedTestClass");
