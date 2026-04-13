@@ -38,7 +38,7 @@ When submitting code, please follow existing [conventions and style](../../wiki/
 
 ## License
 
-By contributing your code, you agree to license your contribution under the terms of the [ASL](http://www.apache.org/licenses/LICENSE-2.0).
+By contributing your code, you agree to license your contribution under the terms of the [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
 All files are released with the Apache 2.0 license.
 

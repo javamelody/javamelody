@@ -44,7 +44,7 @@ import java.util.zip.ZipFile;
  * <tt>java -jar javamelody.war</tt>.
  *
  * @author Kohsuke Kawaguchi, extracted (and simplified) from Jenkins by Emeric Vernat
- * 	licence MIT (alias X11, donc compatible ASL)
+ * 	licence MIT (alias X11, donc compatible Apache-2.0)
  */
 @SuppressWarnings("all")
 public final class Main {
