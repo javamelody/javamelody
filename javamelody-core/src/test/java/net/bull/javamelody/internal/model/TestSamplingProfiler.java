@@ -17,6 +17,12 @@
  */
 package net.bull.javamelody.internal.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -29,8 +35,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import net.bull.javamelody.internal.model.SamplingProfiler.SampledMethod;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test unitaire de la classe SamplingProfiler.
@@ -122,10 +126,9 @@ class TestSamplingProfiler {
 	/**
 	 * Test.
 	 */
-    @SuppressWarnings("unused")
 	@Test
 	void testConstructor2() {
-        assertThrows(Exception.class, () ->		new SamplingProfiler(List.of(" "), null));
+		assertThrows(Exception.class, () -> new SamplingProfiler(List.of(" "), null));
 	}
 
 	/**

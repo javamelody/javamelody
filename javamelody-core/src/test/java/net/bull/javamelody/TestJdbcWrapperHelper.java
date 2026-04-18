@@ -36,7 +36,8 @@ class TestJdbcWrapperHelper {
 		Utils.initialize();
 	}
 
-	/** Test. */
+	/** Test.
+	 * @throws NamingException e */
 	@Test
 	void testGetJndiDataSources() throws NamingException {
 		getJndiDataSources();
@@ -47,7 +48,8 @@ class TestJdbcWrapperHelper {
 		setProperty(Parameter.DATASOURCES, null);
 	}
 
-	/** Test. */
+	/** Test.
+	 * @throws NamingException e */
 	@Test
 	void testGetJndiAndSpringDataSources() throws NamingException {
 		getJndiAndSpringDataSources();
@@ -66,7 +68,8 @@ class TestJdbcWrapperHelper {
 	@Test
 	void testGetFieldValue() throws IllegalAccessException {
 		// sqlCounter est un champ privé qui existe comme un autre
-		assertNotNull(JdbcWrapperHelper.getFieldValue(JdbcWrapper.SINGLETON, "sqlCounter"), "getFieldValue");
+		assertNotNull(JdbcWrapperHelper.getFieldValue(JdbcWrapper.SINGLETON, "sqlCounter"),
+				"getFieldValue");
 	}
 
 	/** Test.

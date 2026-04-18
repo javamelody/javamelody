@@ -17,17 +17,17 @@
  */
 package net.bull.javamelody.internal.publish;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import com.amazonaws.SdkClientException;
-
-import net.bull.javamelody.Parameter;
-import net.bull.javamelody.Utils;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import net.bull.javamelody.Parameter;
+import net.bull.javamelody.Utils;
 
 /**
  * Test unitaire de la classe CloudWatch.
@@ -55,9 +55,8 @@ class TestCloudWatch {
 		cloudWatch2.addValue("metric", 2);
 		cloudWatch2.addValue("metric", 3);
 		assertThrows(IOException.class, () ->
-			// no credentials provided
-			cloudWatch2.send()
-		);
+				// no credentials provided
+				cloudWatch2.send());
 		setProperty(Parameter.CLOUDWATCH_NAMESPACE, null);
 		System.getProperties().remove("aws.region");
 		cloudWatch2.stop();

@@ -41,7 +41,6 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.spi.PersistenceProvider;
 import jakarta.persistence.spi.PersistenceProviderResolverHolder;
-import jakarta.persistence.spi.PersistenceUnitInfo;
 import jakarta.persistence.spi.ProviderUtil;
 import net.bull.javamelody.internal.model.Counter;
 
@@ -63,6 +62,7 @@ class TestJpa {
 
 	/**
 	 * Test EntityManger.find.
+	 * @throws ClassNotFoundException e
 	 */
 	@Test
 	@Disabled
@@ -87,6 +87,7 @@ class TestJpa {
 
 	/**
 	 * Tests createNamedQuery, createNativeQuery et createQery.
+	 * @throws ClassNotFoundException e
 	 */
 	@Test
 	@Disabled
@@ -206,7 +207,7 @@ class TestJpa {
 		persistenceUnitInfoImpl
 				.setPersistenceXmlFileUrl(getClass().getResource("/META-INF/persistence.xml"));
 		final EntityManagerFactory entityManagerFactory = getJpaPersistence()
-				.createContainerEntityManagerFactory((PersistenceUnitInfo) persistenceUnitInfoImpl,
+				.createContainerEntityManagerFactory(persistenceUnitInfoImpl,
 						Collections.emptyMap());
 		assertTrue(JdbcWrapper.isProxyAlready(entityManagerFactory), "proxy");
 		JpaWrapper.getJpaCounter().setDisplayed(false);
@@ -232,8 +233,7 @@ class TestJpa {
 			final PersistenceUnitInfoImpl persistenceUnitInfoImpl = new PersistenceUnitInfoImpl();
 			persistenceUnitInfoImpl
 					.setPersistenceXmlFileUrl(getClass().getResource("/META-INF/persistence.xml"));
-			getJpaPersistence().generateSchema((PersistenceUnitInfo) persistenceUnitInfoImpl,
-					Collections.emptyMap());
+			getJpaPersistence().generateSchema(persistenceUnitInfoImpl, Collections.emptyMap());
 		} catch (final Exception e) {
 			assertNotNull(e, "e");
 		}
