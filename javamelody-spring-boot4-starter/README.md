@@ -4,7 +4,7 @@ The JavaMelody Spring Boot 4 Starter facilitates the integration of JavaMelody i
 
 For Spring Boot 3, see [JavaMelody Spring Boot Starter](../javamelody-spring-boot-starter).
 
-License ASL, http://www.apache.org/licenses/LICENSE-2.0
+License Apache-2.0, http://www.apache.org/licenses/LICENSE-2.0
 
 ## Integration
 
