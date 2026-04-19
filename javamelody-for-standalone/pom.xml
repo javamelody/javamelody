@@ -47,7 +47,7 @@
 				<!-- Use "mvn exec:java" -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<version>3.5.0</version>
+				<version>3.6.3</version>
 				<executions>
 					<execution>
 						<goals>
@@ -62,7 +62,7 @@
 			<!-- Configuration compilation -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.13.0</version>
+				<version>3.15.0</version>
 				<configuration>
 					<source>11</source>
 					<target>11</target>

@@ -343,7 +343,7 @@ class TestPayloadNameRequestWrapper extends EasyMockSupport {
 				+ "   </m:reservation>                                                        \n"
 				+ "    <o:creditCard xmlns:o=\"http://mycompany.example.com/financial\">      \n"
 				+ "     <n:name xmlns:n=\"http://mycompany.example.com/employees\">           \n"
-				+ "           Ã…ke JÃ³gvan Ã˜yvind                                               \n"
+				+ "           ??ke J??gvan ??yvind                                               \n"
 				+ "     </n:name>                                                             \n"
 				+ "     <o:number>123456789099999</o:number>                                  \n"
 				+ "     <o:expiration>2005-02</o:expiration>                                  \n"

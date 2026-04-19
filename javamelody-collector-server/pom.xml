@@ -75,25 +75,25 @@
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>2.11.0</version>
+			<version>2.13.2</version>
 		</dependency>
 		<!-- AWS CloudWatch dependencies to send metrics to CloudWatch (about 4.5 
 			MB) -->
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-cloudwatch</artifactId>
-			<version>1.12.780</version>
+			<version>1.12.797</version>
 		</dependency>
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-s3</artifactId>
-			<version>1.12.780</version>
+			<version>1.12.797</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.jetty.ee10</groupId>
 			<artifactId>jetty-ee10-webapp</artifactId>
-			<version>12.0.16</version>
+			<version>12.1.8</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -101,7 +101,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>3.4.0</version>
+				<version>3.5.1</version>
 				<configuration>
 					<overlays>
 						<overlay>
@@ -136,7 +136,7 @@
 				<!-- Use "mvn jetty:run" -->
 				<groupId>org.eclipse.jetty.ee10</groupId>
 				<artifactId>jetty-ee10-maven-plugin</artifactId>
-				<version>12.0.16</version>
+				<version>12.1.8</version>
 				<configuration>
 					<scan>10</scan>
 				</configuration>
