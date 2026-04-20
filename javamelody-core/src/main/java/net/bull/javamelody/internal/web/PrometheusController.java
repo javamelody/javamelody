@@ -123,9 +123,6 @@ import net.bull.javamelody.internal.model.TomcatInformations;
  *  javamelody_services_hits_count
  *  javamelody_services_errors_count
  *  javamelody_services_duration_millis
- *  javamelody_struts_hits_count
- *  javamelody_struts_errors_count
- *  javamelody_struts_duration_millis
  *  javamelody_jsf_hits_count
  *  javamelody_jsf_errors_count
  *  javamelody_jsf_duration_millis

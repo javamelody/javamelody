@@ -283,13 +283,6 @@
 			<version>7.0.0</version>
 			<optional>true</optional>
 		</dependency>
-		<!-- Dépendance optionnelle xwork pour interceptor struts 2 -->
-		<dependency>
-			<groupId>org.apache.struts.xwork</groupId>
-			<artifactId>xwork-core</artifactId>
-			<version>2.3.37</version>
-			<optional>true</optional>
-		</dependency>
 		<!-- Dépendance optionnelle AWS Java SDK -->
 		<dependency>
 			<groupId>com.amazonaws</groupId>

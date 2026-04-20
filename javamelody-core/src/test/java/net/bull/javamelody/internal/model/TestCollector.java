@@ -169,17 +169,15 @@ class TestCollector {
 	void testCollectWithoutErrors() throws IOException {
 		final Counter counter = createCounter();
 		final Counter jspCounter = new Counter(Counter.JSP_COUNTER_NAME, null);
-		final Counter strutsCounter = new Counter(Counter.STRUTS_COUNTER_NAME, null);
 		final Counter jobCounter = new Counter(Counter.JOB_COUNTER_NAME, null);
 		final Collector collector = new Collector(TEST,
-				List.of(counter, jspCounter, strutsCounter, jobCounter));
+				List.of(counter, jspCounter, jobCounter));
 		if (collector.getCounters().isEmpty()) {
 			fail("getCounters");
 		}
 		counter.addRequest("test1", 0, 0, 0, false, 1000);
 		counter.addRequest("test5", 10000, 200, 200, true, 10000);
 		jspCounter.addRequest("test2", 0, 0, 0, false, 0);
-		strutsCounter.addRequest("test3", 0, 0, 0, false, 0);
 		jobCounter.addRequest("test4", 0, 0, 0, false, 0);
 		collector.collectWithoutErrors(Collections.singletonList(new JavaInformations(null, true)));
 		counter.addRequest("test2", 0, 0, 0, false, 1000);

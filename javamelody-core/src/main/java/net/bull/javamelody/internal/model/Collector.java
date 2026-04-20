@@ -697,7 +697,7 @@ public class Collector { // NOPMD
 			final JRobin hitsJRobin;
 			final JRobin meanTimesJRobin;
 			final JRobin systemErrorsJRobin;
-			if (!counter.isJspOrStrutsCounter()) {
+			if (!counter.isJspCounter()) {
 				hitsJRobin = getCounterJRobin(counterName + "HitsRate");
 				meanTimesJRobin = getCounterJRobin(counterName + "MeanTimes");
 				systemErrorsJRobin = getCounterJRobin(counterName + "SystemErrors");
@@ -813,7 +813,7 @@ public class Collector { // NOPMD
 			// et notamment pour les requêtes http "écrites au hasard" (par exemple, pour tester les failles d'un site web) ;
 			// cela réduit la place occupée par de nombreux fichiers très peu utiles
 			// (et s'il y a eu 0 hit, alors la moyenne vaut -1 : elle n'a pas de sens)
-			if (lastPeriodRequest.getHits() > 1 && !dayCounter.isJspOrStrutsCounter()
+			if (lastPeriodRequest.getHits() > 1 && !dayCounter.isJspCounter()
 					&& (!dayCounter.isErrorCounter() || dayCounter.isJobCounter())) {
 				// on ne crée jamais de graphiques pour les "jsp", "error" et "job" car peu utiles
 				// et potentiellement lourd en usage disque et en mémoire utilisée

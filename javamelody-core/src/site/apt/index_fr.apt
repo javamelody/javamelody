@@ -45,7 +45,7 @@ Java Melody : monitoring d'applications Java
 	Il inclut des courbes de synthèse montrant l'évolution au fil du temps des indicateurs suivants :
 
 	* Nombre d'exécutions, temps d'exécutions moyens et pourcentage d'erreurs pour les
-	requêtes HTTP, requêtes SQL, actions struts, pages jsp et méthodes de façades métiers (si EJB3, Spring ou Guice)
+	requêtes HTTP, requêtes SQL, pages jsp et méthodes de façades métiers (si EJB3, Spring ou Guice)
 
 	* Mémoire Java
 
@@ -60,7 +60,7 @@ Java Melody : monitoring d'applications Java
 	Ces courbes peuvent être visualisées sur la journée en cours, la semaine, le mois, l'année ou une période personnalisée.
 
 	JavaMelody inclut des statistiques sur les compteurs définis (à l'heure d'aujourd'hui
-	requêtes HTTP, requêtes SQL, actions struts, pages jsp et méthodes de façades métiers si EJB3,
+	requêtes HTTP, requêtes SQL, pages jsp et méthodes de façades métiers si EJB3,
 	Spring ou Guice) avec pour chaque compteur :
 
 	* Une synthèse globale indiquant le nombre d'exécutions global, le temps d'exécution moyen, le temps cpu et le pourcentage d'erreurs. 

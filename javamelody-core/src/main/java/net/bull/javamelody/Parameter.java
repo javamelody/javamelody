@@ -128,11 +128,6 @@ public enum Parameter {
 	SERVICES_TRANSFORM_PATTERN("services-transform-pattern"),
 
 	/**
-	 * Expression régulière (null par défaut) pour transformer la description d'une action Struts 2.
-	 */
-	STRUTS_TRANSFORM_PATTERN("struts-transform-pattern"),
-
-	/**
 	 * Expression régulière (null par défaut) pour transformer la description d'une action JSF.
 	 */
 	JSF_TRANSFORM_PATTERN("jsf-transform-pattern"),

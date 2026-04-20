@@ -185,12 +185,6 @@
 			<artifactId>guice</artifactId>
 			<version>7.0.0</version>
 		</dependency>
-		<!-- Dépendance xwork pour interceptor struts 2 -->
-		<dependency>
-			<groupId>org.apache.struts.xwork</groupId>
-			<artifactId>xwork-core</artifactId>
-			<version>2.3.37</version>
-		</dependency>
 		<dependency>
 			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-core</artifactId>

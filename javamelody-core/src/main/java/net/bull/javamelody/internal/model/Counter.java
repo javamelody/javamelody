@@ -66,10 +66,6 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 	 */
 	public static final String JSP_COUNTER_NAME = "jsp";
 	/**
-	 * Nom du counter des actions Struts.
-	 */
-	public static final String STRUTS_COUNTER_NAME = "struts";
-	/**
 	 * Nom du counter des actions JSF RI (Mojarra).
 	 */
 	public static final String JSF_COUNTER_NAME = "jsf";
@@ -568,12 +564,12 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 	}
 
 	/**
-	 * Retourne true si ce counter est un counter de jsp ou d'actions Struts
+	 * Retourne true si ce counter est un counter de jsp
 	 * (c'est-à-dire si son nom est "jsp").
 	 * @return boolean
 	 */
-	public boolean isJspOrStrutsCounter() {
-		return JSP_COUNTER_NAME.equals(name) || STRUTS_COUNTER_NAME.equals(name);
+	public boolean isJspCounter() {
+		return JSP_COUNTER_NAME.equals(name);
 	}
 
 	/**
