@@ -87,6 +87,11 @@ public final class Main {
 	 * @throws Exception e
 	 */
 	public static void main(String[] args) throws IllegalAccessException {
+		final boolean java21OrLater = "21".compareTo(System.getProperty("java.version")) < 0;
+		if(!java21OrLater) {
+			System.out.println("Minimum Java required version for JavaMelody Collector Server is 21, not " + System.getProperty("java.version"));
+		}
+
 		//Allows to pass arguments through stdin to "hide" sensitive parameters like httpsKeyStorePassword
 		//to achieve this use --paramsFromStdIn
 		if (hasArgument("--paramsFromStdIn", args)) {
