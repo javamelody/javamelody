@@ -18,17 +18,15 @@
 package net.bull.javamelody.internal.publish;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
-import com.amazonaws.services.cloudwatch.AmazonCloudWatchClientBuilder;
-import com.amazonaws.services.cloudwatch.model.Dimension;
-import com.amazonaws.services.cloudwatch.model.MetricDatum;
-import com.amazonaws.services.cloudwatch.model.PutMetricDataRequest;
-
 import net.bull.javamelody.Parameter;
+import software.amazon.awssdk.services.cloudwatch.CloudWatchClient;
+import software.amazon.awssdk.services.cloudwatch.model.Dimension;
+import software.amazon.awssdk.services.cloudwatch.model.MetricDatum;
+import software.amazon.awssdk.services.cloudwatch.model.PutMetricDataRequest;
 
 /**
  * Publish chart data to <a href='https://aws.amazon.com/cloudwatch/'>AWS CloudWatch</a>.
@@ -36,32 +34,32 @@ import net.bull.javamelody.Parameter;
  */
 class CloudWatch extends MetricsPublisher {
 	private final String cloudWatchNamespace;
-	private final AmazonCloudWatch awsCloudWatch;
+	private final CloudWatchClient cloudWatchClient;
 	private final String prefix;
 	private final List<Dimension> dimensions = new ArrayList<>();
 
 	private final List<MetricDatum> buffer = new ArrayList<>();
 	private long lastTime;
-	private Date lastTimestamp;
+	private Instant lastTimestamp;
 
-	CloudWatch(AmazonCloudWatch cloudWatch, String cloudWatchNamespace, String prefix,
+	CloudWatch(CloudWatchClient cloudWatchClient, String cloudWatchNamespace, String prefix,
 			String application, String hostName) {
 		super();
-		assert cloudWatch != null;
+		assert cloudWatchClient != null;
 		assert cloudWatchNamespace != null && !cloudWatchNamespace.startsWith("AWS/")
 				&& !cloudWatchNamespace.isEmpty() && cloudWatchNamespace.length() <= 255;
 		assert prefix != null;
 		assert !application.isEmpty() && application.length() <= 255;
 		assert !hostName.isEmpty() && hostName.length() <= 255;
 
-		this.awsCloudWatch = cloudWatch;
+		this.cloudWatchClient = cloudWatchClient;
 		this.cloudWatchNamespace = cloudWatchNamespace;
 		this.prefix = prefix;
 		// A dimension is like a tag which can be used to filter metrics in the CloudWatch UI.
 		// Name and value of dimensions have min length 1 and max length 255.
-		dimensions.add(new Dimension().withName("application").withValue(application));
-		dimensions.add(new Dimension().withName("hostname").withValue(hostName));
-		// note: to add other dimensions (max 10), we could call
+		dimensions.add(Dimension.builder().name("application").value(application).build());
+		dimensions.add(Dimension.builder().name("hostname").value(hostName).build());
+		// note: to add other dimensions (max 30 dimensions), we could call
 		// new URL("http://instance-data/latest/meta-data/instance-id").openStream(),
 		// or /ami-id, /placement/availability-zone, /instance-type, /local-hostname, /local-ipv4, /public-hostname, /public-ipv4
 		// see http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
@@ -91,18 +89,8 @@ class CloudWatch extends MetricsPublisher {
 	 * @param hostName Hostname such as www.host.com@11.22.33.44
 	 */
 	CloudWatch(String cloudWatchNamespace, String prefix, String application, String hostName) {
-		this(AmazonCloudWatchClientBuilder.defaultClient(), cloudWatchNamespace, prefix,
-				application, hostName);
+		this(CloudWatchClient.create(), cloudWatchNamespace, prefix, application, hostName);
 	}
-
-	// exemple en spécifiant credentials, region et endpoint
-	//	CloudWatch(String cloudWatchNamespace, AWSCredentialsProvider provider, String region) {
-	//		this(cloudWatchNamespace, AmazonCloudWatchClientBuilder.standard()
-	//				.withCredentials(provider)
-	//				.withRegion(region)
-	//				.withEndpointConfiguration(new EndpointConfiguration("monitoring.amazonaws.com"))
-	//				.build(), ...);
-	//	}
 
 	static CloudWatch getInstance(String contextPath, String hostName) {
 		final String cloudWatchNamespace = Parameter.CLOUDWATCH_NAMESPACE.getValue();
@@ -127,14 +115,14 @@ class CloudWatch extends MetricsPublisher {
 		assert metric != null;
 		final long timeInSeconds = System.currentTimeMillis() / 1000;
 		if (lastTime != timeInSeconds) {
-			lastTimestamp = new Date();
+			lastTimestamp = Instant.now();
 			lastTime = timeInSeconds;
 		}
 		// http://docs.amazonwebservices.com/AmazonCloudWatch/latest/APIReference/API_MetricDatum.html
 		// In theory, large values are rejected, but the maximum is so large that we don't bother to verify.
-		final MetricDatum metricDatum = new MetricDatum().withMetricName(prefix + metric)
-				.withDimensions(dimensions).withTimestamp(lastTimestamp).withValue(value);
-		//.withUnit("None")
+		final MetricDatum metricDatum = MetricDatum.builder().metricName(prefix + metric)
+				.dimensions(dimensions).timestamp(lastTimestamp).value(value).build();
+		//.unit("None")
 		synchronized (buffer) {
 			buffer.add(metricDatum);
 		}
@@ -147,31 +135,20 @@ class CloudWatch extends MetricsPublisher {
 			datumList = new ArrayList<>(buffer);
 			buffer.clear();
 		}
-		// note: Each PutMetricData request is limited to 40 KB in size for HTTP POST requests.
-		// And the collection MetricData must not have a size greater than 20.
-		final List<List<MetricDatum>> parts = partition(datumList, 20);
-		for (final List<MetricDatum> part : parts) {
-			final PutMetricDataRequest request = new PutMetricDataRequest()
-					.withNamespace(cloudWatchNamespace).withMetricData(part);
-			try {
-				awsCloudWatch.putMetricData(request);
-			} catch (final Exception e) {
-				// pas catch (AmazonCloudWatchException) sinon ClassNotFoundException dans Jenkins par ex
-				throw new IOException("Error connecting to AWS CloudWatch", e);
-			}
+		// Each PutMetricData request is limited to 1 MB in size for HTTP POST requests.
+		// The metricData collection is limited to 1000 different metrics, so we are OK without partitioning the request.
+		final PutMetricDataRequest request = PutMetricDataRequest.builder()
+				.namespace(cloudWatchNamespace).metricData(datumList).build();
+		try {
+			cloudWatchClient.putMetricData(request);
+		} catch (final Exception e) {
+			// pas catch (CloudWatchException) sinon ClassNotFoundException dans Jenkins par ex
+			throw new IOException("Error connecting to AWS CloudWatch", e);
 		}
-	}
-
-	private static <T> List<List<T>> partition(List<T> list, int partitionSize) {
-		final List<List<T>> partitions = new ArrayList<>();
-		for (int i = 0; i < list.size(); i += partitionSize) {
-			partitions.add(list.subList(i, Math.min(i + partitionSize, list.size())));
-		}
-		return partitions;
 	}
 
 	@Override
 	public void stop() {
-		awsCloudWatch.shutdown();
+		cloudWatchClient.close();
 	}
 }

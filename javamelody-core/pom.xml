@@ -285,15 +285,15 @@
 		</dependency>
 		<!-- Dépendance optionnelle AWS Java SDK -->
 		<dependency>
-			<groupId>com.amazonaws</groupId>
-			<artifactId>aws-java-sdk-cloudwatch</artifactId>
-			<version>1.12.797</version>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>cloudwatch</artifactId>
+			<version>2.42.41</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>com.amazonaws</groupId>
-			<artifactId>aws-java-sdk-s3</artifactId>
-			<version>1.12.797</version>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>s3</artifactId>
+			<version>2.42.41</version>
 			<optional>true</optional>
 		</dependency>
 		<!-- Dépendance JUnit -->
