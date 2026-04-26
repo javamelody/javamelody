@@ -73,7 +73,8 @@ public final class UpdateChecker {
 	}
 
 	public static void init(Timer timer, Collector collector, String applicationType) {
-		if (!Parameter.UPDATE_CHECK_DISABLED.getValueAsBoolean()) {
+		if (Parameter.UPDATE_CHECK_DISABLED.getValue() != null
+				&& !Parameter.UPDATE_CHECK_DISABLED.getValueAsBoolean()) {
 			final UpdateChecker updateChecker = new UpdateChecker(collector, applicationType,
 					SERVER_URL);
 			final TimerTask updateCheckerTimerTask = new TimerTask() {
