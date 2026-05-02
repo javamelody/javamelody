@@ -32,6 +32,7 @@ import net.bull.javamelody.internal.model.ProcessInformations;
 public class HtmlProcessInformationsReport extends HtmlAbstractReport {
 	private final List<ProcessInformations> processInformationsList;
 	private final boolean windows;
+	private final boolean windows11OrLater;
 	private final DecimalFormat percentFormat = I18N.createPercentFormat();
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 
@@ -42,6 +43,7 @@ public class HtmlProcessInformationsReport extends HtmlAbstractReport {
 
 		this.processInformationsList = processInformationsList;
 		this.windows = isWindowsProcessList(processInformationsList);
+		this.windows11OrLater = isWindows11ProcessList(processInformationsList);
 	}
 
 	@Override
@@ -56,7 +58,9 @@ public class HtmlProcessInformationsReport extends HtmlAbstractReport {
 	void writeTable() throws IOException {
 		final HtmlTable table = new HtmlTable();
 		table.beginTable(getString("Processus"));
-		write("<th>#Utilisateur#</th>");
+		if (!windows11OrLater) {
+			write("<th>#Utilisateur#</th>");
+		}
 		write("<th class='sorttable_numeric'>#PID#</th>");
 		if (!windows) {
 			write("<th class='sorttable_numeric'>#cpu#</th><th class='sorttable_numeric'>#mem#</th>");
@@ -66,7 +70,10 @@ public class HtmlProcessInformationsReport extends HtmlAbstractReport {
 			write("<th class='sorttable_numeric'>#rss#</th><th>#tty#</th>");
 			write("<th>#stat#</th><th>#start#</th>");
 		}
-		write("<th>#cpuTime#</th><th>#command#</th>");
+		if (!windows11OrLater) {
+			write("<th>#cpuTime#</th>");
+		}
+		write("<th>#command#</th>");
 		for (final ProcessInformations processInformations : processInformationsList) {
 			table.nextRow();
 			writeProcessInformations(processInformations);
@@ -80,11 +87,15 @@ public class HtmlProcessInformationsReport extends HtmlAbstractReport {
 
 	private void writeProcessInformations(ProcessInformations processInformations)
 			throws IOException {
-		write("<td>");
-		write(htmlEncode(processInformations.getUser()));
+		final String nbsp = "&nbsp;";
 		final String newColumnRight = "</td><td align='right'>";
 		final String newColumn = "</td><td>";
-		write(newColumnRight);
+		if (!windows11OrLater) {
+			write("<td>");
+			write(htmlEncode(processInformations.getUser()));
+			write("</td>");
+		}
+		write("<td align='right'>");
 		write(integerFormat.format(processInformations.getPid()));
 		if (!windows) {
 			write(newColumnRight);
@@ -104,8 +115,11 @@ public class HtmlProcessInformationsReport extends HtmlAbstractReport {
 			write(newColumnRight);
 			write(htmlEncode(processInformations.getStart()));
 		}
-		write(newColumnRight);
-		write(htmlEncode(processInformations.getCpuTime()));
+		if (!windows11OrLater) {
+			write(newColumnRight);
+			write(htmlEncode(processInformations.getCpuTime()));
+			write("</td>");
+		}
 		write("</td><td class='wrappedText'>");
 		writeDirectly(htmlEncode(processInformations.getCommand()));
 		write("</td>");
@@ -132,5 +146,16 @@ public class HtmlProcessInformationsReport extends HtmlAbstractReport {
 			}
 		}
 		return true;
+	}
+
+	public static boolean isWindows11ProcessList(
+			List<ProcessInformations> processInformationsList) {
+		// une liste de process est issue de windows 11 si une valeur de user est nulle
+		for (final ProcessInformations processInformations : processInformationsList) {
+			if (processInformations.getUser() == null) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

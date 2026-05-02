@@ -151,16 +151,20 @@ class TestPdfOtherReport {
 
 		PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
 		pdfOtherReport.writeProcessInformations(ProcessInformations.buildProcessInformations(
-				getClass().getResourceAsStream("/tasklist.txt"), true, false));
+				getClass().getResourceAsStream("/tasklist.txt"), false, true, false));
+		assertNotEmptyAndClear(output);
+		pdfOtherReport = new PdfOtherReport(TEST_APP, output);
+		pdfOtherReport.writeProcessInformations(ProcessInformations.buildProcessInformations(
+				getClass().getResourceAsStream("/tasklist_windows_11.txt"), true, true, false));
 		assertNotEmptyAndClear(output);
 		pdfOtherReport = new PdfOtherReport(TEST_APP, output);
 		pdfOtherReport.writeProcessInformations(ProcessInformations
-				.buildProcessInformations(getClass().getResourceAsStream("/ps.txt"), false, false));
+				.buildProcessInformations(getClass().getResourceAsStream("/ps.txt"), false, false, false));
 		assertNotEmptyAndClear(output);
 		pdfOtherReport = new PdfOtherReport(TEST_APP, output);
 		pdfOtherReport.writeProcessInformations(
 				Collections.singletonMap("localhost", ProcessInformations.buildProcessInformations(
-						getClass().getResourceAsStream("/ps.txt"), false, false)));
+						getClass().getResourceAsStream("/ps.txt"), false, false, false)));
 		assertNotEmptyAndClear(output);
 	}
 

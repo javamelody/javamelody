@@ -342,10 +342,13 @@ public class TestHtmlReport {
 		htmlReport.writeMBeans(MBeans.getAllMBeanNodes());
 		assertNotEmptyAndClear(writer);
 		htmlReport.writeProcesses(ProcessInformations.buildProcessInformations(
-				getClass().getResourceAsStream("/tasklist.txt"), true, false));
+				getClass().getResourceAsStream("/tasklist.txt"), false, true, false));
+		assertNotEmptyAndClear(writer);
+		htmlReport.writeProcesses(ProcessInformations.buildProcessInformations(
+				getClass().getResourceAsStream("/tasklist_windows_11.txt"), true, true, false));
 		assertNotEmptyAndClear(writer);
 		htmlReport.writeProcesses(ProcessInformations
-				.buildProcessInformations(getClass().getResourceAsStream("/ps.txt"), false, false));
+				.buildProcessInformations(getClass().getResourceAsStream("/ps.txt"), false, false, false));
 		assertNotEmptyAndClear(writer);
 		HtmlReport.writeAddAndRemoveApplicationLinks(null, new ArrayList<>(), writer);
 		assertNotEmptyAndClear(writer);

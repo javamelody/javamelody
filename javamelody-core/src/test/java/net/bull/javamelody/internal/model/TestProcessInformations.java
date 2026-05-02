@@ -45,20 +45,27 @@ class TestProcessInformations {
 	/** Test. */
 	@Test
 	void testReadPs() {
-		final List<ProcessInformations> processInformations = ProcessInformations
-				.buildProcessInformations(getClass().getResourceAsStream("/tasklist.txt"), true,
+		final List<ProcessInformations> processInformations0 = ProcessInformations
+				.buildProcessInformations(getClass().getResourceAsStream("/tasklist.txt"), false,
+						true, false);
+		assertSame(49, processInformations0.size(), "processes");
+		checkProcesses(processInformations0, false, true);
+		final List<ProcessInformations> processInformations1 = ProcessInformations
+				.buildProcessInformations(
+						getClass().getResourceAsStream("/tasklist_windows_11.txt"), true, true,
 						false);
-		assertSame(49, processInformations.size(), "processes");
-		checkProcesses(processInformations, true);
+		assertSame(14, processInformations1.size(), "processes");
+		checkProcesses(processInformations1, true, true);
 		final List<ProcessInformations> processInformations2 = ProcessInformations
-				.buildProcessInformations(getClass().getResourceAsStream("/ps.txt"), false, false);
+				.buildProcessInformations(getClass().getResourceAsStream("/ps.txt"), false, false,
+						false);
 		assertSame(118, processInformations2.size(), "processes");
-		checkProcesses(processInformations2, false);
+		checkProcesses(processInformations2, false, false);
 		final List<ProcessInformations> processInformations3 = ProcessInformations
 				.buildProcessInformations(getClass().getResourceAsStream("/ps_aix.txt"), false,
-						true);
+						false, true);
 		assertSame(15, processInformations3.size(), "processes");
-		checkProcesses(processInformations3, false);
+		checkProcesses(processInformations3, false, false);
 	}
 
 	/** Test.
@@ -68,14 +75,19 @@ class TestProcessInformations {
 		final List<ProcessInformations> processes = ProcessInformations.buildProcessInformations();
 		assertNotNull(processes, "processes null");
 		assertFalse(processes.isEmpty(), "processes vide");
-		final boolean windows = System.getProperty("os.name").toLowerCase(Locale.getDefault())
-				.contains("windows");
-		checkProcesses(processes, windows);
+		final String osName = System.getProperty("os.name").toLowerCase(Locale.getDefault());
+		final boolean windows = osName.contains("windows");
+		final boolean windows11OrLater = "windows 11".compareTo(osName) <= 0;
+		checkProcesses(processes, windows11OrLater, windows);
 	}
 
-	private void checkProcesses(List<ProcessInformations> processInformations, boolean windows) {
+	private void checkProcesses(List<ProcessInformations> processInformations,
+			boolean windows11OrLater, boolean windows) {
 		for (final ProcessInformations process : processInformations) {
-			assertNotNull(process.getUser(), "user");
+			if (!windows11OrLater) {
+				assertNotNull(process.getUser(), "user");
+				assertNotNull(process.getCpuTime(), "cpuTime");
+			}
 			assertTrue(process.getPid() >= 0, "pid");
 			if (!windows) {
 				assertTrue(process.getCpuPercentage() >= 0, "cpuPercentage");
@@ -86,7 +98,6 @@ class TestProcessInformations {
 				assertNotNull(process.getStart(), "start");
 			}
 			assertTrue(process.getVsz() >= 0, "vsz");
-			assertNotNull(process.getCpuTime(), "cpuTime");
 			assertNotNull(process.getCommand(), "command");
 		}
 	}

@@ -1,0 +1,17 @@
+
+Nom de l'image                 PID Nom de la sessio Num‚ro de s Utilisation 
+========================= ======== ================ =========== ============
+System Idle Process              0 Services                   0         8 Ko
+System                           4 Services                   0        12 Ko
+Secure System                  188 Services                   0    65ÿ288 Ko
+Registry                       228 Services                   0    66ÿ040 Ko
+smss.exe                       724 Services                   0        20 Ko
+csrss.exe                     1084 Services                   0     1ÿ200 Ko
+wininit.exe                   1172 Services                   0       448 Ko
+csrss.exe                     1180 Console                    1     1ÿ388 Ko
+winlogon.exe                  1284 Console                    1       952 Ko
+services.exe                  1304 Services                   0     7ÿ348 Ko
+LsaIso.exe                    1348 Services                   0     2ÿ224 Ko
+lsass.exe                     1356 Services                   0    20ÿ288 Ko
+svchost.exe                   1504 Services                   0    27ÿ952 Ko
+tasklist.exe                  4572 Console                    1    11ÿ828 Ko

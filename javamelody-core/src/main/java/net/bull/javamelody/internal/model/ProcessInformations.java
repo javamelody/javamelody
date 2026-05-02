@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -61,7 +62,8 @@ public final class ProcessInformations implements Serializable {
 	private final String cpuTime;
 	private final String command;
 
-	private ProcessInformations(Scanner sc, boolean windows, boolean macOrAix) {
+	private ProcessInformations(Scanner sc, boolean windows11OrLater, boolean windows,
+			boolean macOrAix) {
 		super();
 		if (windows) {
 			final StringBuilder imageNameBuilder = new StringBuilder(sc.next());
@@ -69,7 +71,7 @@ public final class ProcessInformations implements Serializable {
 				imageNameBuilder.append(' ').append(sc.next());
 			}
 			pid = sc.nextInt();
-			if ("Console".equals(sc.next())) {
+			if (Set.of("Console", "Services").contains(sc.next())) {
 				// ce if est nécessaire si windows server 2003 mais sans connexion à distance ouverte
 				// (comme tasklist.txt dans resources de test,
 				// car parfois "Console" est présent mais parfois non)
@@ -81,18 +83,25 @@ public final class ProcessInformations implements Serializable {
 			vsz = Integer.parseInt(memory.replace(".", "").replace(",", "").replace("ÿ", ""));
 			rss = -1;
 			tty = null;
-			sc.next();
-			sc.skip(WINDOWS_STATE_PATTERN);
 			stat = null;
-			final StringBuilder userBuilder = new StringBuilder(sc.next());
-			while (!sc.hasNext(WINDOWS_CPU_TIME_PATTERN)) {
-				userBuilder.append(' ').append(sc.next());
-			}
-			this.user = userBuilder.toString();
 			start = null;
-			cpuTime = sc.next();
-			command = imageNameBuilder.append("   (").append(sc.nextLine().trim()).append(')')
-					.toString();
+			if (windows11OrLater) {
+				this.user = null;
+				cpuTime = null;
+				command = imageNameBuilder.toString();
+				sc.nextLine();
+			} else {
+				sc.next();
+				sc.skip(WINDOWS_STATE_PATTERN);
+				final StringBuilder userBuilder = new StringBuilder(sc.next());
+				while (!sc.hasNext(WINDOWS_CPU_TIME_PATTERN)) {
+					userBuilder.append(' ').append(sc.next());
+				}
+				this.user = userBuilder.toString();
+				cpuTime = sc.next();
+				command = imageNameBuilder.append("   (").append(sc.nextLine().trim()).append(')')
+						.toString();
+			}
 		} else {
 			user = sc.next();
 			pid = sc.nextInt();
@@ -113,7 +122,7 @@ public final class ProcessInformations implements Serializable {
 	}
 
 	public static List<ProcessInformations> buildProcessInformations(InputStream in,
-			boolean windows, boolean macOrAix) {
+			boolean windows11OrLater, boolean windows, boolean macOrAix) {
 		final String charset;
 		if (windows) {
 			charset = "Cp1252";
@@ -131,7 +140,8 @@ public final class ProcessInformations implements Serializable {
 
 		final List<ProcessInformations> processInfos = new ArrayList<>();
 		while (sc.hasNext()) {
-			final ProcessInformations processInfo = new ProcessInformations(sc, windows, macOrAix);
+			final ProcessInformations processInfo = new ProcessInformations(sc, windows11OrLater,
+					windows, macOrAix);
 			processInfos.add(processInfo);
 		}
 		return Collections.unmodifiableList(processInfos);
@@ -142,10 +152,13 @@ public final class ProcessInformations implements Serializable {
 		try {
 			// pour nodes Jenkins, on évalue ces propriétés à chaque fois sans utiliser de constantes
 			final String osName = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
+			final boolean windows11OrLater = "windows 11".compareTo(osName) <= 0;
 			final boolean windows = osName.contains("windows");
 			final boolean mac = osName.contains("mac");
 			final boolean aix = osName.contains("aix");
-			if (windows) {
+			if (windows11OrLater) {
+				process = Runtime.getRuntime().exec(new String[] { "cmd", "/c", "tasklist" });
+			} else if (windows) {
 				process = Runtime.getRuntime().exec(new String[] { "cmd", "/c", "tasklist /V" });
 			} else if (mac || aix) {
 				// le "f" de "ps wauxf" n'est pas supporté sur Mac OS X et sur AIX, cf issues 74 et 99
@@ -155,7 +168,8 @@ public final class ProcessInformations implements Serializable {
 				// (http://mindprod.com/jgloss/properties.html) qui acceptent la commande ps
 				process = Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", "ps wauxf" });
 			}
-			return buildProcessInformations(process.getInputStream(), windows, mac || aix);
+			return buildProcessInformations(process.getInputStream(), windows11OrLater, windows,
+					mac || aix);
 		} finally {
 			if (process != null) {
 				// évitons http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6462165
