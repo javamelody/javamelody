@@ -132,7 +132,7 @@ class CounterRequestTable extends MTable<CounterRequest> {
 
 	static boolean isRequestGraphDisplayed(Counter parentCounter) {
 		return !(parentCounter.isErrorCounter() && !parentCounter.isJobCounter())
-				&& !parentCounter.isJspCounter();
+				&& !parentCounter.isJspOrStrutsCounter();
 	}
 
 	@Override

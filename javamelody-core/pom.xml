@@ -283,6 +283,13 @@
 			<version>7.0.0</version>
 			<optional>true</optional>
 		</dependency>
+		<!-- Dépendance optionnelle pour interceptor struts -->
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts2-core</artifactId>
+			<version>7.1.1</version>
+			<optional>true</optional>
+		</dependency>
 		<!-- Dépendance optionnelle AWS Java SDK -->
 		<dependency>
 			<groupId>software.amazon.awssdk</groupId>

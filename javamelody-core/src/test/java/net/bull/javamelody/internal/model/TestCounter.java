@@ -431,9 +431,10 @@ public class TestCounter {
 
 	/** Test. */
 	@Test
-	void testJspCounter() {
-		assertFalse(new Counter("http", null).isJspCounter(), "jspCounter");
-		assertTrue(new Counter("jsp", null).isJspCounter(), "jspCounter");
+	void testJspOrStrutsCounter() {
+		assertFalse(new Counter("http", null).isJspOrStrutsCounter(), "jspOrStrutsCounter");
+		assertTrue(new Counter("jsp", null).isJspOrStrutsCounter(), "jspOrStrutsCounter");
+		assertTrue(new Counter("struts", null).isJspOrStrutsCounter(), "jspOrStrutsCounter");
 	}
 
 	/** Test. */

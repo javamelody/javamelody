@@ -173,6 +173,7 @@ class FilterContext {
 		final Counter springCounter = MonitoringProxy.getSpringCounter();
 		final Counter guiceCounter = MonitoringProxy.getGuiceCounter();
 		final Counter servicesCounter = MonitoringProxy.getServicesCounter();
+		final Counter strutsCounter = MonitoringProxy.getStrutsCounter();
 		final Counter jsfCounter = MonitoringProxy.getJsfCounter();
 		final Counter logCounter = LoggingHandler.getLogCounter();
 		final Counter jspCounter = JspWrapper.getJspCounter();
@@ -180,11 +181,11 @@ class FilterContext {
 		if (JobInformations.QUARTZ_AVAILABLE) {
 			final Counter jobCounter = JobGlobalListener.getJobCounter();
 			counters = List.of(httpCounter, sqlCounter, jpaCounter, ejbCounter, springCounter,
-					guiceCounter, servicesCounter, jsfCounter, jspCounter,
+					guiceCounter, servicesCounter, strutsCounter, jsfCounter, jspCounter,
 					errorCounter, logCounter, jobCounter);
 		} else {
 			counters = List.of(httpCounter, sqlCounter, jpaCounter, ejbCounter, springCounter,
-					guiceCounter, servicesCounter, jsfCounter, jspCounter,
+					guiceCounter, servicesCounter, strutsCounter, jsfCounter, jspCounter,
 					errorCounter, logCounter);
 		}
 
@@ -201,6 +202,7 @@ class FilterContext {
 			springCounter.setDisplayed(springCounter.isUsed());
 			guiceCounter.setDisplayed(guiceCounter.isUsed());
 			servicesCounter.setDisplayed(servicesCounter.isUsed());
+			strutsCounter.setDisplayed(strutsCounter.isUsed());
 			jsfCounter.setDisplayed(jsfCounter.isUsed());
 			jspCounter.setDisplayed(jspCounter.isUsed());
 		} else {

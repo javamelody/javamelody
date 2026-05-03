@@ -177,7 +177,7 @@ public class HtmlCounterReport extends HtmlAbstractReport {
 
 	public static boolean isRequestGraphDisplayed(Counter parentCounter) {
 		return !(parentCounter.isErrorCounter() && !parentCounter.isJobCounter())
-				&& !parentCounter.isJspCounter();
+				&& !parentCounter.isJspOrStrutsCounter();
 	}
 
 	void writeRequestsAggregatedOrFilteredByClassName(String requestId) throws IOException {
