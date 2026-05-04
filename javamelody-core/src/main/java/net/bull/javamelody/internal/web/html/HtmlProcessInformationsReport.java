@@ -87,7 +87,6 @@ public class HtmlProcessInformationsReport extends HtmlAbstractReport {
 
 	private void writeProcessInformations(ProcessInformations processInformations)
 			throws IOException {
-		final String nbsp = "&nbsp;";
 		final String newColumnRight = "</td><td align='right'>";
 		final String newColumn = "</td><td>";
 		if (!windows11OrLater) {
