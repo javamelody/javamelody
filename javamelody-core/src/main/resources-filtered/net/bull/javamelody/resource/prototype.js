@@ -1,14 +1,34 @@
-/*  Prototype JavaScript framework, version 1.7.3, with stripTags and unescapeHTML removed to avoid questions about CVE-2020-27511
+/*  Prototype JavaScript framework, version 1.7.4+javamelody.${project.version}, with stripTags and unescapeHTML removed to mitigate CVE-2020-27511.
  *  (c) 2005-2010 Sam Stephenson
  *
+ *  Forked from upstream Prototype.js 1.7.3 — verified byte-identical
+ *  (SHA-256 46bc7c7b853bf69ab0b165153453f7c1e84bf6982fe8adb6245088a5f3de8360)
+ *  to the released 1.7.3 distribution served from
+ *  ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js (the
+ *  corresponding upstream release tag is prototypejs/prototype@1.7.3,
+ *  commit 2a2fc85322b4715a9513c596e3131690125ab6e2). The vendored copy
+ *  was introduced when JavaMelody upgraded its embedded prototype.js to
+ *  1.7.3 at javamelody commit 25c6d7dc on 2017-10-05.
+ *
+ *  The version literal is bumped to 1.7.4 because this artifact ships the
+ *  CVE-2020-27511 fix that a hypothetical upstream 1.7.4 release would have
+ *  shipped (stripTags and unescapeHTML removed; neither is called from
+ *  JavaMelody). The "+javamelody.<n>" build-metadata identifier (SemVer
+ *  2.0.0 §10) records the JavaMelody build of origin. See
+ *  javamelody-core/prototype.js.CHANGES.md for the full local diff from
+ *  upstream 1.7.3.
+ *
  *  Prototype is freely distributable under the terms of an MIT-style license.
- *  For details, see the Prototype web site: http://www.prototypejs.org/
+ *  A canonical-form MIT license text (upstream's own LICENSE is malformed —
+ *  it omits the "shall be included in all copies" clause) is bundled inside
+ *  javamelody-core at META-INF/LICENSE-prototype.js on the classpath; the
+ *  upstream project home is at http://www.prototypejs.org/.
  *
  *--------------------------------------------------------------------------*/
 
 var Prototype = {
 
-  Version: '1.7.3',
+  Version: '1.7.4+javamelody.${project.version}',
 
   Browser: (function(){
     var ua = navigator.userAgent;
