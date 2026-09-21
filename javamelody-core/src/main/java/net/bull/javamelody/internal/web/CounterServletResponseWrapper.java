@@ -46,10 +46,10 @@ public class CounterServletResponseWrapper extends FilterServletResponseWrapper 
 	 */
 	public long getDataLength() {
 		if (writer == null) {
-			return getCounterResponseStream() == null ? 0 : getCounterResponseStream().getDataLength();
-		} else {
-			return writer.getDataLength();
+			return getCounterResponseStream() == null ? 0
+					: getCounterResponseStream().getDataLength();
 		}
+		return writer.getDataLength();
 	}
 
 	/** {@inheritDoc} */
