@@ -204,7 +204,7 @@ class PdfCounterRequestContextReport extends PdfAbstractTableReport {
 		writeDurations(contexts);
 
 		final CounterRequestContextReportHelper counterRequestContextReportHelper = new CounterRequestContextReportHelper(
-				contexts, childHitsDisplayed);
+				contexts, childHitsDisplayed, threadInformationsByThreadId);
 		for (final int[] requestValues : counterRequestContextReportHelper.getRequestValues()) {
 			writeRequestValues(requestValues);
 		}

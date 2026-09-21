@@ -59,13 +59,15 @@ public class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 	public static class CounterRequestContextReportHelper {
 		private final List<CounterRequestContext> contexts;
 		private final boolean childHitsDisplayed;
+		private final Map<Long, ThreadInformations> threadInformationsByThreadId;
 		private final Map<String, CounterRequest> counterRequestsByRequestName = new HashMap<>();
 
 		public CounterRequestContextReportHelper(List<CounterRequestContext> contexts,
-				boolean childHitsDisplayed) {
+				boolean childHitsDisplayed, Map<Long, ThreadInformations> threadInformationsByThreadId) {
 			super();
 			assert contexts != null;
 			this.contexts = contexts;
+			this.threadInformationsByThreadId = threadInformationsByThreadId;
 			this.childHitsDisplayed = childHitsDisplayed;
 		}
 
@@ -83,7 +85,16 @@ public class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 				durationMeans[i] = counterRequest.getMean();
 				cpuTimesMeans[i] = counterRequest.getCpuTimeMean();
 				if (cpuTimesMeans[i] >= 0) {
-					cpuTimes[i] = context.getCpuTime();
+					final ThreadInformations threadInformations = threadInformationsByThreadId.get(context.getThreadId());
+					if (threadInformations != null) {
+						final long currentCpuTimeMillis = threadInformations.getCpuTimeMillis();
+						// context.getCpuTime(currentCpuTime) and not context.getCpuTime()
+						// because the thread of the context is not in the collect server
+						// in case this report is written in the collect server
+						cpuTimes[i] = context.getCpuTime(currentCpuTimeMillis * 1000000L);
+					} else {
+						cpuTimes[i] = -1;
+					}
 				} else {
 					cpuTimes[i] = -1;
 				}
@@ -312,7 +323,7 @@ public class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 		contexts.add(rootContext);
 		contexts.addAll(rootContext.getChildContexts());
 		final CounterRequestContextReportHelper counterRequestContextReportHelper = new CounterRequestContextReportHelper(
-				contexts, childHitsDisplayed);
+				contexts, childHitsDisplayed, threadInformationsByThreadId);
 		write("</td> <td>");
 		writeRequests(contexts, counterRequestContextReportHelper);
 

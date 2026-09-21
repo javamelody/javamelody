@@ -243,7 +243,15 @@ class CounterRequestForContextTable extends CounterRequestTable {
 			final CounterRequest counterRequest = getCounterRequest(row);
 			if (counterRequest != null && counterRequest.getCpuTimeMean() >= 0) {
 				final CounterRequestContext counterRequestContext = getCounterRequestContext(row);
-				cpu = counterRequestContext.getCpuTime();
+				final ThreadInformations threadInformations = getData()
+						.getThreadInformationsByCounterRequestContext(counterRequestContext);
+				if (threadInformations == null) {
+					cpu = null; // un décalage n'a pas permis de récupérer le thread de ce context
+				} else {
+					// context.getCpuTime(currentCpuTime) and not context.getCpuTime()
+					// because the thread of the context is not in this client
+					cpu = counterRequestContext.getCpuTime(threadInformations.getCpuTimeMillis() * 1000000L);
+				}
 			} else {
 				cpu = null;
 			}
