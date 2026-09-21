@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StreamCorruptedException;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -50,6 +51,7 @@ public class CollectorServlet extends HttpServlet {
 
 	@SuppressWarnings("all")
 	private static final Logger LOGGER = LogManager.getLogger("javamelody");
+	private static final Pattern DOT_DOT_PATTERN = Pattern.compile("(\\.\\.|~)");
 
 	@SuppressWarnings("all")
 	private transient HttpAuth httpAuth;
@@ -150,7 +152,7 @@ public class CollectorServlet extends HttpServlet {
 
 	private void addCollectorApplication(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
-		final String appName = req.getParameter("appName");
+		String appName = req.getParameter("appName");
 		final String appUrls = req.getParameter("appUrls");
 		final String action = req.getParameter("action");
 		final String[] aggregatedApps = req.getParameterValues("aggregatedApps");
@@ -158,6 +160,7 @@ public class CollectorServlet extends HttpServlet {
 			if (appName == null || appUrls == null && aggregatedApps == null) {
 				throw new IllegalArgumentException(I18N.getString("donnees_manquantes"));
 			}
+			appName = DOT_DOT_PATTERN.matcher(appName).replaceAll("");
 			if (appUrls != null && !appUrls.startsWith("http://")
 					&& !appUrls.startsWith("https://")) {
 				throw new IllegalArgumentException(I18N.getString("urls_format"));
