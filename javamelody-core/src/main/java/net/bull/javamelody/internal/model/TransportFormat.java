@@ -20,6 +20,7 @@ package net.bull.javamelody.internal.model;
 import java.awt.datatransfer.DataFlavor;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.InvalidClassException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -241,6 +242,14 @@ public enum TransportFormat {
 						name.replace("net.bull.javamelody", "net.bull.javamelody.internal.model"));
 			}
 			throw new ClassNotFoundException(name);
+		}
+
+		// Without this override, this stream could deserialize a proxy class but it would fail to deserialize
+		// a malicious embedded handler given the resolveClass above (not a vulnerability).
+		// With this override, deserializing a proxy class is disallowed and is never used anyway.
+		@Override
+		protected Class<?> resolveProxyClass(String[] interfaces) throws IOException {
+			throw new InvalidClassException("Proxy classes are not allowed in javamelody deserialization");
 		}
 	}
 
