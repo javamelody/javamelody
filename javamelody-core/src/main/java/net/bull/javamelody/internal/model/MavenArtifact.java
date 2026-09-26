@@ -36,6 +36,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -43,6 +45,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.jspecify.annotations.Nullable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -89,6 +92,20 @@ public final class MavenArtifact implements Serializable {
 	}
 
 	private static MavenArtifact parseDependency(URL jarFileLocation) throws IOException {
+		final MavenArtifact dependency = parseDependencyFromMavenPom(jarFileLocation);
+
+		if (dependency != null) {
+			return dependency;
+		}
+
+		// certains artifacts (par exemple Spring Framework/Boot depuis leur passage à Gradle,
+		// ou le driver JDBC PostgreSQL) n'embarquent pas de META-INF/maven/.../pom.xml dans leur jar ;
+		// on se rabat alors sur leur META-INF/MANIFEST.MF, lisible sans accès à un dépôt Maven
+		return parseDependencyFromManifest(jarFileLocation);
+	}
+
+	@Nullable
+	private static MavenArtifact parseDependencyFromMavenPom(final URL jarFileLocation) throws IOException {
 		final byte[] pomXml = readMavenFileFromJarFile(jarFileLocation, "pom.xml");
 		if (pomXml != null) {
 			final MavenArtifact dependency = new MavenArtifact();
@@ -96,6 +113,44 @@ public final class MavenArtifact implements Serializable {
 			return dependency;
 		}
 		return null;
+	}
+
+	private static MavenArtifact parseDependencyFromManifest(URL jarFileLocation) throws IOException {
+		final byte[] manifestFile = readJarFileEntry(jarFileLocation, "META-INF/MANIFEST.MF");
+		if (manifestFile == null) {
+			return null;
+		}
+		final Attributes attributes = new Manifest(new ByteArrayInputStream(manifestFile))
+				.getMainAttributes();
+		final String version = attributes.getValue("Implementation-Version");
+		if (version == null) {
+			return null;
+		}
+		final MavenArtifact dependency = new MavenArtifact();
+		dependency.version = version;
+		dependency.artifactId = getArtifactIdFromFileName(jarFileLocation, version);
+		final String vendorId = attributes.getValue("Implementation-Vendor-Id");
+		dependency.groupId = vendorId != null ? vendorId : "";
+		dependency.name = attributes.getValue("Implementation-Title");
+		dependency.updated = true;
+		return dependency;
+	}
+
+	private static String getArtifactIdFromFileName(URL jarFileLocation, String version) {
+		String fileName = jarFileLocation.getFile();
+		if (fileName.endsWith("!/")) {
+			// cas d'un jar imbriqué dans un jar exécutable, par exemple avec Spring Boot
+			fileName = fileName.substring(0, fileName.length() - "!/".length());
+		}
+		fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
+		if (fileName.endsWith(".jar")) {
+			fileName = fileName.substring(0, fileName.length() - ".jar".length());
+		}
+		final String versionSuffix = '-' + version;
+		if (fileName.endsWith(versionSuffix)) {
+			fileName = fileName.substring(0, fileName.length() - versionSuffix.length());
+		}
+		return fileName;
 	}
 
 	private void parsePomXml(InputStream pomXml) throws IOException {
@@ -665,6 +720,21 @@ public final class MavenArtifact implements Serializable {
 			while (entry != null) {
 				if (entry.getName().startsWith("META-INF/maven/")
 						&& entry.getName().endsWith("/" + pomFileName)) {
+					return InputOutput.pumpToByteArray(zipInputStream);
+				}
+				zipInputStream.closeEntry();
+				entry = zipInputStream.getNextEntry();
+			}
+		}
+		return null;
+	}
+
+	private static byte[] readJarFileEntry(URL jarFileLocation, String entryName) throws IOException {
+		try (ZipInputStream zipInputStream = new ZipInputStream(
+				new BufferedInputStream(jarFileLocation.openStream(), 4096))) {
+			ZipEntry entry = zipInputStream.getNextEntry();
+			while (entry != null) {
+				if (entryName.equals(entry.getName())) {
 					return InputOutput.pumpToByteArray(zipInputStream);
 				}
 				zipInputStream.closeEntry();
