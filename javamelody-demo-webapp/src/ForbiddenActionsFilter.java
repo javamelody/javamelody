@@ -20,6 +20,10 @@ public class ForbiddenActionsFilter implements Filter {
 			// par securite pour les mots de passe, etc
 			((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, "Display of processes forbidden in the demo");
 			return;
+		} else if ("source".equals(request.getParameter("part"))) {
+			// pour limiter la consommation réseau et la consommation cpu
+			((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, "Display of sources forbidden in the demo");
+			return;
 		}
 		chain.doFilter(request, response);
 	}
