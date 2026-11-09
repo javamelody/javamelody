@@ -69,6 +69,9 @@ public enum Action {
 	/** Invalidation d'une session http. */
 	INVALIDATE_SESSION(""),
 
+	/** Invalidation des sessions http anonymes. */
+	INVALIDATE_ANONYMOUS_SESSIONS("systeminfo"),
+
 	/** Invalidation de la session http courante. */
 	LOGOUT(""),
 
@@ -249,6 +252,10 @@ public enum Action {
 			// invalidation des sessions http
 			SessionListener.invalidateAllSessionsExceptCurrentSession(currentSession);
 			messageForReport = I18N.getString("sessions_http_invalidees");
+			break;
+		case INVALIDATE_ANONYMOUS_SESSIONS:
+			// invalidation des sessions http anonymes (sans remoteUser)
+			messageForReport = invalidateAnonymousSessions();
 			break;
 		case INVALIDATE_SESSION:
 			// invalidation d'une session http
@@ -445,6 +452,19 @@ public enum Action {
 		Runtime.getRuntime().gc();
 		final long after = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		return (before - after) / 1024;
+	}
+
+	private String invalidateAnonymousSessions() {
+		final List<SessionInformations> sessions = SessionListener.getAllSessionsInformations();
+		int count = 0;
+		for (final SessionInformations session : sessions) {
+			final String remoteUser = session.getRemoteUser();
+			if (remoteUser == null || remoteUser.trim().isEmpty()) {
+				SessionListener.invalidateSession(session.getId());
+				count++;
+			}
+		}
+		return I18N.getFormattedString("anonymous_sessions_http_invalidees", count);
 	}
 
 	private void clearCaches() {
