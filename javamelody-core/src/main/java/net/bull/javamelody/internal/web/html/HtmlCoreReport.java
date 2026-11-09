@@ -720,6 +720,12 @@ class HtmlCoreReport extends HtmlAbstractReport {
 					+ "'>");
 			write("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#invalidate_sessions#\" /> #invalidate_sessions#</a>");
 			writeln(separator);
+			write("<a href='?action=invalidate_anonymous_sessions" + getCsrfTokenUrlPart()
+					+ "' class='confirm' data-confirm='"
+					+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_invalidate_anonymous_sessions"))
+					+ "'>");
+			write("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#invalidate_anonymous_sessions#\" /> #invalidate_anonymous_sessions#</a>");
+			writeln(separator);
 			write("<a href='?part=sessions'>");
 			writeln("<img src='?resource=system-users.png' width='20' height='20' alt=\"#sessions#\" /> #sessions#</a>");
 		}
